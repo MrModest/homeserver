@@ -1,0 +1,22 @@
+---
+- name: Create directory for the app's data
+  ansible.builtin.file:
+    path: '{{ dir_path }}'
+    state: directory
+    owner: '{{ imch_app_user.user }}'
+    group: '{{ imch_app_user.group }}'
+    recurse: true
+    mode: '0644'
+  loop:
+    - '{{ imch_apps_data_path }}/immich/db'
+    - '{{ imch_apps_data_path }}/immich/model-cache'
+    - '{{ imch_store_data_path }}/immich/upload'
+  loop_control:
+    loop_var: dir_path
+
+- name: Start 'immich'
+  ansible.builtin.import_tasks: tasks/compose-up.yml
+  vars:
+    t_app_data: '{{ imch_apps_data_path }}/immich'
+    t_app_user: '{{ imch_app_user.user }}'
+    t_app_group: '{{ imch_app_user.group }}'

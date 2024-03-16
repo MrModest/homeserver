@@ -1,0 +1,61 @@
+---
+- name: Ininitial checks
+  ansible.builtin.include_role: init_checks
+  tags:
+    - server_init
+
+- name: Setup users
+  ansible.builtin.include_role: setup_users
+  vars:
+    susr_ssh_user:
+      user: '{{ g_ssh_user.user }}'
+      group: '{{ g_ssh_user.group }}'
+      password: '{{ g_user_passwords.ssh }}'
+    susr_smb_user:
+      user: '{{ g_smb_user.user }}'
+      group: '{{ g_smb_user.group }}'
+      password: '{{ g_user_passwords.smb }}'
+    susr_apps_user:
+      user: '{{ g_apps_user.user }}'
+      group: '{{ g_apps_user.group }}'
+      password: '{{ g_user_passwords.apps }}'
+    susr_ssh_public_key: '{{ g_ssh_public_key }}'
+  tags:
+    - server_init
+
+- name: Setup samba shared folder
+  ansible.builtin.include_role: setup_smb
+  vars:
+    smb_hostname: '{{ g_hostname }}'
+    smb_share_root_path: '{{ g_pools.fast.mountPath }}'
+    smb_samba_user:
+      user: '{{ g_smb_user.user }}'
+      group: '{{ g_smb_user.group }}'
+      password: '{{ g_user_passwords.smb }}'
+  tags:
+    - server_init
+
+- name: Setup ZFS pools
+  ansible.builtin.include_role: setup_pools
+  vars:
+    pls_pools:
+      - name: '{{ g_pools.fast.name }}'
+        mount_path: '{{ g_pools.fast.mount_path }}'
+        drives: '{{ g_pools.fast.drives }}'
+        mirror: '{{ g_pools.fast.mirror }}'
+      - name: '{{ g_pools.slow.name }}'
+        mount_path: '{{ g_pools.slow.mount_path }}'
+        drives: '{{ g_pools.slow.drives }}'
+        mirror: '{{ g_pools.slow.mirror }}'
+  tags:
+    - server_init
+
+- name: Setup docker
+  ansible.builtin.include_role: setup_docker
+  vars:
+    dcr_docker_user: '{{ g_docker_user }}'
+    dcr_daemon_conf:
+      data_root: '{{ g_pools.fast.custom_dirs.docker_root }}'
+      logger_host_url: '{{ g_loki_host_url }}'
+  tags:
+    - server_init

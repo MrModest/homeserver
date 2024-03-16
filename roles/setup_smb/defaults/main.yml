@@ -1,0 +1,7 @@
+---
+smb_hostname: placeholder
+smb_share_root_path: placeholder
+smb_samba_user:
+  user: placeholder
+  group: placeholder
+  password: fetch_from_vault

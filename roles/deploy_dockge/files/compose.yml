@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  dockge:
+    image: louislam/dockge:1
+    restart: unless-stopped
+    ports:
+      - ${APP_PORT}:5001
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${APP_DATA_PATH}/data:/app/data
+      - ${STACKS_PATH}:${STACKS_PATH}
+    env_file:
+      - .env
+    environment:
+      # Tell Dockge where to find the stacks
+      - DOCKGE_STACKS_DIR=${STACKS_PATH}

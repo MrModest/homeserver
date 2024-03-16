@@ -1,0 +1,37 @@
+---
+g_hostname: HomeServer
+
+g_ssh_user:
+  user: homessh
+  group: homessh
+g_smb_user:
+  user: sambashare
+  group: sambashare
+g_apps_user:
+  user: apps
+  group: apps
+
+g_pools:
+  fast:
+    name: fast-tank
+    mount_path: /mnt/pools/fast
+    drives:
+      - UUID
+    mirror: false # ToDo: change to 'true' once buy a redundant SSD
+    custom_dirs:
+      apps_data: '/mnt/pools/fast/apps-data'
+      docker_root: '/mnt/pools/fast/docker/data-root'
+      compose_files: '/mnt/pools/fast/docker/compose-files'
+  slow:
+    name: 'slow-tank'
+    mount_path: '/mnt/pools/slow'
+    drives:
+      - UUID
+    mirror: false # ToDo: change to 'true' once buy a redundant HDD
+    custom_dirs:
+      apps_data: '/mnt/pools/slow/apps-data'
+      shared: '/mnt/pools/slow/shared'
+
+g_docker_user: apps
+
+g_loki_host_url: http://localhost:3100 # ToDo: need proper calculation

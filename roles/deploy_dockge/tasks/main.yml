@@ -1,0 +1,16 @@
+---
+- name: Create directory for the app's data
+  ansible.builtin.file:
+    path: '{{ dkg_apps_data_path }}/dockge/data'
+    state: directory
+    owner: '{{ dkg_app_user.user }}'
+    group: '{{ dkg_app_user.group }}'
+    recurse: true
+    mode: '0644'
+
+- name: Start 'dockge'
+  ansible.builtin.import_tasks: tasks/compose-up.yml
+  vars:
+    t_app_data: '{{ dkg_apps_data_path }}/dockge'
+    t_app_user: '{{ dkg_app_user.user }}'
+    t_app_group: '{{ dkg_app_user.group }}'

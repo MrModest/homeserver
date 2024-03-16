@@ -1,0 +1,13 @@
+### macOS ###
+.DS_Store
+
+### IDE
+.idea
+.vscode
+
+### Ansible ###
+*.retry
+
+### Secrets ###
+.vault_pass
+vars/vault.yml

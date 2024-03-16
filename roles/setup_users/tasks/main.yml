@@ -1,0 +1,75 @@
+---
+- name: Create user groups
+  ansible.builtin.group:
+    name: '{{ group_name }}'
+    state: present
+  loop:
+    - '{{ susr_ssh_user.group }}'
+    - '{{ susr_smb_user.group }}'
+    - '{{ susr_apps_user.group }}'
+  loop_control:
+    loop_var: group_name
+
+- name: Create users
+  ansible.builtin.user:
+    name: '{{ user.name }}'
+    password: '{{ user.password }}'
+    group: '{{ user.primary_group }}'
+    groups: '{{ user.additional_groups }}'
+    shell: '{{ user.shell }}'
+    state: present
+    append: true
+  loop:
+    - name: '{{ susr_ssh_user.user }}'
+      password: '{{ susr_apps_user.password }}'
+      primary_group: '{{ susr_ssh_user.group }}'
+      additional_groups:
+        - '{{ susr_sudo_group }}'
+        - '{{ susr_smb_user.group }}'
+      shell: '/bin/bash'
+    - name: '{{ susr_smb_user.user }}'
+      password: '{{ susr_apps_user.password }}'
+      primary_group: '{{ susr_smb_user.group }}'
+      additional_groups: []
+      shell: '/sbin/nologin'
+    - name: '{{ susr_apps_user.user }}'
+      password: '{{ susr_apps_user.password }}'
+      primary_group: '{{ susr_apps_user.group }}'
+      additional_groups:
+        - '{{ susr_smb_user.group }}'
+      shell: '/sbin/nologin'
+  loop_control:
+    loop_var: user
+
+- name: Configure permissions for the ssh user's home directory
+  ansible.builtin.file:
+    path: '/home/{{ susr_ssh_user.user }}'
+    state: directory
+    mode: '0755'
+    owner: '{{ susr_ssh_user.user }}'
+    group: '{{ susr_ssh_user.group }}'
+    recurse: true
+
+- name: Allow passwordless sudo for the ssh user
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%{{ susr_sudo_group }}'
+    line: '%{{ susr_sudo_group }} ALL=(ALL) NOPASSWD: ALL'
+    validate: '/usr/sbin/visudo -cf %s'
+
+- name: Setup SSH public key for the ssh user
+  ansible.posix.authorized_key:
+    user: '{{ susr_ssh_user.user }}'
+    state: present
+    key: '{{ susr_ssh_public_key }}'
+
+- name: Suppress login messages
+  ansible.builtin.file:
+    name: /home/{{ susr_ssh_user.user }}/.hushlogin
+    mode: '0644'
+    state: touch
+    owner: '{{ susr_ssh_user.user }}'
+    group: '{{ susr_ssh_user.group }}'
+    modification_time: preserve
+    access_time: preserve

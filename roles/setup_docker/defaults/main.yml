@@ -1,0 +1,7 @@
+---
+dcr_docker_user: placeholder
+
+dcr_daemon_conf:
+  data_root: placeholder
+  logger_host_url: 127.0.0.1:3100 # Loki
+  metrics_host_url: 127.0.0.1:9323 # Prometheus

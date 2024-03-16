@@ -1,0 +1,13 @@
+{
+  "data-root": "{{ dcr_daemon_conf.data_root }}", ## https://docs.docker.com/engine/reference/commandline/dockerd/#on-linux
+  "storage-driver": "zfs", ##  https://docs.docker.com/storage/storagedriver/select-storage-driver/
+  "log-driver": "loki", ## https://grafana.com/docs/loki/latest/send-data/docker-driver/configuration/#change-the-default-logging-driver
+  "log_opts": { ##  https://grafana.com/docs/loki/latest/send-data/docker-driver/configuration/#supported-log-opt-options
+    "loki-url": "{{ dcr_daemon_conf.logger_host_url }}/loki/api/v1/push",
+    "loki-batch-size": "400",
+    "max-size": "100m",
+    "max-file": "2"
+  },
+  "metrics-addr" : "{{ dcr_daemon_conf.metrics_host_url }}", # For Prometheus metrics - https://freedium.cfd/https://medium.com/geekculture/how-to-monitor-docker-metrics-using-prometheus-grafana-707b970f1f06
+  "experimental" : true
+}

@@ -1,0 +1,41 @@
+---
+- name: Assure that 'docker-py' python module is absent
+  ansible.builtin.pip:
+    name: docker-py
+    state: absent
+
+- name: Install 'docker' python module
+  ansible.builtin.pip:
+    name: docker
+    state: present
+
+- name: Install 'docker-compose' python module
+  ansible.builtin.pip:
+    name: docker-compose
+
+- name: Add user account to Docker group
+  ansible.builtin.user:
+    name: "{{ dcr_docker_user }}"
+    groups: docker
+    append: true
+
+- name: Install a Loki login plugin
+  community.docker.docker_plugin:
+    plugin_name: grafana/loki-docker-driver:latest
+    alias: loki
+    state: enable
+
+- name: Generate Docker daemon.json
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    mode: '0644'
+    owner: root
+    group: root
+  register: docker_config
+
+- name: Restart Docker # noqa no-handler
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+  when: docker_config.changed

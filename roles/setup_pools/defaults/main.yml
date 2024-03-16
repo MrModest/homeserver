@@ -1,0 +1,6 @@
+---
+pls_pools:
+  - name: placeholder
+    mount_path: placeholder
+    drives: []
+    mirror: false

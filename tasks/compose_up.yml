@@ -1,0 +1,20 @@
+---
+- name: Upload compose file
+  ansible.builtin.copy:
+    src: compose.yml
+    dest: '{{ t_app_data }}'
+    owner: '{{ t_app_user }}'
+    group: '{{ t_app_group }}'
+    mode: '0644'
+
+- name: Upload env file
+  ansible.builtin.template:
+    src: .env.j2
+    dest: '{{ t_app_data }}'
+    owner: '{{ t_app_user }}'
+    group: '{{ t_app_group }}'
+    mode: '0644'
+
+- name: Create and start services
+  community.docker.docker_compose:
+    project_src: '{{ t_app_data }}'

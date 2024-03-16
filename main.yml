@@ -1,0 +1,34 @@
+---
+- name: Configure the home server
+  hosts: homeserver
+  vars_files:
+    - /vars/vault.yml
+  tasks:
+    - name: Setup environment
+      ansible.builtin.include_tasks: tasks/setup_environment.yml
+      tags:
+        - server_init
+
+    - name: Deploy 'dockge'
+      ansible.builtin.include_role: deploy_dockge
+      vars:
+        dkg_app_port: 5001
+        dkg_apps_data_path: '{{ g_pools.fast.custom_dirs.apps_data }}'
+        dkg_stack_path: '{{ g_pools.fast.custom_dirs.compose_files }}'
+        dkg_app_user: '{{ g_apps_user }}'
+      tags: 
+        - applications
+        - dockge
+
+    - name: Deploy 'immich'
+      ansible.builtin.include_role: deploy_immich
+      vars:
+        imch_app_port: 2283
+        imch_apps_data_path: '{{ g_pools.fast.custom_dirs.apps_data }}'
+        imch_store_data_path: '{{ g_pools.slow.custom_dirs.apps_data }}'
+        imch_app_version: v1.92.1
+        imch_app_user: '{{ g_apps_user }}'
+        imch_db_password: '{{ g_db_passwords.immich }}'
+      tags:
+        - applications
+        - immich

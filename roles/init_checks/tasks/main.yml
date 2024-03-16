@@ -1,0 +1,19 @@
+---
+- name: Update and upgrade apt packages
+  become: true
+  ansible.builtin.apt:
+    upgrade: true
+    update_cache: true
+    cache_valid_time: 86400 # One day
+
+- name: Check Python3 is installed
+  become: true
+  ansible.builtin.apt:
+    name: python3
+    state: present
+
+- name: Check Pip3 is installed
+  become: true
+  ansible.builtin.apt:
+    name: python3-pip
+    state: present

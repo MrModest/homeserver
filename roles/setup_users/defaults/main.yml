@@ -1,0 +1,17 @@
+---
+susr_ssh_user:
+  user: placeholder
+  group: placeholder
+  password: placeholder
+susr_smb_user:
+  user: placeholder
+  group: placeholder
+  password: placeholder
+susr_apps_user:
+  user: placeholder
+  group: placeholder
+  password: placeholder
+
+susr_ssh_public_key: placeholder
+
+susr_sudo_group: sudo
