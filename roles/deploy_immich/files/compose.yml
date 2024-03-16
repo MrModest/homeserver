@@ -1,19 +1,15 @@
-version: "3.8"
-
-#
 # WARNING: Make sure to use the docker-compose.yml of the current release:
-#
 # https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml
-#
 # The compose file on main may not be compatible with the latest release.
-#
 
+version: '3.8'
 name: immich
-
 services:
   immich-server:
-    container_name: immich_server
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    container_name: immich_server
+    user: ${APP_USER}
+    restart: 'unless-stopped'
     command: [ "start.sh", "immich" ]
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
@@ -25,11 +21,12 @@ services:
     depends_on:
       - redis
       - database
-    restart: 'unless-stopped'
 
   immich-microservices:
-    container_name: immich_microservices
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    container_name: immich_microservices
+    user: ${APP_USER}
+    restart: 'unless-stopped'
     # extends:
     #   file: hwaccel.yml
     #   service: hwaccel
@@ -42,25 +39,28 @@ services:
     depends_on:
       - redis
       - database
-    restart: 'unless-stopped'
 
   immich-machine-learning:
-    container_name: immich_machine_learning
     image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
+    container_name: immich_machine_learning
+    user: ${APP_USER}
+    restart: 'unless-stopped'
     volumes:
       - ${MODEL_CACHE_PATH}:/cache
     env_file:
       - .env
-    restart: 'unless-stopped'
 
   redis:
-    container_name: immich_redis
     image: redis:6.2-alpine@sha256:c5a607fb6e1bb15d32bbcf14db22787d19e428d59e31a5da67511b49bb0f1ccc
+    container_name: immich_redis
+    user: ${APP_USER}
     restart: 'unless-stopped'
 
   database:
-    container_name: immich_postgres
     image: tensorchord/pgvecto-rs:pg14-v0.1.11@sha256:0335a1a22f8c5dd1b697f14f079934f5152eaaa216c09b61e293be285491f8ee
+    container_name: immich_postgres
+    user: ${APP_USER}
+    restart: 'unless-stopped'
     env_file:
       - .env
     environment:
@@ -69,4 +69,3 @@ services:
       POSTGRES_DB: ${DB_DATABASE_NAME}
     volumes:
       - ${PG_DATA_PATH}:/var/lib/postgresql/data
-    restart: 'unless-stopped'

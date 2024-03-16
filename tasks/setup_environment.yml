@@ -56,6 +56,5 @@
     dcr_docker_user: '{{ g_docker_user }}'
     dcr_daemon_conf:
       data_root: '{{ g_pools.fast.custom_dirs.docker_root }}'
-      logger_host_url: '{{ g_loki_host_url }}'
   tags:
     - server_init

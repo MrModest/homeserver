@@ -1,0 +1,58 @@
+# More info:
+# - https://github.com/grafana/loki/blob/main/production/docker-compose.yaml
+# - https://freedium.cfd/https://pramodshehan.medium.com/containers-metrics-in-prometheus-and-grafana-389555499eb8
+
+version: '3.8'
+services:
+  grafana:
+    image: 'grafana/grafana:latest'
+    container_name: grafana
+    user: ${APPS_USER}
+    restart: unless-stopped
+    ports:
+      - ${GRAFANA_APP_PORT}:3000
+    env_file:
+      - .env
+    volumes:
+      - '${GRAFANA_APP_DATA_PATH}/data:/var/lib/grafana'
+  loki:
+    image: grafana/loki:2.3.0
+    container_name: loki
+    user: ${APPS_USER}
+    restart: unless-stopped
+    ports:
+      - '${LOKI_APP_PORT}:3100'
+    volumes:
+      - ${LOKI_APP_DATA_PATH}/config/loki-config.yaml:/etc/loki/loki-config.yaml
+      - ${LOKI_APP_DATA_PATH}/data:/data/loki
+    command: -config.file=/etc/loki/loki-config.yaml
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    user: ${APPS_USER}
+    restart: unless-stopped
+    ports:
+      - '${PROMETHEUS_APP_PORT}:9090'
+    env_file:
+      - .env
+    volumes:
+      - ${PROMETHEUS_APP_DATA_PATH}/config/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    extra_hosts: # https://stackoverflow.com/a/67158212/7422280
+      - "host.docker.internal:host-gateway"
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    container_name: cadvisor
+    user: ${APPS_USER}
+    restart: unless-stopped
+    ports:
+      - '${CADVISOR_APP_PORT}:8080'
+    env_file:
+      - .env
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk:/dev/disk/:ro
