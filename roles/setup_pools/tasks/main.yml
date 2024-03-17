@@ -3,6 +3,7 @@
   ansible.builtin.apt:
     name: zfsutils-linux
     state: present
+  become: true
   register: result
   until: result is succeeded
 

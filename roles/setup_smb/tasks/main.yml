@@ -7,10 +7,13 @@
     mode: 'u=rwX,g=rwX,o=rX'
     recurse: true
     state: directory
+  become: true
 
 - name: Configure samba
   ansible.builtin.include_role:
     name: vladgh.samba.server
+    apply:
+      become: true
   vars:
     samba_netbios_name: '{{ smb_hostname }}'
     samba_server_string: '{{ smb_hostname }}'

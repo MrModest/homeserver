@@ -3,6 +3,7 @@
   ansible.builtin.group:
     name: '{{ group_name }}'
     state: present
+  become: true
   loop:
     - '{{ susr_ssh_user.group }}'
     - '{{ susr_smb_user.group }}'
@@ -19,6 +20,7 @@
     shell: '{{ user.shell }}'
     state: present
     append: true
+  become: true
   loop:
     - name: '{{ susr_ssh_user.user }}'
       password: '{{ susr_apps_user.password }}'
@@ -49,6 +51,7 @@
     owner: '{{ susr_ssh_user.user }}'
     group: '{{ susr_ssh_user.group }}'
     recurse: true
+  become: true
 
 - name: Allow passwordless sudo for the ssh user
   ansible.builtin.lineinfile:
@@ -57,12 +60,15 @@
     regexp: '^%{{ susr_sudo_group }}'
     line: '%{{ susr_sudo_group }} ALL=(ALL) NOPASSWD: ALL'
     validate: '/usr/sbin/visudo -cf %s'
+  become: true
 
 - name: Setup SSH public key for the ssh user
   ansible.posix.authorized_key:
     user: '{{ susr_ssh_user.user }}'
+    path: '/home/{{ susr_ssh_user.user }}/.ssh/authorized_keys'
     state: present
     key: '{{ susr_ssh_public_key }}'
+  become: true
 
 - name: Suppress login messages
   ansible.builtin.file:
@@ -73,3 +79,4 @@
     group: '{{ susr_ssh_user.group }}'
     modification_time: preserve
     access_time: preserve
+  become: true

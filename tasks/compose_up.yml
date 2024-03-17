@@ -18,3 +18,4 @@
 - name: Create and start services
   community.docker.docker_compose:
     project_src: '{{ t_app_data }}'
+  when: ansible_facts['ansible_check_mode'] is false

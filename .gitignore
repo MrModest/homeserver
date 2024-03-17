@@ -11,3 +11,4 @@
 ### Secrets ###
 .vault_pass
 vars/vault.yml
+inventory.yml

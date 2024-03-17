@@ -2,7 +2,7 @@
 - name: Configure the home server
   hosts: homeserver
   vars_files:
-    - /vars/vault.yml
+    - vars/vault.yml
   vars:
     p_apps_data: '{{ g_pools.fast.custom_dirs.apps_data }}'
     p_apps_user: '{{ g_apps_user }}'
@@ -13,7 +13,8 @@
         - server_init
 
     - name: Setup observability
-      ansible.builtin.include_role: setup_observability
+      ansible.builtin.include_role:
+        name: setup_observability
       vars:
         obs_app_user: '{{ p_apps_user }}'
         obs_apps_data_path: '{{ p_apps_data }}'
@@ -22,7 +23,8 @@
         - observability
 
     - name: Deploy 'dockge'
-      ansible.builtin.include_role: deploy_dockge
+      ansible.builtin.include_role:
+        name: deploy_dockge
       vars:
         dkg_apps_data_path: '{{ p_apps_data }}'
         dkg_stack_path: '{{ g_pools.fast.custom_dirs.compose_files }}'
@@ -32,7 +34,8 @@
         - dockge
 
     - name: Deploy 'immich'
-      ansible.builtin.include_role: deploy_immich
+      ansible.builtin.include_role:
+        name: deploy_immich
       vars:
         imch_apps_data_path: '{{ p_apps_data }}'
         imch_store_data_path: '{{ g_pools.slow.custom_dirs.apps_data }}'
