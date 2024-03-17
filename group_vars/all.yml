@@ -32,6 +32,4 @@ g_pools:
       apps_data: '/mnt/pools/slow/apps-data'
       shared: '/mnt/pools/slow/shared'
 
-g_docker_user: apps
-
 g_loki_host_url: http://localhost:3100 # ToDo: need proper calculation

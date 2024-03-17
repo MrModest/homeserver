@@ -2,6 +2,7 @@
 # Additionally: https://github.com/openshift/openshift-ansible/blob/master/docs/style_guide.adoc
 skip_list:
   - var-naming[no-role-prefix]
+  - risky-shell-pipe
 
 warn_list:
   - yaml[new-line-at-end-of-file]

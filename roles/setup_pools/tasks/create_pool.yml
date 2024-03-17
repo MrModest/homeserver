@@ -1,0 +1,29 @@
+---
+- name: Check if the pool exists
+  ansible.builtin.shell: >-
+    2>/dev/null zpool status -v {{ pls_t_pool_name }} | grep 'pool: {{ pls_t_pool_name }}' | wc -l
+  loop_control:
+    loop_var: pool
+  register: pls_t_pool_exists
+  changed_when: false
+
+- name: Print the status
+  ansible.builtin.debug:
+    msg: 'The pool {{ pls_t_pool_name }} is already exists. Skipping.'
+  when: pls_t_pool_exists.stdout == '1'
+
+- name: Create zpools
+  ansible.builtin.command: >-
+    zpool create -fm {{ pls_t_pool_mount_path }} {{ pls_t_pool_name }} {{ 'mirror' if pls_t_pool_mirror else '' }} {{ pls_t_pool_drives | join(' ') }}
+  when: pls_t_pool_exists.stdout == '0'
+  become: true
+  changed_when: true
+
+- name: Check created pool status
+  ansible.builtin.command: zpool status -v {{ pls_t_pool_name }}
+  register: pls_t_pool_status
+  changed_when: false
+
+- name: Print the status
+  ansible.builtin.debug:
+    var: pls_t_pool_status.stdout
