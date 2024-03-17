@@ -1,0 +1,37 @@
+---
+- name: SanDisk SD9SB8W1
+  serial: 181156802064
+  dev: sda
+  size: 119.2G
+  purpose: OS
+  by-ids:
+    - ata-SanDisk_SD9SB8W128G1001_181156802064
+    - scsi-0ATA_SanDisk_SD9SB8W1_181156802064
+    - scsi-1ATA_SanDisk_SD9SB8W128G1001_181156802064
+    - scsi-35001b448b6a60035
+    - scsi-SATA_SanDisk_SD9SB8W1_181156802064
+    - wwn-0x5001b448b6a60035
+
+- name: INTENSO SSD
+  serial: 1642312002004838
+  dev: sdc
+  size: 232.9G
+  purpose: fast pool
+  by-ids:
+    - ata-INTENSO_SSD_1642312002004838
+    - scsi-0ATA_INTENSO_SSD_1642312002004838
+    - scsi-1ATA_INTENSO_SSD_1642312002004838
+    - scsi-SATA_INTENSO_SSD_1642312002004838
+
+- name: WDC WD20EZAZ-00L
+  serial: WD-WXC2A51F94ST
+  dev: sdb
+  size: 1.8T
+  purpose: slow pool
+  by-ids:
+    - ata-WDC_WD20EZAZ-00L9GB0_WD-WXC2A51F94ST
+    - scsi-0ATA_WDC_WD20EZAZ-00L_WD-WXC2A51F94ST
+    - scsi-1ATA_WDC_WD20EZAZ-00L9GB0_WD-WXC2A51F94ST
+    - scsi-350014ee269be2a21
+    - scsi-SATA_WDC_WD20EZAZ-00L_WD-WXC2A51F94ST
+    - wwn-0x50014ee269be2a21

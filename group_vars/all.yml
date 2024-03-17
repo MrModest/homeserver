@@ -16,7 +16,7 @@ g_pools:
     name: fast-tank
     mount_path: /mnt/pools/fast
     drives:
-      - UUID
+      - /dev/disk/by-id/ata-INTENSO_SSD_1642312002004838
     mirror: false # ToDo: change to 'true' once buy a redundant SSD
     custom_dirs:
       apps_data: '/mnt/pools/fast/apps-data'
@@ -26,7 +26,7 @@ g_pools:
     name: 'slow-tank'
     mount_path: '/mnt/pools/slow'
     drives:
-      - UUID
+      - /dev/disk/by-id/ata-WDC_WD20EZAZ-00L9GB0_WD-WXC2A51F94ST
     mirror: false # ToDo: change to 'true' once buy a redundant HDD
     custom_dirs:
       apps_data: '/mnt/pools/slow/apps-data'
