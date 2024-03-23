@@ -28,6 +28,7 @@
       additional_groups:
         - '{{ susr_sudo_group }}'
         - '{{ susr_smb_user.group }}'
+        - '{{ susr_apps_user.group }}'
       shell: '/bin/bash'
     - name: '{{ susr_smb_user.user }}'
       password: '{{ susr_apps_user.password }}'

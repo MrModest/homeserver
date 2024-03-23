@@ -1,4 +1,16 @@
 ---
+- name: Create directory for the app's data
+  ansible.builtin.file:
+    path: '{{ dir_path }}'
+    state: directory
+    owner: '{{ t_app_user }}'
+    group: '{{ t_app_group }}'
+    recurse: true
+    mode: '0754'
+  loop: '{{ t_app_data_dirs }}'
+  loop_control:
+    loop_var: dir_path
+
 - name: Upload compose file
   ansible.builtin.copy:
     src: compose.yml
