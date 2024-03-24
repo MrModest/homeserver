@@ -44,10 +44,10 @@
 - name: Setup samba shared folder
   ansible.builtin.include_role:
     name: setup_smb
-  when: ansible_facts['ansible_check_mode'] is false # https://github.com/vladgh/ansible-collection-vladgh-samba/pull/122
+  when: ansible_check_mode is false # https://github.com/vladgh/ansible-collection-vladgh-samba/pull/122
   vars:
     smb_hostname: '{{ g_hostname }}'
-    smb_share_root_path: '{{ g_pools.fast.mount_path }}'
+    smb_share_root_path: '{{ g_pools.slow.custom_dirs.shared }}'
     smb_samba_user:
       user: '{{ g_smb_user.user }}'
       group: '{{ g_smb_user.group }}'
@@ -58,10 +58,16 @@
 - name: Setup docker
   ansible.builtin.include_role:
     name: setup_docker
-  when: ansible_facts['ansible_check_mode'] is false
+  when: ansible_check_mode is false
   vars:
     dcr_docker_user: '{{ g_ssh_user.user }}'
     dcr_daemon_conf:
       data_root: '{{ g_pools.fast.custom_dirs.docker_root }}'
+      logger: # Loki
+        host: 127.0.0.1
+        port: 3100
+      metrics: # Prometheus
+        host: 127.0.0.1
+        port: 9323
   tags:
     - server_init

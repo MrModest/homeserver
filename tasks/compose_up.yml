@@ -7,6 +7,7 @@
     group: '{{ t_app_group }}'
     recurse: true
     mode: '0754'
+  become: true
   loop: '{{ t_app_data_dirs }}'
   loop_control:
     loop_var: dir_path
@@ -18,6 +19,7 @@
     owner: '{{ t_app_user }}'
     group: '{{ t_app_group }}'
     mode: '0644'
+  become: true
 
 - name: Upload env file
   ansible.builtin.template:
@@ -26,8 +28,9 @@
     owner: '{{ t_app_user }}'
     group: '{{ t_app_group }}'
     mode: '0644'
+  become: true
 
 - name: Create and start services
   community.docker.docker_compose:
     project_src: '{{ t_app_data }}'
-  when: ansible_facts['ansible_check_mode'] is false
+  when: ansible_check_mode is false

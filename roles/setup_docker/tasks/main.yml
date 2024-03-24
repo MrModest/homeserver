@@ -1,4 +1,67 @@
 ---
+- name: Install required packages
+  ansible.builtin.apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - software-properties-common
+  become: true
+
+- name: Create directory for Docker's GPG key
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Add Docker's official GPG key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    keyring: /etc/apt/keyrings/docker.gpg
+    state: present
+  become: true
+
+- name: Print architecture variables
+  ansible.builtin.debug:
+    msg: "Architecture: {{ ansible_architecture }}, Codename: {{ ansible_lsb.codename }}"
+
+- name: Add Docker repository
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [arch={{ dcr_arch_mapping[ansible_architecture] | default(ansible_architecture) }}
+      signed-by=/etc/apt/keyrings/docker.gpg]
+      https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
+    filename: docker
+    state: present
+  become: true
+
+- name: Install Docker and related packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  loop:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
+  become: true
+
+- name: Add Docker group
+  ansible.builtin.group:
+    name: docker
+    state: present
+  become: true
+
+- name: Add user to Docker group
+  ansible.builtin.user:
+    name: "{{ dcr_docker_user }}"
+    groups: docker
+    append: true
+  become: true
+
 - name: Assure that 'docker-py' python module is absent
   ansible.builtin.pip:
     name: docker-py
@@ -13,17 +76,12 @@
   ansible.builtin.pip:
     name: docker-compose
 
-- name: Add user account to Docker group
-  ansible.builtin.user:
-    name: "{{ dcr_docker_user }}"
-    groups: docker
-    append: true
-
 - name: Install a Loki login plugin
   community.docker.docker_plugin:
-    plugin_name: grafana/loki-docker-driver:latest
+    plugin_name: 'grafana/loki-docker-driver:{{ dcr_loki_driver_version }}'
     alias: loki
     state: enable
+  become: true
 
 - name: Generate Docker daemon.json
   ansible.builtin.template:
@@ -32,10 +90,21 @@
     mode: '0644'
     owner: root
     group: root
+  become: true
   register: docker_config
 
 - name: Restart Docker # noqa no-handler
-  ansible.builtin.service:
+  ansible.builtin.systemd_service:
     name: docker
     state: restarted
+  become: true
   when: docker_config.changed
+
+- name: Enable Docker services
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: true
+  become: true
+  loop:
+    - docker.service
+    - containerd.service

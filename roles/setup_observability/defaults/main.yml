@@ -9,3 +9,4 @@ obs_apps_ports:
   prometheus: 9092
   cadvisor: 8082
   docker_metrics: 9323
+obs_docker_root_dir: /var/lib/docker
