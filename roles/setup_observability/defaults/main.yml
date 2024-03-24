@@ -10,3 +10,12 @@ obs_apps_ports:
   cadvisor: 8082
   docker_metrics: 9323
 obs_docker_root_dir: /var/lib/docker
+
+obs_loki_docker_driver_opts:
+  loki_host: 127.0.0.1
+  loki-batch-size: '400'
+  max_size: '100m'
+  max_file: '2'
+
+obs_prometheus_host: 127.0.0.1
+obs_loki_driver_version: 2.9.4

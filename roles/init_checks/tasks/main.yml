@@ -13,3 +13,17 @@
       - python3-pip
     state: present
   become: true
+
+- name: Setup aliases
+  ansible.builtin.copy:
+    dest: /etc/profile.d/aliases.sh
+    content: |
+      alias sll='sudo ls -lah'
+      alias docker-start='sudo systemctl start docker'
+      alias docker-status='systemctl status docker'
+      alias dcu='docker compose up -d'
+      alias dcd='docker compose down'
+    owner: root
+    group: root
+    mode: '0644'
+  become: true

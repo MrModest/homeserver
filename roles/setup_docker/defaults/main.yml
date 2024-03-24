@@ -10,8 +10,6 @@ dcr_daemon_conf:
     host: 127.0.0.1
     port: 9323
 
-dcr_loki_driver_version: 2.9.4
-
 dcr_arch_mapping:  # Map ansible architecture {{ ansible_architecture }} names to Docker's architecture names
   x86_64: amd64
   aarch64: arm64

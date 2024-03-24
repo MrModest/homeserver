@@ -1,13 +1,4 @@
 {
   "data-root": "{{ dcr_daemon_conf.data_root }}",
-  "storage-driver": "zfs",
-  "log-driver": "loki",
-  "log-opts": {
-    "loki-url": "{{ dcr_daemon_conf.logger.host }}:{{ dcr_daemon_conf.logger.port }}/loki/api/v1/push",
-    "loki-batch-size": "400",
-    "max-size": "100m",
-    "max-file": "2"
-  },
-  "metrics-addr" : "{{ dcr_daemon_conf.metrics.host }}:{{ dcr_daemon_conf.metrics.port }}",
-  "experimental" : true
+  "storage-driver": "zfs"
 }

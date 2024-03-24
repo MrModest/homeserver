@@ -76,13 +76,6 @@
   ansible.builtin.pip:
     name: docker-compose
 
-- name: Install a Loki login plugin
-  community.docker.docker_plugin:
-    plugin_name: 'grafana/loki-docker-driver:{{ dcr_loki_driver_version }}'
-    alias: loki
-    state: enable
-  become: true
-
 - name: Generate Docker daemon.json
   ansible.builtin.template:
     src: daemon.json.j2
@@ -92,13 +85,8 @@
     group: root
   become: true
   register: docker_config
-
-- name: Restart Docker # noqa no-handler
-  ansible.builtin.systemd_service:
-    name: docker
-    state: restarted
-  become: true
-  when: docker_config.changed
+  notify:
+    - Restart dockerd
 
 - name: Enable Docker services
   ansible.builtin.systemd_service:
