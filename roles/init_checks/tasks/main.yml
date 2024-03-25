@@ -20,7 +20,8 @@
     content: |
       alias sll='sudo ls -lah'
       alias docker-start='sudo systemctl start docker'
-      alias docker-status='systemctl status docker'
+      alias docker-restart='sudo systemctl restart docker'
+      alias docker-status='sudo systemctl status docker'
       alias dcu='docker compose up -d'
       alias dcd='docker compose down'
     owner: root
