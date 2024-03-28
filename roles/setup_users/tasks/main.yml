@@ -27,6 +27,7 @@
       primary_group: '{{ susr_ssh_user.group }}'
       additional_groups:
         - '{{ susr_sudo_group }}'
+        - systemd-journal
         - '{{ susr_smb_user.group }}'
         - '{{ susr_apps_user.group }}'
       shell: '/bin/bash'

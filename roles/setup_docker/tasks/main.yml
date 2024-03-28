@@ -88,6 +88,9 @@
   notify:
     - Restart dockerd
 
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
 - name: Enable Docker services
   ansible.builtin.systemd_service:
     name: "{{ item }}"

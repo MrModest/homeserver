@@ -64,6 +64,51 @@
       notify:
         - Restart dockerd
 
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
+
+- name: Create Prometheus config
+  block:
+    - name: Create conf directory
+      ansible.builtin.file:
+        path: '{{ obs_apps_data_path }}/observability/prometheus/config'
+        state: directory
+        mode: '0644'
+        owner: '{{ obs_app_user.user }}'
+        group: '{{ obs_app_user.group }}'
+        recurse: true
+      become: true
+
+    - name: Copy config file
+      ansible.builtin.template:
+        src: prometheus.yml.j2
+        dest: '{{ obs_apps_data_path }}/observability/prometheus/config/prometheus.yml'
+        owner: '{{ obs_app_user.user }}'
+        group: '{{ obs_app_user.group }}'
+        mode: '0644'
+      become: true
+
+- name: Create Loki config
+  block:
+    - name: Create conf directory
+      ansible.builtin.file:
+        path: '{{ obs_apps_data_path }}/observability/loki/config'
+        state: directory
+        mode: '0644'
+        owner: '{{ obs_app_user.user }}'
+        group: '{{ obs_app_user.group }}'
+        recurse: true
+      become: true
+
+    - name: Copy config file
+      ansible.builtin.copy:
+        src: loki-config.yaml
+        dest: '{{ obs_apps_data_path }}/observability/loki/config/loki-config.yaml'
+        mode: '0644'
+        owner: '{{ obs_app_user.user }}'
+        group: '{{ obs_app_user.group }}'
+      become: true
+
 - name: Start 'Grafana + Prometheus + Loki + cAdvisor'
   ansible.builtin.import_tasks: tasks/compose_up.yml
   vars:

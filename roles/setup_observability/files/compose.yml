@@ -7,7 +7,7 @@ services:
   grafana:
     image: 'grafana/grafana:latest'
     container_name: grafana
-    user: ${APPS_USER}
+    user: ${APP_USER}
     restart: unless-stopped
     ports:
       - ${GRAFANA_APP_PORT}:3000
@@ -18,7 +18,7 @@ services:
   loki:
     image: grafana/loki:2.3.0
     container_name: loki
-    user: ${APPS_USER}
+    user: ${APP_USER}
     restart: unless-stopped
     ports:
       - '${LOKI_APP_PORT}:3100'
@@ -29,7 +29,7 @@ services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus
-    user: ${APPS_USER}
+    user: ${APP_USER}
     restart: unless-stopped
     ports:
       - '${PROMETHEUS_APP_PORT}:9090'
@@ -44,7 +44,7 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor
     container_name: cadvisor
-    user: ${APPS_USER}
+    user: ${APP_USER}
     restart: unless-stopped
     ports:
       - '${CADVISOR_APP_PORT}:8080'

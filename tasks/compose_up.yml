@@ -30,7 +30,24 @@
     mode: '0644'
   become: true
 
+- name: Fetch user's UID
+  ansible.builtin.command: 'id -u {{ t_app_user }}'
+  changed_when: false
+  register: t_tmp_app_data_uid
+
+- name: Fetch user's GID
+  ansible.builtin.command: 'id -g {{ t_app_user }}'
+  changed_when: false
+  register: t_tmp_app_data_gid
+
+- name: Replace user with UID:GUI
+  ansible.builtin.lineinfile:
+    path: '{{ t_app_data }}/.env'
+    regexp: '^APP_USER=.*$'
+    line: 'APP_USER={{ t_tmp_app_data_uid.stdout }}:{{ t_tmp_app_data_gid.stdout }}'
+  become: true
+
 - name: Create and start services
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_src: '{{ t_app_data }}'
   when: ansible_check_mode is false
