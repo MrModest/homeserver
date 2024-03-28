@@ -40,7 +40,7 @@
   changed_when: false
   register: t_tmp_app_data_gid
 
-- name: Replace user with UID:GUI
+- name: Replace user with UID:GID
   ansible.builtin.lineinfile:
     path: '{{ t_app_data }}/.env'
     regexp: '^APP_USER=.*$'
