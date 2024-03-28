@@ -50,11 +50,11 @@
 
     - name: Print content of the updated file
       ansible.builtin.debug:
-        msg: 'Resut is {{ obs_tmp_daemon_merged | to_json }}'
+        msg: 'Resut is {{ obs_tmp_daemon_merged | to_nice_json }}'
 
     - name: Write updated config
       ansible.builtin.copy:
-        content: '{{ obs_tmp_daemon_merged }}'
+        content: '{{ obs_tmp_daemon_merged | to_nice_json }}'
         dest: /etc/docker/daemon.json
         force: true
         mode: '0644'
