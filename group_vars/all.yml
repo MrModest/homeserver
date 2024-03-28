@@ -31,5 +31,3 @@ g_pools:
     custom_dirs:
       apps_data: '/mnt/pools/slow/apps-data'
       shared: '/mnt/pools/slow/shared'
-
-g_loki_host_url: http://localhost:3100 # ToDo: need proper calculation
