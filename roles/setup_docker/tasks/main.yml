@@ -85,11 +85,9 @@
     group: root
   become: true
   register: docker_config
-  notify:
-    - Restart dockerd
 
-- name: Flush handlers
-  ansible.builtin.meta: flush_handlers
+- name: Restart dockerd
+  ansible.builtin.import_tasks: tasks/restart_docker.yml
 
 - name: Enable Docker services
   ansible.builtin.systemd_service:

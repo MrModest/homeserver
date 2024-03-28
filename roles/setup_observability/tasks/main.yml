@@ -61,11 +61,9 @@
         owner: root
         group: root
       become: true
-      notify:
-        - Restart dockerd
 
-    - name: Flush handlers
-      ansible.builtin.meta: flush_handlers
+    - name: Restart dockerd
+      ansible.builtin.import_tasks: tasks/restart_docker.yml
 
 - name: Create Prometheus config
   block:
