@@ -6,7 +6,7 @@ version: '3.8'
 name: immich
 services:
   immich-server:
-    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION}
     container_name: immich_server
     user: ${APP_USER}
     restart: 'unless-stopped'
@@ -23,7 +23,7 @@ services:
       - database
 
   immich-microservices:
-    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION}
     container_name: immich_microservices
     user: ${APP_USER}
     restart: 'unless-stopped'
@@ -41,7 +41,7 @@ services:
       - database
 
   immich-machine-learning:
-    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION}
     container_name: immich_machine_learning
     user: ${APP_USER}
     restart: 'unless-stopped'
@@ -51,13 +51,13 @@ services:
       - .env
 
   redis:
-    image: redis:6.2-alpine@sha256:c5a607fb6e1bb15d32bbcf14db22787d19e428d59e31a5da67511b49bb0f1ccc
+    image: registry.hub.docker.com/library/redis:${REDIST_VERSION}
     container_name: immich_redis
-    user: ${APP_USER}
+    user: redis
     restart: 'unless-stopped'
 
   database:
-    image: tensorchord/pgvecto-rs:pg14-v0.1.11@sha256:0335a1a22f8c5dd1b697f14f079934f5152eaaa216c09b61e293be285491f8ee
+    image: registry.hub.docker.com/tensorchord/pgvecto-rs:${POSTGRES_VERSION}
     container_name: immich_postgres
     user: ${APP_USER}
     restart: 'unless-stopped'

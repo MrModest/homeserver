@@ -28,7 +28,7 @@
         name: deploy_dockge
       vars:
         dkg_apps_data_path: '{{ p_apps_data }}'
-        dkg_stack_path: '{{ g_pools.fast.custom_dirs.compose_files }}'
+        dkg_stack_path: '{{ g_pools.fast.custom_dirs.apps_data }}'
         dkg_app_user: '{{ p_apps_user }}'
       tags:
         - applications
