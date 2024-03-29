@@ -1,4 +1,5 @@
-Ansible playbook to configure a home server
+Ansible playbook to configure a home server <br/>
+⚠️ Still in WIP
 
 # Requirements
 
