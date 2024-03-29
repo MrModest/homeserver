@@ -78,6 +78,7 @@ Ansible playbook to configure a home server
   - [ ] Paperless
   - [ ] Nextcloud
   - [ ] homepage
+  - [ ] Portainer
   - [ ] AriaNg
   - [ ] metube
   - [ ] Stirling-PDF
