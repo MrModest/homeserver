@@ -44,7 +44,7 @@
   ansible.builtin.lineinfile:
     path: '{{ t_app_data }}/.env'
     regexp: '^APP_USER=.*$'
-    line: 'APP_USER={{ t_tmp_app_data_uid.stdout }}:{{ t_tmp_app_data_gid.stdout }}'
+    line: "APP_USER='{{ t_tmp_app_data_uid.stdout }}'"
   become: true
 
 - name: Create and start services

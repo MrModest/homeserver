@@ -20,15 +20,19 @@
   ansible.builtin.copy:
     dest: /etc/profile.d/aliases.sh
     content: |
+      alias ll='ls -lah'
       alias sll='sudo ls -lah'
-      alias bat='batcat'
+      alias bat='batcat --wrap=never'
 
       alias docker-start='sudo systemctl start docker'
       alias docker-start='sudo systemctl stop docker'
       alias docker-restart='sudo systemctl restart docker'
       alias docker-status='sudo systemctl status docker'
+
       alias dcu='docker compose up -d'
       alias dcd='docker compose down'
+
+      alias docker_ps='docker ps | bat'
     owner: root
     group: root
     mode: '0644'

@@ -16,47 +16,11 @@
   ansible.builtin.import_tasks: adjust_docker_daemon.yml
   when: false # Let's not do it default for all containers for now
 
-- name: Create Prometheus config
-  block:
-    - name: Create conf directory
-      ansible.builtin.file:
-        path: '{{ obs_apps_data_path }}/observability/prometheus/config'
-        state: directory
-        mode: '0644'
-        owner: '{{ obs_app_user.user }}'
-        group: '{{ obs_app_user.group }}'
-        recurse: true
-      become: true
+- name: Preconfigure Prometheus
+  ansible.builtin.import_tasks: preconfig_prometheus.yml
 
-    - name: Copy config file
-      ansible.builtin.template:
-        src: prometheus.yml.j2
-        dest: '{{ obs_apps_data_path }}/observability/prometheus/config/prometheus.yml'
-        owner: '{{ obs_app_user.user }}'
-        group: '{{ obs_app_user.group }}'
-        mode: '0644'
-      become: true
-
-- name: Create Loki config
-  block:
-    - name: Create conf directory
-      ansible.builtin.file:
-        path: '{{ obs_apps_data_path }}/observability/loki/config'
-        state: directory
-        mode: '0644'
-        owner: '{{ obs_app_user.user }}'
-        group: '{{ obs_app_user.group }}'
-        recurse: true
-      become: true
-
-    - name: Copy config file
-      ansible.builtin.copy:
-        src: loki-config.yaml
-        dest: '{{ obs_apps_data_path }}/observability/loki/config/loki-config.yaml'
-        mode: '0644'
-        owner: '{{ obs_app_user.user }}'
-        group: '{{ obs_app_user.group }}'
-      become: true
+- name: Preconfigure Loki
+  ansible.builtin.import_tasks: preconfig_loki.yml
 
 - name: Start 'Grafana + Prometheus + Loki + cAdvisor'
   ansible.builtin.import_tasks: tasks/compose_up.yml
@@ -66,6 +30,4 @@
     t_app_group: '{{ obs_app_user.group }}'
     t_app_data_dirs:
       - '{{ obs_apps_data_path }}/observability/grafana/data'
-      - '{{ obs_apps_data_path }}/observability/loki/config'
-      - '{{ obs_apps_data_path }}/observability/loki/data'
       - '{{ obs_apps_data_path }}/observability/prometheus/config'

@@ -1,0 +1,40 @@
+---
+- name: Create Loki user groups
+  ansible.builtin.group:
+    name: '{{ obs_loki_user.name }}'
+    state: present
+  become: true
+
+- name: Create Loki user
+  ansible.builtin.user:
+    name: '{{ obs_loki_user.name }}'
+    group: '{{ obs_loki_user.name }}'
+    groups:
+      - '{{ obs_app_user.group }}'
+    uid: '{{ obs_loki_user.uid }}'
+    shell: '/sbin/nologin'
+    state: present
+    append: true
+  become: true
+
+- name: Create Loki conf directory
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    mode: '0644'
+    owner: '{{ obs_loki_user.name }}'
+    group: '{{ obs_loki_user.name }}'
+    recurse: true
+  become: true
+  loop:
+    - '{{ obs_apps_data_path }}/observability/loki/config'
+    - '{{ obs_apps_data_path }}/observability/loki/data'
+
+- name: Copy Loki config file into the directory
+  ansible.builtin.copy:
+    src: loki-config.yaml
+    dest: '{{ obs_apps_data_path }}/observability/loki/config/loki-config.yaml'
+    mode: '0644'
+    owner: '{{ obs_loki_user.name }}'
+    group: '{{ obs_loki_user.name }}'
+  become: true

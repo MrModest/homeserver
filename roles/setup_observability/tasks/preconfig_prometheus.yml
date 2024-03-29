@@ -1,0 +1,17 @@
+---
+- name: Create Prometheus conf directory
+  ansible.builtin.file:
+    path: '{{ obs_apps_data_path }}/observability/prometheus/config'
+    state: directory
+    mode: '0644'
+    owner: '{{ obs_prometheus_user.uid }}'
+    recurse: true
+  become: true
+
+- name: Copy Prometheus config file
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: '{{ obs_apps_data_path }}/observability/prometheus/config/prometheus.yml'
+    owner: '{{ obs_prometheus_user.uid }}'
+    mode: '0644'
+  become: true

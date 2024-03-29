@@ -2,6 +2,15 @@
 obs_app_user:
   user: placeholder
   group: placeholder
+# obs_grafana_user:
+#   name: grafana
+#   id: 472
+obs_loki_user:
+  name: loki
+  uid: 10001
+obs_prometheus_user:
+  name: prometheus
+  uid: 65534
 obs_apps_data_path: placeholder
 obs_apps_ports:
   grafana: 3000
