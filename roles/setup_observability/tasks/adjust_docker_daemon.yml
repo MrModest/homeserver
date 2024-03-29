@@ -46,6 +46,8 @@
     owner: root
     group: root
   become: true
+  register: docker_config
 
-- name: Restart dockerd
+- name: Restart dockerd # noqa: no-handler
   ansible.builtin.import_tasks: tasks/restart_docker.yml
+  when: docker_config.changed

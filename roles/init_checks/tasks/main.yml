@@ -12,6 +12,7 @@
       - python3
       - python3-pip
       - jq
+      - bat
     state: present
   become: true
 
@@ -20,7 +21,10 @@
     dest: /etc/profile.d/aliases.sh
     content: |
       alias sll='sudo ls -lah'
+      alias bat='batcat'
+
       alias docker-start='sudo systemctl start docker'
+      alias docker-start='sudo systemctl stop docker'
       alias docker-restart='sudo systemctl restart docker'
       alias docker-status='sudo systemctl status docker'
       alias dcu='docker compose up -d'

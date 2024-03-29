@@ -8,43 +8,35 @@ services:
   grafana:
     image: 'grafana/grafana:latest'
     container_name: grafana
-    user: ${APP_USER}
     restart: unless-stopped
     ports:
       - ${GRAFANA_APP_PORT}:3000
     env_file:
       - .env
     volumes:
-      - '${GRAFANA_APP_DATA_PATH}/data:/var/lib/grafana'
-    logging:
-      driver: loki
-      options:
-        loki-url: 
-        loki-batch-size: "400"
-        max-size: "100m"
-        max-file: "2"
+      - '${APP_DATA_ROOT}/grafana/data:/var/lib/grafana'
   loki:
     image: grafana/loki:2.3.0
     container_name: loki
-    user: ${APP_USER}
     restart: unless-stopped
     ports:
       - '${LOKI_APP_PORT}:3100'
+    env_file:
+      - .env
     volumes:
-      - ${LOKI_APP_DATA_PATH}/config/loki-config.yaml:/etc/loki/loki-config.yaml
-      - ${LOKI_APP_DATA_PATH}/data:/data/loki
+      - ${APP_DATA_ROOT}/loki/config/loki-config.yaml:/etc/loki/loki-config.yaml
+      - ${APP_DATA_ROOT}/loki/data:/data/loki
     command: -config.file=/etc/loki/loki-config.yaml
   prometheus:
     image: prom/prometheus
     container_name: prometheus
-    user: ${APP_USER}
     restart: unless-stopped
     ports:
       - '${PROMETHEUS_APP_PORT}:9090'
     env_file:
       - .env
     volumes:
-      - ${PROMETHEUS_APP_DATA_PATH}/config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ${APP_DATA_ROOT}/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     extra_hosts: # https://stackoverflow.com/a/67158212/7422280
@@ -52,7 +44,6 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor
     container_name: cadvisor
-    user: ${APP_USER}
     restart: unless-stopped
     ports:
       - '${CADVISOR_APP_PORT}:8080'
