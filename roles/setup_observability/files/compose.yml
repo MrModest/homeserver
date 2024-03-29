@@ -16,6 +16,13 @@ services:
       - .env
     volumes:
       - '${GRAFANA_APP_DATA_PATH}/data:/var/lib/grafana'
+    logging:
+      driver: loki
+      options:
+        loki-url: 
+        loki-batch-size: "400"
+        max-size: "100m"
+        max-file: "2"
   loki:
     image: grafana/loki:2.3.0
     container_name: loki

@@ -12,58 +12,9 @@
     state: enable
   become: true
 
-- name: Configure docker logs and metrics
-  block:
-    - name: Create adjustment json for docker daemon.json
-      block:
-        - name: Create temp json from the template
-          ansible.builtin.template:
-            src: docker-daemon-amend.json.j2
-            dest: /tmp/docker-daemon-amend.json
-            mode: '0644'
-
-        - name: Read from the json
-          ansible.builtin.slurp:
-            src: /tmp/docker-daemon-amend.json
-          register: obs_tmp_daemon_amend_raw
-
-        - name: Load the json into variable
-          ansible.builtin.set_fact:
-            obs_tmp_daemon_amend: '{{ obs_tmp_daemon_amend_raw.content | b64decode }}'
-
-    - name: Load current 'daemon.json' file
-      ansible.builtin.slurp:
-        path: /etc/docker/daemon.json
-      register: obs_tmp_daemon_raw
-
-    - name: Set json into variable
-      ansible.builtin.set_fact:
-        obs_tmp_daemon_json: '{{ obs_tmp_daemon_raw.content | b64decode }}'
-
-    - name: Print content of the json
-      ansible.builtin.debug:
-        var: obs_tmp_daemon_json
-
-    - name: Adjust the daemon config
-      ansible.builtin.set_fact:
-        obs_tmp_daemon_merged: '{{ obs_tmp_daemon_json | combine(obs_tmp_daemon_amend) }}'
-
-    - name: Print content of the updated file
-      ansible.builtin.debug:
-        msg: 'Resut is {{ obs_tmp_daemon_merged | to_nice_json }}'
-
-    - name: Write updated config
-      ansible.builtin.copy:
-        content: '{{ obs_tmp_daemon_merged | to_nice_json }}'
-        dest: /etc/docker/daemon.json
-        force: true
-        mode: '0644'
-        owner: root
-        group: root
-      become: true
-
-    - name: Restart dockerd
-      ansible.builtin.import_tasks: tasks/restart_docker.yml
+- name: Adjust docker daemon.json to set default logging driver
+  ansible.builtin.import_tasks: adjust_docker_daemon.yml
+  when: false # Let's not do it default for all containers for now
 
 - name: Create Prometheus config
   block:
