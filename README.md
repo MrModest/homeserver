@@ -63,3 +63,28 @@ Ansible playbook to configure a home server
   "experimental" : true
 }
 ```
+
+# ToDo
+
+- [x] Configure observability
+- [ ] Configure Samba
+- [ ] Configure reverse-proxy
+- [ ] Configure HTTPS
+- [ ] Configure backups
+- [ ] Configure Tailscale
+- [ ] Install applications
+  - [x] Immich
+  - [x] Dockge
+  - [ ] Paperless
+  - [ ] Nextcloud
+  - [ ] homepage
+  - [ ] AriaNg
+  - [ ] metube
+  - [ ] Stirling-PDF
+  - [ ] Jellyfin
+  - [ ] Grist
+  - [ ] n8n
+  - [ ] Kasm
+  - [ ] Cockpit
+  - [ ] NoteCalc
+  - [ ] Open Speed Test
