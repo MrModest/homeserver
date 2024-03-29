@@ -40,7 +40,6 @@
       vars:
         imch_apps_data_path: '{{ p_apps_data }}'
         imch_store_data_path: '{{ g_pools.slow.custom_dirs.apps_data }}'
-        imch_app_version: v1.99.0
         imch_app_user: '{{ p_apps_user }}'
         imch_db_password: '{{ g_db_passwords.immich }}'
       tags:
