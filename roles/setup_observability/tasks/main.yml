@@ -14,7 +14,6 @@
 
 - name: Adjust docker daemon.json to set default logging driver
   ansible.builtin.import_tasks: adjust_docker_daemon.yml
-  when: false # Let's not do it default for all containers for now
 
 - name: Preconfigure Prometheus
   ansible.builtin.import_tasks: preconfig_prometheus.yml
