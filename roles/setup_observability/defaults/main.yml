@@ -1,4 +1,9 @@
 ---
+obs_apps_version:
+  grafana: '10.1.9'
+  loki: '2.8.11'
+  prometheus: 'v2.51.1'
+  cadvisor: 'v0.49.1'
 obs_app_user:
   user: placeholder
   group: placeholder

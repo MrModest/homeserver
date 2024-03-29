@@ -54,7 +54,7 @@ Ansible playbook to configure a home server
   "storage-driver": "zfs",
   "log-driver": "loki",
   "log-opts": {
-    "loki-url": "127.0.0.1:3100/loki/api/v1/push",
+    "loki-url": "http://127.0.0.1:3100/loki/api/v1/push",
     "loki-batch-size": "400",
     "max-size": "100m",
     "max-file": "2"

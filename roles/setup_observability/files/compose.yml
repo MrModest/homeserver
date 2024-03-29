@@ -6,7 +6,7 @@
 version: '3.8'
 services:
   grafana:
-    image: 'grafana/grafana:latest'
+    image: 'grafana/grafana:${GRAFANA_VERSION}'
     container_name: grafana
     user: ${APP_USER}
     restart: unless-stopped
@@ -17,7 +17,7 @@ services:
     volumes:
       - '${APP_DATA_ROOT}/grafana/data:/var/lib/grafana'
   loki:
-    image: grafana/loki:2.3.0
+    image: grafana/loki:${LOKI_VERSION}
     container_name: loki
     user: loki
     restart: unless-stopped
@@ -30,7 +30,7 @@ services:
       - ${APP_DATA_ROOT}/loki/data:/data/loki
     command: -config.file=/etc/loki/loki-config.yaml
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:${PROMETHEUS_VERSION}
     container_name: prometheus
     user: '0' #root
     restart: unless-stopped
@@ -45,7 +45,7 @@ services:
     extra_hosts: # https://stackoverflow.com/a/67158212/7422280
       - "host.docker.internal:host-gateway"
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor
+    image: gcr.io/cadvisor/cadvisor:${CADVISOR_VERSION}
     container_name: cadvisor
     user: '0' #root
     restart: unless-stopped
