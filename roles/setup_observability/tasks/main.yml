@@ -29,4 +29,3 @@
     t_app_group: '{{ obs_app_user.group }}'
     t_app_data_dirs:
       - '{{ obs_apps_data_path }}/observability/grafana/data'
-      - '{{ obs_apps_data_path }}/observability/prometheus/config'
