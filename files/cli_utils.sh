@@ -5,3 +5,9 @@ function docker_sh () {
 function check_port() {
     sudo ss -lptn 'sport = :$1'
 }
+
+function install_z() {
+    mkdir ~/.cli_customs
+    wget "https://raw.githubusercontent.com/rupa/z/master/z.sh" -O ~/.cli_customs/z.sh
+    echo "source ~/.cli_customs/z.sh" >> ~/.bashrc
+}
