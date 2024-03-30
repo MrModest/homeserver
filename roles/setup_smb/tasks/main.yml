@@ -39,3 +39,10 @@
         # For example: If samba is configured as a MASTER BROWSER (see local master, os level, domain master, preferred master)
         # this option will prevent workstations from being able to browse the network.
         valid_users: '+{{ smb_samba_user.group }}'
+
+- name: Fix permissions for Shared folder
+  ansible.builtin.file:
+    path: '{{ smb_share_root_path }}'
+    owner: '{{ smb_samba_user.user }}'
+    group: '{{ smb_samba_user.group }}'
+    mode: '0754'

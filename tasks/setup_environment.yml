@@ -54,6 +54,7 @@
       password: '{{ g_user_passwords.smb }}'
   tags:
     - server_init
+    - samba
 
 - name: Setup docker
   ansible.builtin.include_role:
@@ -71,3 +72,4 @@
         port: 9323
   tags:
     - server_init
+    - docker
