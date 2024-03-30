@@ -3,6 +3,8 @@
     "log-opts": {
         "loki-url": "http://{{ obs_loki_docker_driver_opts.loki_host }}:{{ obs_apps_ports.loki }}/loki/api/v1/push",
         "loki-batch-size": "400",
+        "loki-retries": "5",
+        "mode": "non-blocking",
         "max-size": "100m",
         "max-file": "2"
     },
