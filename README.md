@@ -68,7 +68,7 @@ Ansible playbook to configure a home server <br/>
 # ToDo
 
 - [x] Configure observability
-- [ ] Configure Samba
+- [x] Configure Samba
 - [ ] Configure reverse-proxy
 - [ ] Configure HTTPS
 - [ ] Configure backups
