@@ -77,6 +77,8 @@
 - name: Setup reverse proxy
   ansible.builtin.include_role:
     name: setup_proxy
+  vars_files:
+    ./vars/apps.yml
   vars:
     prx_app_user:
       user: root
@@ -85,15 +87,4 @@
     prx_my_domain: '{{ g_domain }}'
     prx_my_host_ip: '{{ g_host_ip }}'
     prx_cloudflare_api_token: '{{ g_cloudflare_api_token }}'
-    prx_apps:
-      - name: dockge
-        port: 5001
-      - name: immich
-        container_name: immich_server
-        port: 3001
-      - name: grafana
-        port: 3000
-      - name: prometheus
-        port: 9090
-      - name: loki
-        port: 3100
+    prx_apps: '{{ g_caddy_apps }}'
