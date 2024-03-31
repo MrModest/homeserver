@@ -67,36 +67,36 @@ Ansible playbook to configure a home server <br/>
 
 # ToDo
 
-- Server
-  - [ ] Configure observability
-    - [x] Configure Docker containers observability with Loki/Prometheus/Grafana
-    - [ ] Configure internal bridges between Prometheus and apps that pushes metrics
-      - [ ] Fix docker metrics providing
-      - [ ] Fix immich metrics providing
-    - [ ] Configure host logs and metrics
-      - [ ] Install Promtail to push `/var/log/*` logs to Loki
-      - [ ] Push Storage/RAM/CPU of host machine to Prometheus
-      - [ ] Collect ZFS related metrics
-  - [x] Configure Samba
-  - [ ] Configure reverse-proxy
-  - [ ] Configure HTTPS
-  - [ ] Configure backups
-  - [ ] Configure Tailscale
-- Applications
-  - [x] Immich
-  - [x] Dockge
-  - [ ] Paperless
-  - [ ] Nextcloud
-  - [ ] homepage
-  - [ ] Portainer
-  - [ ] AriaNg
-  - [ ] metube
-  - [ ] Stirling-PDF
-  - [ ] Jellyfin
-  - [ ] Grist
-  - [ ] n8n
-  - [ ] Kasm
-  - [ ] Cockpit
-  - [ ] NoteCalc
-  - [ ] Open Speed Test
-  - [ ] PiHole (for local DNS)
+### Server
+- [ ] Configure observability
+  - [x] Configure Docker containers observability with Loki/Prometheus/Grafana
+  - [ ] Configure internal bridges between Prometheus and apps that pushes metrics
+    - [ ] Fix docker metrics providing
+    - [ ] Fix immich metrics providing
+  - [ ] Configure host logs and metrics
+    - [ ] Install Promtail to push `/var/log/*` logs to Loki
+    - [ ] Push Storage/RAM/CPU of host machine to Prometheus
+    - [ ] Collect ZFS related metrics
+- [x] Configure Samba
+- [ ] Configure reverse-proxy
+- [ ] Configure HTTPS
+- [ ] Configure backups
+- [ ] Configure Tailscale
+### Applications
+- [x] Immich
+- [x] Dockge
+- [ ] Paperless
+- [ ] Nextcloud
+- [ ] homepage
+- [ ] Portainer
+- [ ] AriaNg
+- [ ] metube
+- [ ] Stirling-PDF
+- [ ] Jellyfin
+- [ ] Grist
+- [ ] n8n
+- [ ] Kasm
+- [ ] Cockpit
+- [ ] NoteCalc
+- [ ] Open Speed Test
+- [ ] PiHole (for local DNS)
