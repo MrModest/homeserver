@@ -5,8 +5,6 @@ services:
     container_name: dockge
     user: ${APP_USER}
     restart: unless-stopped
-    ports:
-      - ${APP_PORT}:5001
     env_file:
       - .env
     environment:

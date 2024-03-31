@@ -10,8 +10,6 @@ services:
     container_name: grafana
     user: ${APP_USER}
     restart: unless-stopped
-    ports:
-      - ${GRAFANA_APP_PORT}:3000
     env_file:
       - .env
     volumes:
@@ -21,8 +19,6 @@ services:
     container_name: loki
     user: loki
     restart: unless-stopped
-    ports:
-      - '${LOKI_APP_PORT}:3100'
     env_file:
       - .env
     volumes:
@@ -34,8 +30,6 @@ services:
     container_name: prometheus
     user: '0' #root
     restart: unless-stopped
-    ports:
-      - '${PROMETHEUS_APP_PORT}:9090'
     env_file:
       - .env
     volumes:
@@ -49,8 +43,6 @@ services:
     container_name: cadvisor
     user: '0' #root
     restart: unless-stopped
-    ports:
-      - '${CADVISOR_APP_PORT}:8080'
     env_file:
       - .env
     volumes:

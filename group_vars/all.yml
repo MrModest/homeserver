@@ -1,5 +1,7 @@
 ---
 g_hostname: HomeServer
+g_domain: homelab.local
+g_host_ip: placeholder
 
 g_ssh_user:
   user: homessh

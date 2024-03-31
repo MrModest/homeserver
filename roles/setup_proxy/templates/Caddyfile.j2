@@ -1,7 +1,7 @@
 {% for app in prx_apps %}
 
 {{ app.name }}.{{ prx_my_domain }} {
-  reverse_proxy {{ app.container_name }}:{{ app.port }}
+  reverse_proxy {{ app.container_name | default(app.name, true) }}:{{ app.port }}
   tls {
     dns cloudflare env.CLOUDFLARE_API_TOKEN
   }

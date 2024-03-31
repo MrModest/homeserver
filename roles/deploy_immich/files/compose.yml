@@ -16,8 +16,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
-    ports:
-      - ${APP_PORT}:3001
     depends_on:
       - redis
       - database
