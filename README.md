@@ -83,20 +83,21 @@ Ansible playbook to configure a home server <br/>
 - [ ] Configure backups
 - [ ] Configure Tailscale
 ### Applications
-- [x] Immich
-- [x] Dockge
-- [ ] Paperless
-- [ ] Nextcloud
-- [ ] homepage
-- [ ] Portainer
-- [ ] AriaNg
-- [ ] metube
-- [ ] Stirling-PDF
-- [ ] Jellyfin
-- [ ] Grist
-- [ ] n8n
-- [ ] Kasm
-- [ ] Cockpit
-- [ ] NoteCalc
-- [ ] Open Speed Test
-- [ ] PiHole (for local DNS)
+- [x] [Immich](https://github.com/immich-app/immich)
+- [x] [Dockge](https://github.com/louislam/dockge)
+- [ ] [Paperless](https://github.com/paperless-ngx/paperless-ngx)
+- [ ] [Nextcloud](https://github.com/nextcloud/all-in-one)
+- [ ] [homepage](https://github.com/gethomepage/homepage)
+- [ ] [Portainer](https://docs.portainer.io/v/2.20/start/install-ce/server/docker/linux)
+- [ ] [AriaNg](https://hub.docker.com/r/hurlenko/aria2-ariang)
+- [ ] [metube](https://github.com/alexta69/metube)
+- [ ] [Stirling-PDF](https://github.com/Stirling-Tools/Stirling-PDF/tree/main)
+- [ ] [Jellyfin](https://jellyfin.org/docs/general/installation/container)
+- [ ] [Grist](https://github.com/gristlabs/grist-core)
+- [ ] [n8n](https://docs.n8n.io/hosting/installation/docker/)
+- [ ] [NoteCalc](https://github.com/bbodi/notecalc3)
+- [ ] [Open Speed Test](https://hub.docker.com/r/openspeedtest/latest)
+- [ ] [PiHole](https://github.com/pi-hole/docker-pi-hole/?tab=readme-ov-file#quick-start) (for local DNS)
+- Non-docker
+  - [ ] [Cockpit](https://cockpit-project.org/)
+  - [ ] [Kasm](https://www.kasmweb.com/docs/latest/install/single_server_install.html)
