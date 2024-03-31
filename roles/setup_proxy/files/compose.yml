@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  caddy:
+    build: .
+    container_name: caddy
+    hostname: caddy
+    restart: unless-stopped
+    user: '0' # root
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    networks:
+      - caddynet
+    env_file:
+      - .env
+    volumes:
+      - ${APP_DATA_PATH}/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${APP_DATA_PATH}/data:/data
+      - ${APP_DATA_PATH}/config:/config
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  caddynet:
+    attachable: true
+    driver: bridge

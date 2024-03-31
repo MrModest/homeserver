@@ -1,0 +1,42 @@
+---
+- name: Create directories for Caddy
+  ansible.builtin.file:
+    path: '{{ dir_path }}'
+    state: directory
+    owner: '{{ prx_app_user.user }}'
+    group: '{{ prx_app_user.group }}'
+    recurse: true
+    mode: '0754'
+  become: true
+  loop:
+    - '{{ prx_apps_data_path }}/caddy'
+    - '{{ prx_apps_data_path }}/caddy/data'
+    - '{{ prx_apps_data_path }}/caddy/config'
+  loop_control:
+    loop_var: dir_path
+
+- name: Copy Caddyfile
+  ansible.builtin.template:
+    src: 'Caddyfile.j2'
+    dest: '{{ prx_apps_data_path }}/caddy/Caddyfile'
+    owner: '{{ prx_app_user.user }}'
+    group: '{{ prx_app_user.group }}'
+    mode: '0644'
+  become: true
+
+- name: Copy Dockerfile
+  ansible.builtin.copy:
+    src: Dockerfile
+    dest: "{{ prx_apps_data_path }}/caddy/Dockerfile"
+    owner: '{{ prx_app_user.user }}'
+    group: '{{ prx_app_user.group }}'
+    mode: '0644'
+  become: true
+
+- name: Start 'caddy'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_data: '{{ prx_apps_data_path }}/caddy'
+    t_app_user: '{{ prx_app_user.user }}'
+    t_app_group: '{{ prx_app_user.group }}'
+    t_app_data_dirs: []

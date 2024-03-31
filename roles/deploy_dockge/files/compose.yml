@@ -16,3 +16,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${APP_DATA_PATH}/data:/app/data
       - ${STACKS_PATH}:${STACKS_PATH}
+
+networks:
+  caddy_caddynet:
+    external: true

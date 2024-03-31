@@ -69,3 +69,7 @@ services:
       POSTGRES_DB: ${DB_DATABASE_NAME}
     volumes:
       - ${PG_DATA_PATH}:/var/lib/postgresql/data
+
+networks:
+  caddy_caddynet:
+    external: true

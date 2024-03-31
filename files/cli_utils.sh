@@ -1,5 +1,9 @@
 function docker_sh () {
     docker exec -t -i $1 /bin/bash
+    if [ "$?" -ne "0" ]
+    then
+        docker exec -t -i $1 /bin/sh
+    fi
 }
 
 function check_port() {

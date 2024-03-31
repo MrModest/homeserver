@@ -1,0 +1,14 @@
+---
+prx_app_user:
+  user: placeholder
+  group: placeholder
+
+prx_apps_data_path: placeholder
+prx_my_domain: placeholder
+prx_my_host_ip: placeholder
+prx_cloudflare_api_token: placeholder
+
+prx_apps:
+  - name: dockge
+    container_name: dockge
+    port: 5001
