@@ -46,3 +46,4 @@
     owner: '{{ smb_samba_user.user }}'
     group: '{{ smb_samba_user.group }}'
     mode: '0754'
+  become: true

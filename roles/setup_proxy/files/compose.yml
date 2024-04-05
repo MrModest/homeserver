@@ -1,6 +1,28 @@
 version: '3.9'
 
 services:
+  tailscale:
+    image: tailscale/tailscale:${TAILSCALE_VERSION}
+    container_name: tailscale
+    hostname: tailscale
+    user: '0' # root
+    env_file:
+      - .env
+    environment:
+      - TS_AUTHKEY=${TAILSCALE_API_TOKEN}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    command: ["tailscale", "up"] # https://www.reddit.com/r/Tailscale/comments/112pp7h/comment/j8mynk0/
+    volumes:
+      - ${APP_DATA_ROOT}/tailscale/state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+    networks:
+      - caddynet
   caddy:
     build: .
     container_name: caddy
@@ -16,9 +38,9 @@ services:
     env_file:
       - .env
     volumes:
-      - ${APP_DATA_PATH}/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ${APP_DATA_PATH}/data:/data
-      - ${APP_DATA_PATH}/config:/config
+      - ${APP_DATA_ROOT}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${APP_DATA_ROOT}/caddy/data:/data
+      - ${APP_DATA_ROOT}/caddy/config:/config
       - /var/run/docker.sock:/var/run/docker.sock
 
 networks:

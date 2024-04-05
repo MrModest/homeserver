@@ -3,6 +3,7 @@
   hosts: homeserver
   vars_files:
     - vars/vault.yml
+    - vars/apps.yml
   vars:
     p_apps_data: '{{ g_pools.fast.custom_dirs.apps_data }}'
     p_apps_user: '{{ g_apps_user }}'
