@@ -1,7 +1,6 @@
 ---
 g_hostname: HomeServer
 g_domain: homelab.local
-g_host_ip: '192.168.178.34'
 
 g_ssh_user:
   user: homessh
