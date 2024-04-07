@@ -1,3 +1,8 @@
+duckdns {
+  api_token {env.DUCKDNS_API_TOKEN}
+  override_domain {env.DUCKDNS_DOMAIN}
+}
+
 {% for app in prx_apps %}
 
 {{ app.name }}.{{ prx_my_domain }} {
