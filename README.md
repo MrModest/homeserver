@@ -3,7 +3,7 @@ Ansible playbook to configure a home server <br/>
 
 # Requirements
 
-- Ubuntu 22.04 LTS
+- Ubuntu Server 22.04 LTS
 - First installation should be finished before this playbook to run
 
 # Recommended configurations
