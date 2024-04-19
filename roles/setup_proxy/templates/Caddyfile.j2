@@ -1,14 +1,12 @@
-duckdns {
-  api_token {env.DUCKDNS_API_TOKEN}
-  override_domain {env.DUCKDNS_DOMAIN}
-}
-
 {% for app in prx_apps %}
 
 {{ app.name }}.{{ prx_my_domain }} {
   reverse_proxy {{ app.container_name | default(app.name, true) }}:{{ app.port }}
   tls {
-    dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    dns duckdns {
+      api_token {env.DUCKDNS_API_TOKEN}
+      override_domain {{ app.name }}.{{ prx_duckdns_domain }}
+    }
   }
 }
 
