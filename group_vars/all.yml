@@ -1,6 +1,6 @@
 ---
 g_hostname: HomeServer
-g_domain: homelab.local
+g_domain: server.home
 g_duckdns_domain: mrmodest.duckdns.org
 
 g_ssh_user:
