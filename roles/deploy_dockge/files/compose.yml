@@ -16,5 +16,6 @@ services:
       - ${STACKS_PATH}:${STACKS_PATH}
 
 networks:
-  caddy_caddynet:
+  default:
     external: true
+    name: nginxnetwork

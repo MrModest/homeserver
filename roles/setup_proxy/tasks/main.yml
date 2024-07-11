@@ -1,5 +1,5 @@
 ---
-- name: Create directories for Caddy
+- name: Create directories for Nginx Proxy Manager
   ansible.builtin.file:
     path: '{{ dir_path }}'
     state: directory
@@ -9,34 +9,20 @@
     mode: '0754'
   become: true
   loop:
-    - '{{ prx_apps_data_path }}/caddy'
-    - '{{ prx_apps_data_path }}/caddy/data'
-    - '{{ prx_apps_data_path }}/caddy/config'
+    - '{{ prx_apps_data_path }}/nginx'
+    - '{{ prx_apps_data_path }}/nginx/data'
+    - '{{ prx_apps_data_path }}/nginx/letsencrypt'
   loop_control:
     loop_var: dir_path
 
-- name: Copy Caddyfile
-  ansible.builtin.template:
-    src: 'Caddyfile.j2'
-    dest: '{{ prx_apps_data_path }}/caddy/Caddyfile'
-    owner: '{{ prx_app_user.user }}'
-    group: '{{ prx_app_user.group }}'
-    mode: '0644'
-  become: true
+- name: Create a docker network
+  community.docker.docker_network:
+    name: nginxnetwork
 
-- name: Copy Dockerfile
-  ansible.builtin.copy:
-    src: Dockerfile
-    dest: "{{ prx_apps_data_path }}/caddy/Dockerfile"
-    owner: '{{ prx_app_user.user }}'
-    group: '{{ prx_app_user.group }}'
-    mode: '0644'
-  become: true
-
-- name: Start 'caddy'
+- name: Start 'Nginx Proxy Manager'
   ansible.builtin.import_tasks: tasks/compose_up.yml
   vars:
-    t_app_data: '{{ prx_apps_data_path }}/caddy'
+    t_app_data: '{{ prx_apps_data_path }}/nginx'
     t_app_user: '{{ prx_app_user.user }}'
     t_app_group: '{{ prx_app_user.group }}'
     t_app_data_dirs: []

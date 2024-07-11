@@ -69,5 +69,6 @@ services:
       - ${PG_DATA_PATH}:/var/lib/postgresql/data
 
 networks:
-  caddy_caddynet:
+  default:
     external: true
+    name: nginxnetwork

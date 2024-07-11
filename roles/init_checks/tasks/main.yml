@@ -13,6 +13,7 @@
       - python3-pip
       - jq
       - bat
+      - tree
     state: present
   become: true
 

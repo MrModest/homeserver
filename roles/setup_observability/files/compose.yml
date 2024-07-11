@@ -53,5 +53,6 @@ services:
       - /dev/disk:/dev/disk/:ro
 
 networks:
-  caddy_caddynet:
+  default:
     external: true
+    name: nginxnetwork

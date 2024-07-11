@@ -83,9 +83,5 @@
       group: root
     prx_apps_data_path: '{{ g_pools.fast.custom_dirs.apps_data }}'
     prx_my_domain: '{{ g_domain }}'
-    prx_tailscale_ip: '{{ g_tailscale_ip }}'
-    prx_cloudflare_api_token: '{{ g_cloudflare_api_token }}'
-    prx_tailscale_api_token: '{{ g_tailscale_api_token }}'
     prx_duckdns_api_token: '{{ g_duckdns_api_token }}'
     prx_duckdns_domain: '{{ g_duckdns_domain }}'
-    prx_apps: '{{ g_caddy_apps }}'
