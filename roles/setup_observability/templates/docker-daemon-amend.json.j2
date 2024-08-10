@@ -1,13 +1,13 @@
 {
     "log-driver": "loki",
     "log-opts": {
-        "loki-url": "http://{{ obs_loki_docker_driver_opts.loki_host }}:{{ obs_apps_ports.loki }}/loki/api/v1/push",
+        "loki-url": "http://loki:3100/loki/api/v1/push",
         "loki-batch-size": "400",
         "loki-retries": "5",
         "mode": "non-blocking",
         "max-size": "100m",
         "max-file": "2"
     },
-    "metrics-addr" : "{{ obs_prometheus_host }}:{{ obs_apps_ports.docker_metrics }}",
+    "metrics-addr" : "host.docker.internal:9323",
     "experimental" : true
 }

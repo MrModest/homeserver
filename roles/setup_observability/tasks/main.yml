@@ -5,16 +5,6 @@
     state: started
   become: true
 
-- name: Install a Loki login plugin
-  community.docker.docker_plugin:
-    plugin_name: 'grafana/loki-docker-driver:{{ obs_loki_driver_version }}'
-    alias: loki
-    state: enable
-  become: true
-
-- name: Adjust docker daemon.json to set default logging driver
-  ansible.builtin.import_tasks: adjust_docker_daemon.yml
-
 - name: Preconfigure Prometheus
   ansible.builtin.import_tasks: preconfig_prometheus.yml
 

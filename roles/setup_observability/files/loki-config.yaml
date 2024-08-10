@@ -4,9 +4,10 @@ auth_enabled: false
 server:
   http_listen_port: 3100
   grpc_listen_port: 9096
+  http_server_read_timeout: 600s
+  http_server_write_timeout: 600s
 
 common:
-  instance_addr: 127.0.0.1
   path_prefix: /tmp/loki
   storage:
     filesystem:
@@ -14,6 +15,7 @@ common:
       rules_directory: /tmp/loki/rules
   replication_factor: 1
   ring:
+    instance_addr: 127.0.0.1
     kvstore:
       store: inmemory
 
@@ -23,6 +25,11 @@ query_range:
       embedded_cache:
         enabled: true
         max_size_mb: 100
+
+querier:
+  max_concurrent: 2048
+query_scheduler:
+  max_outstanding_requests_per_tenant: 2048
 
 schema_config:
   configs:
@@ -37,5 +44,14 @@ schema_config:
 ruler:
   alertmanager_url: http://localhost:9093
 
-analytics: # https://github.com/grafana/loki/blob/main/pkg/analytics/stats.go
-  reporting_enabled: false
+compactor:
+  working_directory: /tmp/loki/retention
+  shared_store: filesystem
+  compaction_interval: 10m
+  retention_enabled: true
+  retention_delete_delay: 2h
+  retention_delete_worker_count: 150
+
+limits_config:
+  retention_period: 180d
+  max_query_series: 100000

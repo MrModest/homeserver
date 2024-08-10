@@ -1,4 +1,9 @@
 {
   "data-root": "{{ dcr_daemon_conf.data_root }}",
-  "storage-driver": "zfs"
+  "storage-driver": "zfs",
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "1m",
+    "max-file": "1"
+  }
 }

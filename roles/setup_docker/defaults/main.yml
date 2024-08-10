@@ -3,12 +3,6 @@ dcr_docker_user: placeholder
 
 dcr_daemon_conf:
   data_root: placeholder
-  logger: # Loki
-    host: 127.0.0.1
-    port: 3100
-  metrics: # Prometheus
-    host: 127.0.0.1
-    port: 9323
 
 dcr_arch_mapping:  # Map ansible architecture {{ ansible_architecture }} names to Docker's architecture names
   x86_64: amd64

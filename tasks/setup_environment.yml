@@ -64,12 +64,6 @@
     dcr_docker_user: '{{ g_ssh_user.user }}'
     dcr_daemon_conf:
       data_root: '{{ g_pools.fast.custom_dirs.docker_root }}'
-      logger: # Loki
-        host: 127.0.0.1
-        port: 3100
-      metrics: # Prometheus
-        host: 127.0.0.1
-        port: 9323
   tags:
     - server_init
     - docker

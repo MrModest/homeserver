@@ -25,6 +25,17 @@ services:
       - ${APP_DATA_ROOT}/loki/config/loki-config.yaml:/etc/loki/loki-config.yaml
       - ${APP_DATA_ROOT}/loki/data:/data/loki
     command: -config.file=/etc/loki/loki-config.yaml
+  promtail:
+    image: grafana/promtail:${PROMTAIL_VERSION}
+    container_name: promtail
+    volumes:
+      - ${APP_DATA_ROOT}/promtail/config/promtail.yaml:/etc/promtail/promtail.yaml
+      - /var/log:/var/log
+      - ${DOCKER_ROOT_DIR}/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/promtail.yaml
+    depends_on:
+      - loki
   prometheus:
     image: prom/prometheus:${PROMETHEUS_VERSION}
     container_name: prometheus

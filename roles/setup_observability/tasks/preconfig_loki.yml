@@ -1,41 +1,52 @@
 ---
 - name: Create Loki user groups
   ansible.builtin.group:
-    name: '{{ obs_loki_user.name }}'
+    name: loki
     state: present
   become: true
 
 - name: Create Loki user
   ansible.builtin.user:
-    name: '{{ obs_loki_user.name }}'
-    group: '{{ obs_loki_user.name }}'
+    name: loki
+    group: loki
     groups:
       - '{{ obs_app_user.group }}'
-    uid: '{{ obs_loki_user.uid }}'
+    uid: 10001
     shell: '/sbin/nologin'
     state: present
     append: true
   become: true
 
-- name: Create Loki conf directory
+- name: Create Loki and Promtail conf directories
   ansible.builtin.file:
     path: '{{ item }}'
     state: directory
     mode: '0644'
-    owner: '{{ obs_loki_user.name }}'
-    group: '{{ obs_loki_user.name }}'
+    owner: loki
+    group: loki
     recurse: true
   become: true
   loop:
     - '{{ obs_apps_data_path }}/observability/loki'
     - '{{ obs_apps_data_path }}/observability/loki/config'
     - '{{ obs_apps_data_path }}/observability/loki/data'
+    - '{{ obs_apps_data_path }}/observability/promtail'
+    - '{{ obs_apps_data_path }}/observability/promtail/config'
 
 - name: Copy Loki config file into the directory
   ansible.builtin.copy:
     src: loki-config.yaml
     dest: '{{ obs_apps_data_path }}/observability/loki/config/loki-config.yaml'
     mode: '0644'
-    owner: '{{ obs_loki_user.name }}'
-    group: '{{ obs_loki_user.name }}'
+    owner: loki
+    group: loki
+  become: true
+
+- name: Copy Promtail config file into the directory
+  ansible.builtin.copy:
+    src: loki-config.yaml
+    dest: '{{ obs_apps_data_path }}/observability/promtail/config/promtail.yaml'
+    mode: '0644'
+    owner: loki
+    group: loki
   become: true

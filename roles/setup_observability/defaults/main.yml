@@ -2,6 +2,7 @@
 obs_apps_version:
   grafana: '10.1.9'
   loki: '2.8.11'
+  promtail: '3.0.0'
   prometheus: 'v2.51.1'
   cadvisor: 'v0.49.1'
 obs_app_user:
@@ -10,19 +11,7 @@ obs_app_user:
 # obs_grafana_user:
 #   name: grafana
 #   id: 472
-obs_loki_user:
-  name: loki
-  uid: 10001
-obs_prometheus_user:
-  name: prometheus
-  uid: 65534
 obs_apps_data_path: placeholder
-obs_apps_ports:
-  grafana: 3000
-  loki: 3100
-  prometheus: 9092
-  cadvisor: 8082
-  docker_metrics: 9323
 obs_docker_root_dir: /var/lib/docker
 
 obs_loki_docker_driver_opts:
@@ -31,5 +20,4 @@ obs_loki_docker_driver_opts:
   max_size: '100m'
   max_file: '2'
 
-obs_prometheus_host: 127.0.0.1
 obs_loki_driver_version: 2.9.4
