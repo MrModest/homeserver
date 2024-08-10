@@ -44,7 +44,7 @@
 
 - name: Copy Promtail config file into the directory
   ansible.builtin.copy:
-    src: loki-config.yaml
+    src: promtail.yaml
     dest: '{{ obs_apps_data_path }}/observability/promtail/config/promtail.yaml'
     mode: '0644'
     owner: loki
