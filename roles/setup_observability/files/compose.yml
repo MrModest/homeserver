@@ -62,6 +62,8 @@ services:
       - /sys:/sys:ro
       - ${DOCKER_ROOT_DIR}:/var/lib/docker:ro
       - /dev/disk:/dev/disk/:ro
+    devices:
+      - /dev/zfs:/dev/zfs
 
 networks:
   default:

@@ -3,7 +3,7 @@
   ansible.builtin.file:
     path: '{{ obs_apps_data_path }}/observability/prometheus/config'
     state: directory
-    mode: '0644'
+    mode: '0754'
     owner: '{{ obs_app_user.user }}'
     group: '{{ obs_app_user.group }}'
     recurse: true
