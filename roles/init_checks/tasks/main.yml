@@ -29,11 +29,21 @@
       alias docker-stop='sudo systemctl stop docker'
       alias docker-restart='sudo systemctl restart docker'
       alias docker-status='sudo systemctl status docker'
+      alias d-container-restart='docker container restart'
 
       alias dcu='docker compose up -d'
       alias dcd='docker compose down'
 
-      alias docker_ps='docker ps | bat'
+      alias docker-ps='docker ps | bat'
+      alias docker-logs='docker logs -f'
+
+      function docker-sh() {
+        docker exec -it $1 sh
+      }
+
+      function docker-bash() {
+        docker exec -it $1 bash
+      }
     owner: root
     group: root
     mode: '0644'

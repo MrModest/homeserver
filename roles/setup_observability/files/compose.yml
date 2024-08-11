@@ -64,6 +64,16 @@ services:
       - /dev/disk:/dev/disk/:ro
     devices:
       - /dev/zfs:/dev/zfs
+  prometheus_node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: prometheus_node_exporter
+    command:
+      - '--path.rootfs=/host'
+    network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'
 
 networks:
   default:
