@@ -69,6 +69,7 @@ services:
     container_name: prometheus_node_exporter
     command:
       - '--path.rootfs=/host'
+      - '--path.udev.data=/host/run/udev/data' # https://github.com/prometheus/node_exporter/issues/2692#issuecomment-2015812571
     network_mode: host
     pid: host
     restart: unless-stopped
