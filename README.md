@@ -54,16 +54,16 @@ Ansible playbook to configure a home server <br/>
 ### Server
 - [ ] Configure observability
   - [x] Configure Docker containers observability with Loki/Prometheus/Grafana
-  - [ ] Configure internal bridges between Prometheus and apps that pushes metrics
-    - [ ] Fix docker metrics providing
-    - [ ] Fix immich metrics providing
+  - [x] Configure internal bridges between Prometheus and apps that pushes metrics
+    - [x] Fix docker metrics providing
+    - [x] Fix immich metrics providing
   - [ ] Configure host logs and metrics
-    - [ ] Install Promtail to push `/var/log/*` logs to Loki
-    - [ ] Push Storage/RAM/CPU of host machine to Prometheus
+    - [x] Install Promtail to push `/var/log/*` logs to Loki
+    - [x] Push Storage/RAM/CPU of host machine to Prometheus
     - [ ] Collect ZFS related metrics
 - [x] Configure Samba
-- [ ] Configure reverse-proxy
-- [ ] Configure HTTPS
+- [x] Configure reverse-proxy
+- [x] Configure HTTPS
 - [ ] Configure backups
 - [ ] Configure Tailscale
 ### Applications
