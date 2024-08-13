@@ -23,7 +23,7 @@ g_pools:
     mirror: false # ToDo: change to 'true' once buy a redundant SSD
     custom_dirs:
       apps_data: '/mnt/pools/fast/apps-data'
-      docker_root: '/mnt/pools/fast/docker/data-root'
+      docker_root: '/mnt/pools/fast/docker/data-root' # Default: /var/lib/docker
       compose_files: '/mnt/pools/fast/docker/compose-files'
   slow:
     name: 'slow-tank'

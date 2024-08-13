@@ -61,9 +61,11 @@
     name: setup_docker
   when: ansible_check_mode is false
   vars:
-    dcr_docker_user: '{{ g_ssh_user.user }}'
-    dcr_daemon_conf:
-      data_root: '{{ g_pools.fast.custom_dirs.docker_root }}'
+    dcr_docker_user: '{{ g_ssh_user }}'
+    dcr_apps_user: '{{ g_apps_user }}'
+    dcr_dirs:
+      docker_root: '{{ g_pools.fast.custom_dirs.docker_root }}'
+      compose_root: '{{ g_pools.fast.custom_dirs.compose_files }}'
   tags:
     - server_init
     - docker

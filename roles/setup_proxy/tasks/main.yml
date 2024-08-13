@@ -23,6 +23,7 @@
   ansible.builtin.import_tasks: tasks/compose_up.yml
   vars:
     t_app_data: '{{ prx_apps_data_path }}/nginx'
+    t_app_name: 'nginx'
     t_app_user: '{{ prx_app_user.user }}'
     t_app_group: '{{ prx_app_user.group }}'
     t_app_data_dirs: []

@@ -15,7 +15,7 @@
 - name: Upload compose file
   ansible.builtin.copy:
     src: compose.yml
-    dest: '{{ t_app_data }}/compose.yml'
+    dest: '{{ g_pools.fast.custom_dirs.compose_files }}/{{ t_app_name }}/compose.yml'
     owner: '{{ t_app_user }}'
     group: '{{ t_app_group }}'
     mode: '0644'
@@ -24,7 +24,7 @@
 - name: Upload env file
   ansible.builtin.template:
     src: .env.j2
-    dest: '{{ t_app_data }}/.env'
+    dest: '{{ g_pools.fast.custom_dirs.compose_files }}/{{ t_app_name }}/.env'
     owner: '{{ t_app_user }}'
     group: '{{ t_app_group }}'
     mode: '0644'

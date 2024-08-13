@@ -1,4 +1,13 @@
 ---
+- name: Create a dir for compose files
+  ansible.builtin.file:
+    path: '{{ dcr_dirs.compose_root }}'
+    state: directory
+    mode: '0754'
+    owner: '{{ dcr_apps_user.user }}'
+    group: '{{ dcr_apps_user.group }}'
+  become: true
+
 - name: Install required packages
   ansible.builtin.apt:
     pkg:
@@ -57,7 +66,7 @@
 
 - name: Add user to Docker group
   ansible.builtin.user:
-    name: "{{ dcr_docker_user }}"
+    name: "{{ dcr_docker_user.user }}"
     groups: docker
     append: true
   become: true
@@ -86,9 +95,11 @@
   become: true
   register: docker_config
 
-- name: Restart dockerd # noqa: no-handler
-  ansible.builtin.import_tasks: tasks/restart_docker.yml
-  when: docker_config.changed
+- name: Restart dockerd
+  ansible.builtin.systemd_service:
+    name: docker
+    state: restarted
+  become: true
 
 - name: Enable Docker services
   ansible.builtin.systemd_service:
