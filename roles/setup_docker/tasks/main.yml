@@ -3,7 +3,7 @@
   ansible.builtin.file:
     path: '{{ dcr_dirs.compose_root }}'
     state: directory
-    mode: '0754'
+    mode: '{{ p_default_permissions.directory }}'
     owner: '{{ dcr_apps_user.user }}'
     group: '{{ dcr_apps_user.group }}'
   become: true
@@ -89,7 +89,7 @@
   ansible.builtin.template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
-    mode: '0644'
+    mode: '{{ p_default_permissions.file }}'
     owner: root
     group: root
   become: true

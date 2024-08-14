@@ -21,7 +21,7 @@
   ansible.builtin.file:
     path: '{{ item }}'
     state: directory
-    mode: '0754'
+    mode: '{{ p_default_permissions.directory }}'
     owner: loki
     group: loki
     recurse: true
@@ -37,7 +37,7 @@
   ansible.builtin.copy:
     src: loki-config.yaml
     dest: '{{ obs_apps_data_path }}/observability/loki/config/loki-config.yaml'
-    mode: '0644'
+    mode: '{{ p_default_permissions.file }}'
     owner: loki
     group: loki
   become: true
@@ -46,7 +46,7 @@
   ansible.builtin.copy:
     src: promtail.yaml
     dest: '{{ obs_apps_data_path }}/observability/promtail/config/promtail.yaml'
-    mode: '0644'
+    mode: '{{ p_default_permissions.file }}'
     owner: loki
     group: loki
   become: true

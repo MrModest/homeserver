@@ -75,7 +75,7 @@
 - name: Suppress login messages
   ansible.builtin.file:
     name: /home/{{ susr_ssh_user.user }}/.hushlogin
-    mode: '0644'
+    mode: '{{ p_default_permissions.file }}'
     state: touch
     owner: '{{ susr_ssh_user.user }}'
     group: '{{ susr_ssh_user.group }}'

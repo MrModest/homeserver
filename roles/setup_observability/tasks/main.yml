@@ -14,9 +14,6 @@
 - name: Start 'Grafana + Prometheus + Loki + cAdvisor'
   ansible.builtin.import_tasks: tasks/compose_up.yml
   vars:
-    t_app_data: '{{ obs_apps_data_path }}/observability'
     t_app_name: 'observability'
-    t_app_user: '{{ obs_app_user.user }}'
-    t_app_group: '{{ obs_app_user.group }}'
     t_app_data_dirs:
       - '{{ obs_apps_data_path }}/observability/grafana/data'

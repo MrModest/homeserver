@@ -2,10 +2,7 @@
 - name: Start 'immich'
   ansible.builtin.import_tasks: tasks/compose_up.yml
   vars:
-    t_app_data: '{{ imch_apps_data_path }}/immich'
     t_app_name: 'immich'
-    t_app_user: '{{ imch_app_user.user }}'
-    t_app_group: '{{ imch_app_user.group }}'
     t_app_data_dirs:
       - '{{ imch_apps_data_path }}/immich/db'
       - '{{ imch_apps_data_path }}/immich/model-cache'

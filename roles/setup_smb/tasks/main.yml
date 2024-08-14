@@ -45,5 +45,5 @@
     path: '{{ smb_share_root_path }}'
     owner: '{{ smb_samba_user.user }}'
     group: '{{ smb_samba_user.group }}'
-    mode: '0754'
+    mode: '{{ p_default_permissions.directory }}'
   become: true

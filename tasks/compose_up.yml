@@ -3,10 +3,10 @@
   ansible.builtin.file:
     path: '{{ dir_path }}'
     state: directory
-    owner: '{{ t_app_user }}'
-    group: '{{ t_app_group }}'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
     recurse: true
-    mode: '0754'
+    mode: '{{ p_default_permissions.directory }}'
   become: true
   loop: '{{ t_app_data_dirs }}'
   loop_control:
@@ -15,28 +15,28 @@
 - name: Upload compose file
   ansible.builtin.copy:
     src: compose.yml
-    dest: '{{ g_pools.fast.custom_dirs.compose_files }}/{{ t_app_name }}/compose.yml'
-    owner: '{{ t_app_user }}'
-    group: '{{ t_app_group }}'
-    mode: '0644'
+    dest: '{{ p_apps_data }}/{{ t_app_name }}/compose.yml'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.file }}'
   become: true
 
 - name: Upload env file
   ansible.builtin.template:
     src: .env.j2
-    dest: '{{ g_pools.fast.custom_dirs.compose_files }}/{{ t_app_name }}/.env'
-    owner: '{{ t_app_user }}'
-    group: '{{ t_app_group }}'
-    mode: '0644'
+    dest: '{{ p_apps_data }}/{{ t_app_name }}/.env'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.file }}'
   become: true
 
 - name: Fetch user's UID
-  ansible.builtin.command: 'id -u {{ t_app_user }}'
+  ansible.builtin.command: 'id -u {{ p_apps_user }}'
   changed_when: false
   register: t_tmp_app_data_uid
 
 - name: Fetch user's GID
-  ansible.builtin.command: 'id -g {{ t_app_user }}'
+  ansible.builtin.command: 'id -g {{ p_apps_user }}'
   changed_when: false
   register: t_tmp_app_data_gid
 
@@ -49,6 +49,6 @@
 
 - name: Create and start services
   community.docker.docker_compose_v2:
-    project_src: '{{ t_app_data }}'
+    project_src: '{{ p_apps_data }}'
   become: true
   when: ansible_check_mode is false

@@ -7,6 +7,9 @@
   vars:
     p_apps_data: '{{ g_pools.fast.custom_dirs.apps_data }}'
     p_apps_user: '{{ g_apps_user }}'
+    p_default_permissions:
+      file: '0644'
+      directory: '0754'
   tasks:
     - name: Setup environment
       ansible.builtin.include_tasks: tasks/setup_environment.yml
