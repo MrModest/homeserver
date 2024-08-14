@@ -31,12 +31,12 @@
   become: true
 
 - name: Fetch user's UID
-  ansible.builtin.command: 'id -u {{ p_apps_user }}'
+  ansible.builtin.command: 'id -u {{ p_apps_user.user }}'
   changed_when: false
   register: t_tmp_app_data_uid
 
 - name: Fetch user's GID
-  ansible.builtin.command: 'id -g {{ p_apps_user }}'
+  ansible.builtin.command: 'id -g {{ p_apps_user.group }}'
   changed_when: false
   register: t_tmp_app_data_gid
 
