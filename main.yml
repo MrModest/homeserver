@@ -46,3 +46,10 @@
       tags:
         - applications
         - immich
+
+    - name: Deploy 'homepage'
+      ansible.builtin.include_role:
+        name: deploy_homepage
+      tags:
+        - applications
+        - homepage

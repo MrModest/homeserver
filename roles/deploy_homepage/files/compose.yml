@@ -1,0 +1,16 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:${APP_VERSION}
+    container_name: homepage
+    environment:
+      PUID: ${APP_USER}
+      PGID: ${APP_GROUP}
+    volumes:
+      - ${APP_DATA_PATH}/config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
+    restart: unless-stopped
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork
