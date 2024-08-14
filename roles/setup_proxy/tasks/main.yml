@@ -1,20 +1,4 @@
 ---
-- name: Create directories for Nginx Proxy Manager
-  ansible.builtin.file:
-    path: '{{ dir_path }}'
-    state: directory
-    owner: '{{ p_apps_user.user }}'
-    group: '{{ p_apps_user.group }}'
-    recurse: true
-    mode: '{{ p_default_permissions.directory }}'
-  become: true
-  loop:
-    - '{{ p_apps_data }}/nginx'
-    - '{{ p_apps_data }}/nginx/data'
-    - '{{ p_apps_data }}/nginx/letsencrypt'
-  loop_control:
-    loop_var: dir_path
-
 - name: Create a docker network
   community.docker.docker_network:
     name: nginxnetwork
@@ -23,4 +7,7 @@
   ansible.builtin.import_tasks: tasks/compose_up.yml
   vars:
     t_app_name: 'nginx'
-    t_app_data_dirs: []
+    t_app_data_dirs:
+      - '{{ p_apps_data }}/nginx'
+      - '{{ p_apps_data }}/nginx/data'
+      - '{{ p_apps_data }}/nginx/letsencrypt'
