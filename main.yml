@@ -24,13 +24,14 @@
         - applications
         - observability
 
-    - name: Deploy 'dockge'
+    - name: Deploy 'portainer'
       ansible.builtin.include_role:
-        name: deploy_dockge
+        name: deploy_portainer
       vars:
-        dkg_apps_data_path: '{{ p_apps_data }}'
-        dkg_stack_path: '{{ g_pools.fast.custom_dirs.compose_files }}'
-        dkg_app_user: '{{ p_apps_user }}'
+        prt_apps_data_path: '{{ p_apps_data }}'
+        prt_stack_path: '{{ g_pools.fast.custom_dirs.compose_files }}'
+        prt_app_user: '{{ p_apps_user }}'
+        prt_app_host: 'portainer.{{ g_duckdns_domain }}'
       tags:
         - applications
         - dockge

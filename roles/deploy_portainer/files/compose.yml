@@ -1,0 +1,18 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:${APP_VERSION}
+    container_name: portainer
+    user: '0'
+    command: -H unix:///var/run/docker.sock
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=${APP_HOST}
+      - VIRTUAL_PORT=${APP_PORT}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${APP_DATA_PATH}/data:/data
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

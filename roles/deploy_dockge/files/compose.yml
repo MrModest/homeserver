@@ -3,7 +3,7 @@ services:
   dockge:
     image: louislam/dockge:1
     container_name: dockge
-    user: ${APP_USER}
+    user: '0'
     restart: unless-stopped
     env_file:
       - .env
