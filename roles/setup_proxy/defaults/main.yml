@@ -1,9 +1,4 @@
 ---
-prx_app_user:
-  user: placeholder
-  group: placeholder
-
-prx_apps_data_path: placeholder
 prx_my_domain: placeholder
 
 prx_duckdns_api_token: placeholder

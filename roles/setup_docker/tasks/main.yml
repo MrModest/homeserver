@@ -4,8 +4,8 @@
     path: '{{ dcr_dirs.compose_root }}'
     state: directory
     mode: '{{ p_default_permissions.directory }}'
-    owner: '{{ dcr_apps_user.user }}'
-    group: '{{ dcr_apps_user.group }}'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
   become: true
 
 - name: Install required packages

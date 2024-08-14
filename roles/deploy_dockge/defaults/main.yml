@@ -1,8 +1,3 @@
 ---
 dkg_app_port: 5001
-dkg_apps_data_path: placeholder
 dkg_stack_path: placeholder # Absolute path to the directory with all 'compose.yml' files
-
-dkg_app_user:
-  user: placeholder
-  group: placeholder

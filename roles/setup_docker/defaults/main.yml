@@ -1,6 +1,5 @@
 ---
 dcr_docker_user: placeholder
-dcr_apps_user: placeholder
 
 dcr_dirs:
   docker_root: placeholder

@@ -1,19 +1,19 @@
 ---
 - name: Create Prometheus conf directory
   ansible.builtin.file:
-    path: '{{ obs_apps_data_path }}/observability/prometheus/config'
+    path: '{{ p_apps_data }}/observability/prometheus/config'
     state: directory
     mode: '{{ p_default_permissions.directory }}'
-    owner: '{{ obs_app_user.user }}'
-    group: '{{ obs_app_user.group }}'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
     recurse: true
   become: true
 
 - name: Copy Prometheus config file
   ansible.builtin.copy:
     src: prometheus.yml
-    dest: '{{ obs_apps_data_path }}/observability/prometheus/config/prometheus.yml'
+    dest: '{{ p_apps_data }}/observability/prometheus/config/prometheus.yml'
     mode: '{{ p_default_permissions.file }}'
-    owner: '{{ obs_app_user.user }}'
-    group: '{{ obs_app_user.group }}'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
   become: true

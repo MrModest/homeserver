@@ -2,7 +2,7 @@ services:
   portainer:
     image: portainer/portainer-ce:${APP_VERSION}
     container_name: portainer
-    user: '0'
+    user: '0' # root
     command: -H unix:///var/run/docker.sock
     restart: unless-stopped
     environment:

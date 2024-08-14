@@ -1,14 +1,10 @@
 ---
 imch_app_port: 2283
-imch_apps_data_path: placeholder
+p_apps_data: placeholder
 imch_store_data_path: placeholder
 
 imch_app_version: v1.100.0
 imch_redis_version: 6.2-alpine@sha256:51d6c56749a4243096327e3fb964a48ed92254357108449cb6e23999c37773c5
 imch_postgres_version: pg14-v0.2.0@sha256:90724186f0a3517cf6914295b5ab410db9ce23190a2d9d0b9dd6463e3fa298f0
-
-imch_app_user:
-  user: placeholder
-  group: placeholder
 
 imch_db_password: placeholder

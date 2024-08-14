@@ -10,7 +10,7 @@
     name: loki
     group: loki
     groups:
-      - '{{ obs_app_user.group }}'
+      - '{{ p_apps_user.group }}'
     uid: 10001
     shell: '/sbin/nologin'
     state: present
@@ -27,16 +27,16 @@
     recurse: true
   become: true
   loop:
-    - '{{ obs_apps_data_path }}/observability/loki'
-    - '{{ obs_apps_data_path }}/observability/loki/config'
-    - '{{ obs_apps_data_path }}/observability/loki/data'
-    - '{{ obs_apps_data_path }}/observability/promtail'
-    - '{{ obs_apps_data_path }}/observability/promtail/config'
+    - '{{ p_apps_data }}/observability/loki'
+    - '{{ p_apps_data }}/observability/loki/config'
+    - '{{ p_apps_data }}/observability/loki/data'
+    - '{{ p_apps_data }}/observability/promtail'
+    - '{{ p_apps_data }}/observability/promtail/config'
 
 - name: Copy Loki config file into the directory
   ansible.builtin.copy:
     src: loki-config.yaml
-    dest: '{{ obs_apps_data_path }}/observability/loki/config/loki-config.yaml'
+    dest: '{{ p_apps_data }}/observability/loki/config/loki-config.yaml'
     mode: '{{ p_default_permissions.file }}'
     owner: loki
     group: loki
@@ -45,7 +45,7 @@
 - name: Copy Promtail config file into the directory
   ansible.builtin.copy:
     src: promtail.yaml
-    dest: '{{ obs_apps_data_path }}/observability/promtail/config/promtail.yaml'
+    dest: '{{ p_apps_data }}/observability/promtail/config/promtail.yaml'
     mode: '{{ p_default_permissions.file }}'
     owner: loki
     group: loki

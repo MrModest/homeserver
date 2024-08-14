@@ -3,15 +3,15 @@
   ansible.builtin.file:
     path: '{{ dir_path }}'
     state: directory
-    owner: '{{ prx_app_user.user }}'
-    group: '{{ prx_app_user.group }}'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
     recurse: true
     mode: '{{ p_default_permissions.directory }}'
   become: true
   loop:
-    - '{{ prx_apps_data_path }}/nginx'
-    - '{{ prx_apps_data_path }}/nginx/data'
-    - '{{ prx_apps_data_path }}/nginx/letsencrypt'
+    - '{{ p_apps_data }}/nginx'
+    - '{{ p_apps_data }}/nginx/data'
+    - '{{ p_apps_data }}/nginx/letsencrypt'
   loop_control:
     loop_var: dir_path
 

@@ -6,7 +6,9 @@
     - vars/apps.yml
   vars:
     p_apps_data: '{{ g_pools.fast.custom_dirs.apps_data }}'
+
     p_apps_user: '{{ g_apps_user }}'
+
     p_default_permissions:
       file: '0644'
       directory: '0754'
@@ -20,8 +22,6 @@
       ansible.builtin.include_role:
         name: setup_observability
       vars:
-        obs_app_user: '{{ p_apps_user }}'
-        obs_apps_data_path: '{{ p_apps_data }}'
         obs_docker_root_dir: '{{ g_pools.fast.custom_dirs.docker_root }}'
       tags:
         - applications
@@ -31,9 +31,7 @@
       ansible.builtin.include_role:
         name: deploy_portainer
       vars:
-        prt_apps_data_path: '{{ p_apps_data }}'
         prt_stack_path: '{{ g_pools.fast.custom_dirs.compose_files }}'
-        prt_app_user: '{{ p_apps_user }}'
         prt_app_host: 'portainer.{{ g_duckdns_domain }}'
       tags:
         - applications
@@ -43,9 +41,7 @@
       ansible.builtin.include_role:
         name: deploy_immich
       vars:
-        imch_apps_data_path: '{{ p_apps_data }}'
         imch_store_data_path: '{{ g_pools.slow.custom_dirs.apps_data }}'
-        imch_app_user: '{{ p_apps_user }}'
         imch_db_password: '{{ g_db_passwords.immich }}'
       tags:
         - applications

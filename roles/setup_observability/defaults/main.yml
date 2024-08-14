@@ -5,13 +5,10 @@ obs_apps_version:
   promtail: '3.0.0'
   prometheus: 'v2.51.1'
   cadvisor: 'v0.49.1'
-obs_app_user:
-  user: placeholder
-  group: placeholder
 # obs_grafana_user:
 #   name: grafana
 #   id: 472
-obs_apps_data_path: placeholder
+p_apps_data: placeholder
 obs_docker_root_dir: /var/lib/docker
 
 obs_loki_docker_driver_opts:

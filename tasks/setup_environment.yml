@@ -61,8 +61,7 @@
     name: setup_docker
   when: ansible_check_mode is false
   vars:
-    dcr_docker_user: '{{ g_ssh_user }}'
-    dcr_apps_user: '{{ g_apps_user }}'
+    dcr_docker_user: '{{ p_apps_user }}'
     dcr_dirs:
       docker_root: '{{ g_pools.fast.custom_dirs.docker_root }}'
       compose_root: '{{ g_pools.fast.custom_dirs.compose_files }}'
@@ -74,10 +73,6 @@
   ansible.builtin.include_role:
     name: setup_proxy
   vars:
-    prx_app_user:
-      user: root
-      group: root
-    prx_apps_data_path: '{{ g_pools.fast.custom_dirs.apps_data }}'
     prx_my_domain: '{{ g_domain }}'
     prx_duckdns_api_token: '{{ g_duckdns_api_token }}'
     prx_duckdns_domain: '{{ g_duckdns_domain }}'
