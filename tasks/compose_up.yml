@@ -42,13 +42,13 @@
 
 - name: Replace user with UID:GID
   ansible.builtin.lineinfile:
-    path: '{{ t_app_data }}/.env'
+    path: '{{ p_apps_data }}/{{ t_app_name }}/.env'
     regexp: '^APP_USER=.*$'
     line: "APP_USER='{{ t_tmp_app_data_uid.stdout }}'"
   become: true
 
 - name: Create and start services
   community.docker.docker_compose_v2:
-    project_src: '{{ p_apps_data }}'
+    project_src: '{{ p_apps_data }}/{{ t_app_name }}'
   become: true
   when: ansible_check_mode is false
