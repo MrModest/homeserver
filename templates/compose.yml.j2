@@ -1,13 +1,12 @@
-version: '3.8'
 services:
 {% for service in services %}
   {{ service.name }}:
-    image: {{item.image}}  
+    image: {{item.image}}
     container_name: {{ service.name }}
     user: {{ service.user }}
     restart: unless-stopped
 
-  {% if service.ports is defined %} 
+  {% if service.ports is defined %}
     ports:
     {% for port in service.ports %}
       - '{{ port }}'
@@ -17,21 +16,21 @@ services:
     env_file:
       - .env
 
-  {% if service.env_vars is defined %} 
+  {% if service.env_vars is defined %}
     environment:
     {% for env_var in service.env_vars %}
       - '{{ env_var }}'
     {% endfor %}
   {% endif %}
 
-  {% if service.volumes is defined %} 
+  {% if service.volumes is defined %}
     volumes:
     {% for volume in service.volumes %}
       - '{{ volume }}'
     {% endfor %}
   {% endif %}
 
-  {% if service.extra_host is defined %} 
+  {% if service.extra_host is defined %}
     extra_hosts:
       - '{{ service.extra_host }}'
   {%- endif %}

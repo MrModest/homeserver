@@ -3,7 +3,6 @@
 # - https://freedium.cfd/https://pramodshehan.medium.com/containers-metrics-in-prometheus-and-grafana-389555499eb8
 # - https://stackoverflow.com/a/76919356/7422280
 
-version: '3.8'
 services:
   grafana:
     image: 'grafana/grafana:${GRAFANA_VERSION}'
