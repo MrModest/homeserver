@@ -1,4 +1,15 @@
 services:
+  hp_dockerproxy:
+    image: ghcr.io/tecnativa/docker-socket-proxy:0.2
+    container_name: hp_dockerproxy
+    environment:
+      - CONTAINERS=1 # Allow access to viewing containers
+      - SERVICES=1 # Allow access to viewing services (necessary when using Docker Swarm)
+      - TASKS=1 # Allow access to viewing tasks (necessary when using Docker Swarm)
+      - POST=0 # Disallow any POST operations (effectively read-only)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Mounted as read-only
+    restart: unless-stopped
   homepage:
     image: ghcr.io/gethomepage/homepage:${APP_VERSION}
     container_name: homepage
@@ -7,7 +18,6 @@ services:
       PGID: ${APP_GROUP}
     volumes:
       - ${APP_DATA_PATH}/config:/app/config
-      - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
     restart: unless-stopped
 
 networks:
