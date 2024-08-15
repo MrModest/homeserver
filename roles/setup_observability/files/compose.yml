@@ -13,6 +13,12 @@ services:
       - .env
     volumes:
       - '${APP_DATA_ROOT}/grafana/data:/var/lib/grafana'
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
   loki:
     image: grafana/loki:${LOKI_VERSION}
     container_name: loki
@@ -24,6 +30,12 @@ services:
       - ${APP_DATA_ROOT}/loki/config/loki-config.yaml:/etc/loki/loki-config.yaml
       - ${APP_DATA_ROOT}/loki/data:/data/loki
     command: -config.file=/etc/loki/loki-config.yaml
+    healthcheck:
+      test: wget --quiet --tries=1 --output-document=- http://localhost:3100/ready | grep -q -w ready || exit 1
+      start_period: 20s
+      interval: 10s
+      timeout: 1s
+      retries: 12  # try for 2 minutes
   promtail:
     image: grafana/promtail:${PROMTAIL_VERSION}
     container_name: promtail
