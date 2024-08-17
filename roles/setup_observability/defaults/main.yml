@@ -8,7 +8,6 @@ obs_apps_version:
 # obs_grafana_user:
 #   name: grafana
 #   id: 472
-p_apps_data: placeholder
 obs_docker_root_dir: /var/lib/docker
 
 obs_loki_docker_driver_opts:

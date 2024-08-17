@@ -11,8 +11,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ${APP_DATA_ROOT}/nginx/data:/data
-      - ${APP_DATA_ROOT}/nginx/letsencrypt:/etc/letsencrypt
+      - ${APP_DATA}/data:/data
+      - ${APP_DATA}/letsencrypt:/etc/letsencrypt
     healthcheck:
       test: ["CMD", "/usr/bin/check-health"]
       interval: 10s

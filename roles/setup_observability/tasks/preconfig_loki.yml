@@ -51,8 +51,8 @@
   become: true
 
 - name: Copy Promtail config file into the directory
-  ansible.builtin.copy:
-    src: promtail.yaml
+  ansible.builtin.template:
+    src: promtail.yaml.j2
     dest: '{{ p_apps_data }}/observability/promtail/config/promtail.yaml'
     mode: '{{ p_default_permissions.file }}'
     owner: loki
