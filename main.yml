@@ -25,7 +25,6 @@
         name: deploy_kopia
       vars:
         kpia_server:
-          address: 'kopia.{{ g_duckdns_domain }}'
           username: kopia
           password: '{{ g_kopia_server_password }}'
         kpia_repo_password: '{{ g_kopia_repo_password }}'

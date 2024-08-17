@@ -11,7 +11,8 @@ services:
       - start
       - --disable-csrf-token-checks
       - --insecure
-      - --address=${SERVER_ADDRESS}
+      - --without-password # turn off Basic Auth for WebUI
+      - --address=0.0.0.0:${APP_PORT}
       - --server-username=${SERVER_USERNAME}
       - --server-password=${SERVER_PASSWORD}
     env_file:

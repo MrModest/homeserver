@@ -3,7 +3,6 @@ kpia_app_port: 51515
 kpia_version: '0.17.0'
 
 kpia_server:
-  address: placeholder
   username: placeholder
   password: placeholder
 
