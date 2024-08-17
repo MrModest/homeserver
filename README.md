@@ -69,13 +69,14 @@ Ansible playbook to configure a home server <br/>
 - [x] Configure HTTPS
 - [ ] Configure backups
 - [ ] Configure Tailscale
-### Applications
+
+### Docker Applications
 - [x] [Immich](https://github.com/immich-app/immich)
-- [x] [Dockge](https://github.com/louislam/dockge)
+- [ ] ~~[Dockge](https://github.com/louislam/dockge)~~
 - [ ] [Paperless](https://github.com/paperless-ngx/paperless-ngx)
 - [ ] [Nextcloud](https://github.com/nextcloud/all-in-one)
 - [ ] [homepage](https://github.com/gethomepage/homepage)
-- [ ] [Portainer](https://docs.portainer.io/v/2.20/start/install-ce/server/docker/linux)
+- [x] [Portainer](https://docs.portainer.io/v/2.20/start/install-ce/server/docker/linux)
 - [ ] [AriaNg](https://hub.docker.com/r/hurlenko/aria2-ariang)
 - [ ] [metube](https://github.com/alexta69/metube)
 - [ ] [Stirling-PDF](https://github.com/Stirling-Tools/Stirling-PDF/tree/main)
@@ -85,6 +86,7 @@ Ansible playbook to configure a home server <br/>
 - [ ] [NoteCalc](https://github.com/bbodi/notecalc3)
 - [ ] [Open Speed Test](https://hub.docker.com/r/openspeedtest/latest)
 - [ ] [PiHole](https://github.com/pi-hole/docker-pi-hole/?tab=readme-ov-file#quick-start) (for local DNS)
-- Non-docker
+
+### "Bare metal" Applications
   - [ ] [Cockpit](https://cockpit-project.org/)
   - [ ] [Kasm](https://www.kasmweb.com/docs/latest/install/single_server_install.html)
