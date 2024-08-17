@@ -5,6 +5,14 @@
     state: present
   become: true
 
+- name: Add apps_user into loki group
+  ansible.builtin.user:
+    name: '{{ p_apps_user.user }}'
+    groups:
+      - loki
+    append: true
+    state: present
+
 - name: Create Loki user
   ansible.builtin.user:
     name: loki
