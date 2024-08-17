@@ -17,6 +17,10 @@ Ansible playbook to configure a home server <br/>
     - to store big files that doesn't need to be redundant or backed up (for example, something that easily retractable from the internet)
 
 # Remarks
+- Users
+  - `apps` to run all non-priviliged contaners
+  - `homessh` to connect via ssh
+  - `sambashare` to connect to SMB share via clients
 - Permissions
   - `0644` - More relevant for files
     - Owner can read & write.
@@ -30,6 +34,7 @@ Ansible playbook to configure a home server <br/>
   - `/mnt/pools` to mount ZFS pools
   - `/mnt/pools/<fast|slow>/apps-data/<app's name>` stores all stuff dedicated to the given app directly
   - `/mnt/pools/fast/docker/data-root` is dedicated to store all docker related stuff instead of `/var/lib/docker`
+- [Files Structure](docs/Files%20Structure.md)
 
 # Docker daemon configuration
 
