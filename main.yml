@@ -6,6 +6,7 @@
     - vars/apps.yml
   vars:
     p_apps_data: '{{ g_pools.fast.custom_dirs.apps_data }}'
+    p_compose_files: '{{ g_pools.fast.custom_dirs.compose_files }}'
 
     p_apps_user: '{{ g_apps_user }}'
 
@@ -31,7 +32,6 @@
       ansible.builtin.include_role:
         name: deploy_portainer
       vars:
-        prt_stack_path: '{{ g_pools.fast.custom_dirs.compose_files }}'
         prt_app_host: 'portainer.{{ g_duckdns_domain }}'
       tags:
         - applications
