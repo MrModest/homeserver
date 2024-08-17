@@ -13,12 +13,16 @@ services:
   homepage:
     image: ghcr.io/gethomepage/homepage:${APP_VERSION}
     container_name: homepage
+    env_file:
+      - .env
     environment:
       PUID: ${APP_USER}
       PGID: ${APP_GROUP}
     volumes:
       - ${APP_DATA_PATH}/config:/app/config
     restart: unless-stopped
+    depends_on:
+      - hp_dockerproxy
 
 networks:
   default:
