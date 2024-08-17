@@ -1,0 +1,43 @@
+alias ll='ls -lah'
+alias sll='sudo ls -lah'
+
+alias bat='batcat --wrap=never'
+alias sbat='sudo batcat --wrap=never'
+
+alias docker-start='sudo systemctl start docker'
+alias docker-stop='sudo systemctl stop docker'
+alias docker-restart='sudo systemctl restart docker'
+alias docker-status='sudo systemctl status docker'
+
+alias d-container-restart='docker container restart'
+
+alias dcu='docker compose up -d'
+alias dcd='docker compose down'
+
+alias d-ps='docker ps | bat'
+alias d-logs='docker logs | bat'
+alias d-logs-f='docker logs -f'
+
+function d-sh() {
+  docker exec -it $1 sh
+}
+
+function d-bash() {
+  docker exec -it $1 bash
+}
+
+function d-envs() {
+  docker exec $1 env
+}
+
+function d-set-env() {
+  docker exec -i $1 /bin/bash -c "export $2 $3"
+}
+
+function cd-apps() {
+  cd {{ p_apps_data }}/$1
+}
+
+function cd-compose() {
+  cd {{ p_compose_files }}/$1
+}

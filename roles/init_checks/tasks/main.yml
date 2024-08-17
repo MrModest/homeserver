@@ -19,38 +19,9 @@
   become: true
 
 - name: Setup aliases
-  ansible.builtin.copy:
+  ansible.builtin.template:
+    src: aliases.sh.j2
     dest: /etc/profile.d/aliases.sh
-    content: |
-      alias ll='ls -lah'
-      alias sll='sudo ls -lah'
-      alias bat='batcat --wrap=never'
-
-      alias cd-apps-data='cd {{ p_apps_data }}'
-
-      alias docker-start='sudo systemctl start docker'
-      alias docker-stop='sudo systemctl stop docker'
-      alias docker-restart='sudo systemctl restart docker'
-      alias docker-status='sudo systemctl status docker'
-      alias d-container-restart='docker container restart'
-
-      alias dcu='docker compose up -d'
-      alias dcd='docker compose down'
-
-      alias docker-ps='docker ps | bat'
-      alias docker-logs='docker logs -f'
-
-      function docker-sh() {
-        docker exec -it $1 sh
-      }
-
-      function docker-bash() {
-        docker exec -it $1 bash
-      }
-
-      function docker-envs() {
-        docker exec $1 env
-      }
     owner: root
     group: root
     mode: '{{ p_default_permissions.file }}'
