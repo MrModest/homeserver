@@ -3,12 +3,12 @@
 > [!WARNING]
 > Still In Progress
 
-# Requirements
+## Requirements
 
 - Ubuntu Server 22.04 LTS
 - First installation should be finished before this playbook to run
 
-# Recommended configurations
+## Recommended configurations
 - Boot system and root in a dedicated SSD drive with the default ext4 partitioning and stores nothing but OS
 - All other drives are formatted into ZFS pools
   - a "fast" pool with 2 SSD in a mirror mode (~256Gb each)
@@ -18,7 +18,7 @@
   - a "very big and slow" pool with 1 HDD in a stripe mode (~8Tb)
     - to store big files that doesn't need to be redundant or backed up (for example, something that easily retractable from the internet)
 
-# Remarks
+## Remarks
 - Users
   - `apps` to run all non-priviliged contaners
   - `homessh` to connect via ssh
@@ -38,7 +38,7 @@
   - `/mnt/pools/fast/docker/data-root` is dedicated to store all docker related stuff instead of `/var/lib/docker`
 - [Files Structure](docs/Files%20Structure.md)
 
-# Docker daemon configuration
+## Docker daemon configuration
 
 ```json
 {
@@ -53,6 +53,9 @@
   "experimental" : true
 }
 ```
+
+---
+
 
 # ToDo
 
