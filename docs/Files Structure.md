@@ -24,6 +24,9 @@
 └── slow <-- HDD pool
     ├── apps-data <-- same as '/fast/apps-data', but in HDD drives
     │   └── immich
+    ├── backups
+    │   └── kopia
+    │       └── repositiory
     └── shared <-- SMB shares' root
         └── shared
 ```
