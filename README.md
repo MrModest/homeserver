@@ -42,14 +42,12 @@ Ansible playbook to configure a home server <br/>
 {
   "data-root": "/mnt/pools/fast/docker/data-root",
   "storage-driver": "zfs",
-  "log-driver": "loki",
+  "log-driver": "json-file",
   "log-opts": {
-    "loki-url": "http://loki:3100/loki/api/v1/push",
-    "loki-batch-size": "400",
-    "max-size": "100m",
-    "max-file": "2"
+    "max-size": "1m",
+    "max-file": "1"
   },
-  "metrics-addr" : "host.docker.internal:9323",
+  "metrics-addr" : "0.0.0.0:9323",
   "experimental" : true
 }
 ```
