@@ -3,6 +3,10 @@ services:
     image: kopia/kopia:${APP_VERSION}
     hostname: kopia
     container_name: kopia
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
     user: '0' # root
     restart: unless-stopped
     # Setup the server that provides the web gui
@@ -19,6 +23,8 @@ services:
       # Set repository password
       KOPIA_PASSWORD: ${REPO_PASSWORD}
       USER: ${APP_USER}
+    devices:
+      - /dev/fuse:/dev/fuse:rwm
     volumes:
       # Mount local folders needed by kopia
       - ${APP_DATA_PATH}/config:/app/config
