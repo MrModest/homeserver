@@ -6,6 +6,7 @@
     mode: '{{ p_default_permissions.directory }}'
     owner: '{{ p_apps_user.user }}'
     group: '{{ p_apps_user.group }}'
+    recurse: true
   become: true
 
 - name: Install required packages
