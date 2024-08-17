@@ -24,9 +24,6 @@
       ansible.builtin.include_role:
         name: deploy_kopia
       vars:
-        kpia_server:
-          username: kopia
-          password: '{{ g_kopia_server_password }}'
         kpia_repo_password: '{{ g_kopia_repo_password }}'
       tags:
         - applications

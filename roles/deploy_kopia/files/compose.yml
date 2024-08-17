@@ -13,8 +13,6 @@ services:
       - --insecure
       - --without-password # turn off Basic Auth for WebUI
       - --address=0.0.0.0:${APP_PORT}
-      - --server-username=${SERVER_USERNAME}
-      - --server-password=${SERVER_PASSWORD}
     env_file:
       - .env
     environment:
