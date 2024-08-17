@@ -1,5 +1,7 @@
 Ansible playbook to configure a home server <br/>
-⚠️ Still in WIP
+
+> [!WARNING]
+> Still In Progress
 
 # Requirements
 
