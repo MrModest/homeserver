@@ -7,6 +7,7 @@
   vars:
     p_apps_data: '{{ g_pools.fast.custom_dirs.apps_data }}'
     p_compose_files: '{{ g_pools.fast.custom_dirs.compose_files }}'
+    p_backups_root: '{{ g_pools.slow.custom_dirs.backups_root }}'
 
     p_apps_user: '{{ g_apps_user }}'
 
@@ -18,6 +19,19 @@
       ansible.builtin.include_tasks: tasks/setup_environment.yml
       tags:
         - server_init
+
+    - name: Deploy 'kopia' for backups
+      ansible.builtin.include_role:
+        name: deploy_kopia
+      vars:
+        kpia_server:
+          address: 'kopia.{{ g_duckdns_domain }}'
+          username: kopia
+          password: '{{ g_kopia_server_password }}'
+        kpia_repo_password: '{{ g_kopia_repo_password }}'
+      tags:
+        - applications
+        - kopia
 
     - name: Setup observability
       ansible.builtin.include_role:
@@ -35,7 +49,7 @@
         prt_app_host: 'portainer.{{ g_duckdns_domain }}'
       tags:
         - applications
-        - dockge
+        - portainer
 
     - name: Deploy 'immich'
       ansible.builtin.include_role:

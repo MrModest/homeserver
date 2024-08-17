@@ -1,0 +1,14 @@
+---
+- name: Start 'kopia'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'kopia'
+    t_app_data_dirs:
+      - '{{ p_apps_data }}/kopia/config'
+      - '{{ p_apps_data }}/kopia/cache'
+      - '{{ p_apps_data }}/kopia/logs'
+      - '{{ p_apps_data }}/kopia/rclone'
+      - '{{ p_apps_data }}/kopia/mounts'
+      - '{{ p_backups_root }}/kopia/repositiory'
+  tags:
+    - kopia

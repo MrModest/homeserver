@@ -1,0 +1,40 @@
+services:
+  kopia:
+    image: kopia/kopia:${APP_VERSION}
+    hostname: kopia
+    container_name: kopia
+    user: '0' # root
+    restart: unless-stopped
+    # Setup the server that provides the web gui
+    command:
+      - server
+      - start
+      - --disable-csrf-token-checks
+      - --insecure
+      - --address=${SERVER_ADDRESS}
+      - --server-username=${SERVER_USERNAME}
+      - --server-password=${SERVER_PASSWORD}
+    env_file:
+      - .env
+    environment:
+      # Set repository password
+      KOPIA_PASSWORD: ${REPO_PASSWORD}
+      USER: ${APP_USER}
+    volumes:
+      # Mount local folders needed by kopia
+      - ${APP_DATA_PATH}/config:/app/config
+      - ${APP_DATA_PATH}/cache:/app/cache
+      - ${APP_DATA_PATH}/logs:/app/logs
+      - ${APP_DATA_PATH}/rclone:/app/rclone
+      # Mount local folders to snapshot
+      - /home:/data/host/home:ro
+      - /mnt/pools:/data/pools:ro
+      # Mount repository location
+      - ${BACKUPS_ROOT}/repositiory:/repository
+      # Mount path for browsing mounted snaphots
+      - ${APP_DATA_PATH}/mounts:/tmp:shared
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork
