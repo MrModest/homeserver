@@ -12,6 +12,16 @@
   loop_control:
     loop_var: dir_path
 
+- name: Create subdirectory for the compose file
+  ansible.builtin.file:
+    path: '{{ p_compose_files }}/{{ t_app_name }}'
+    state: directory
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    recurse: true
+    mode: '{{ p_default_permissions.directory }}'
+  become: true
+
 - name: Upload compose file
   ansible.builtin.copy:
     src: compose.yml
