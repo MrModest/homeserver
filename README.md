@@ -1,4 +1,4 @@
-Ansible playbook to configure a home server <br/>
+# Ansible playbook to configure a home server
 
 > [!WARNING]
 > Still In Progress
