@@ -12,16 +12,16 @@
     susr_ssh_user:
       user: '{{ g_ssh_user.user }}'
       group: '{{ g_ssh_user.group }}'
-      password: '{{ g_user_passwords.ssh }}'
+      password: '{{ v_user_passwords.ssh }}'
     susr_smb_user:
       user: '{{ g_smb_user.user }}'
       group: '{{ g_smb_user.group }}'
-      password: '{{ g_user_passwords.smb }}'
+      password: '{{ v_user_passwords.smb }}'
     susr_apps_user:
       user: '{{ g_apps_user.user }}'
       group: '{{ g_apps_user.group }}'
-      password: '{{ g_user_passwords.apps }}'
-    susr_ssh_public_key: '{{ g_ssh_public_key }}'
+      password: '{{ v_user_passwords.apps }}'
+    susr_ssh_public_key: '{{ v_ssh_public_key }}'
   tags:
     - server_init
 
@@ -51,7 +51,7 @@
     smb_samba_user:
       user: '{{ g_smb_user.user }}'
       group: '{{ g_smb_user.group }}'
-      password: '{{ g_user_passwords.smb }}'
+      password: '{{ v_user_passwords.smb }}'
   tags:
     - server_init
     - samba
@@ -74,5 +74,5 @@
     name: setup_proxy
   vars:
     prx_my_domain: '{{ g_domain }}'
-    prx_duckdns_api_token: '{{ g_duckdns_api_token }}'
+    prx_duckdns_api_token: '{{ v_duckdns_api_token }}'
     prx_duckdns_domain: '{{ g_duckdns_domain }}'

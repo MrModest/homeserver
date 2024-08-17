@@ -24,7 +24,7 @@
       ansible.builtin.include_role:
         name: deploy_kopia
       vars:
-        kpia_repo_password: '{{ g_kopia_repo_password }}'
+        kpia_repo_password: '{{ v_kopia_repo_password }}'
       tags:
         - applications
         - kopia
@@ -52,7 +52,7 @@
         name: deploy_immich
       vars:
         imch_store_data_path: '{{ g_pools.slow.custom_dirs.apps_data }}'
-        imch_db_password: '{{ g_db_passwords.immich }}'
+        imch_db_password: '{{ v_db_passwords.immich }}'
       tags:
         - applications
         - immich
