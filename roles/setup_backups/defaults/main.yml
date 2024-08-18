@@ -6,7 +6,7 @@ kpia_repo_password: placeholder
 
 kpia_rclone_config:
   mailru:
-    backup_path: NoSync/Backups/HomeServer
+    backup_path: placeholder
     webdav_url: placeholder
     user: placeholder
     password_enc: placeholder
