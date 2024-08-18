@@ -20,11 +20,17 @@
       tags:
         - server_init
 
-    - name: Deploy 'kopia' for backups
+    - name: Setup backups
       ansible.builtin.include_role:
-        name: deploy_kopia
+        name: setup_backups
       vars:
         kpia_repo_password: '{{ v_kopia_repo_password }}'
+        kpia_rclone_config:
+          mailru:
+            backup_path: NoSync/Backups/HomeServer
+            webdav_url: https://webdav.cloud.mail.ru
+            user: '{{ v_rclone_config.mailru.user }}'
+            password_enc: '{{ v_rclone_config.mailru.password_enc }}'
       tags:
         - applications
         - kopia

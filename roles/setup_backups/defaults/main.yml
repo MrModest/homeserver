@@ -1,0 +1,12 @@
+---
+kpia_app_port: 51515
+kpia_version: '0.17.0'
+
+kpia_repo_password: placeholder
+
+kpia_rclone_config:
+  mailru:
+    backup_path: NoSync/Backups/HomeServer
+    webdav_url: placeholder
+    user: placeholder
+    password_enc: placeholder

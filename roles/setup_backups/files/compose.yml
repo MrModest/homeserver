@@ -35,7 +35,8 @@ services:
       - /home:/data/host/home:ro
       - /mnt/pools:/data/pools:ro
       # Mount repository location
-      - ${BACKUPS_ROOT}/repositiory:/repository
+      - ${REPO_PATH}/repositiory:/repository
+      - ${DB_DUMPS_PATH}:/db_dumps:ro
       # Mount path for browsing mounted snaphots
       - ${APP_DATA_PATH}/mounts:/tmp:shared
 
