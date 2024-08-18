@@ -19,7 +19,7 @@
     dest: "{{ p_apps_data }}/kopia/rclone/rclone.conf"
     owner: root
     group: root
-    mode: 0644
+    mode: '{{ p_default_permissions.file }}'
   become: true
   tags:
     - kopia

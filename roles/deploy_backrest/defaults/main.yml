@@ -1,0 +1,12 @@
+---
+bkrs_app_port: 9898
+bkrs_version: 'v1.4.0'
+
+bkrs_repo_password: placeholder
+
+bkrs_rclone_config:
+  mailru:
+    backup_path: placeholder
+    webdav_url: placeholder
+    user: placeholder
+    password_enc: placeholder

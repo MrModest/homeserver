@@ -3,6 +3,7 @@ g_hostname: HomeServer
 g_domain: server.home
 g_duckdns_domain: mrmodest.duckdns.org
 g_host_ip: 192.168.178.34
+g_timezone: Europe/Berlin
 
 g_ssh_user:
   user: homessh

@@ -1,0 +1,29 @@
+services:
+  backrest:
+    image: garethgeorge/backrest:${APP_VERSION}
+    container_name: backrest
+    hostname: backrest
+    volumes:
+      - ${APP_DATA_PATH_1}/data:/data
+      - ${APP_DATA_PATH_1}/config:/config
+      - ${APP_DATA_PATH_1}/cache:/cache
+      - ${APP_DATA_PATH}/rclone:/app/rclone
+
+      - /home:/hostfs/home:ro
+      - /mnt/pools:/hostfs/mnt/pools:ro
+
+      - ${REPO_PATH}/repos:/repos
+    env_file:
+      - .env
+    environment:
+      - BACKREST_DATA=/data # the restic binary and the database
+      - BACKREST_CONFIG=/config/config.json # backrest config file.
+      - XDG_CACHE_HOME=/cache # restic cache
+      - TZ=${TIMEZONE} # used for cron jobs
+      - RCLONE_CONFIG=/app/rclone/rclone.conf
+    restart: unless-stopped
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

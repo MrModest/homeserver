@@ -5,6 +5,8 @@
     - vars/vault.yml
     - vars/apps.yml
   vars:
+    p_timezone: '{{ g_timezone }}'
+
     p_apps_data: '{{ g_pools.fast.custom_dirs.apps_data }}'
     p_compose_files: '{{ g_pools.fast.custom_dirs.compose_files }}'
     p_backups_root: '{{ g_pools.slow.custom_dirs.backups_root }}'
@@ -20,20 +22,20 @@
       tags:
         - server_init
 
-    - name: Setup backups
+    - name: Deploy backrest
       ansible.builtin.include_role:
-        name: setup_backups
+        name: deploy_backrest
       vars:
-        kpia_repo_password: '{{ v_kopia_repo_password }}'
-        kpia_rclone_config:
+        bkrs_repo_password: '{{ v_kopia_repo_password }}'
+        bkrs_rclone_config:
           mailru:
-            backup_path: NoSync/Backups/HomeServer
+            backup_path: NoSync/Backups/HomeServer/backrest
             webdav_url: https://webdav.cloud.mail.ru
             user: '{{ v_rclone_config.mailru.user }}'
             password_enc: '{{ v_rclone_config.mailru.password_enc }}'
       tags:
         - applications
-        - kopia
+        - backrest
 
     - name: Setup observability
       ansible.builtin.include_role:
