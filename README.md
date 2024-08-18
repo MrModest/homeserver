@@ -73,7 +73,7 @@
 - [x] Configure reverse-proxy
 - [x] Configure HTTPS
 - [ ] Configure backups
-  - [x] Install [Kopia](https://github.com/kopia/kopia/)
+  - [x] Install [backrest](https://github.com/garethgeorge/backrest)
   - [x] Configure scheduled local backups
   - [ ] Configure `rclone` to copy local repo to Remote (Cloude/WebDAV/S3)
 - [ ] Configure Tailscale
