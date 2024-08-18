@@ -1,0 +1,97 @@
+{
+  "modno":  22,
+  "version":  2,
+  "instance":  "HomeServer",
+  "repos":  [
+    {
+      "id":  "main__local",
+      "uri":  "/repos/main",
+      "prunePolicy":  {
+        "maxUnusedPercent":  10
+      },
+      "checkPolicy":  {
+        "schedule":  {
+          "maxFrequencyDays":  1
+        },
+        "readDataSubsetPercent":  100
+      },
+      "commandPrefix":  {}
+    },
+    {
+      "id":  "main__mailru-webdav",
+      "uri":  "rclone:mailru-webdav:{{ bkrs_rclone_config.mailru.backup_path }}/main",
+      "prunePolicy":  {
+        "maxUnusedPercent":  10
+      },
+      "checkPolicy":  {
+        "readDataSubsetPercent":  100
+      },
+      "commandPrefix":  {}
+    }
+  ],
+  "plans":  [
+    {
+      "id":  "main__local__daily",
+      "repo":  "main__local",
+      "paths":  [
+        "/hostfs/home",
+        "/hostfs{{ p_apps_data }}",
+        "/hostfs{{ p_backups_root }}/db_dumps"
+      ],
+      "excludes":  [
+        "tmp",
+        "cache",
+        ".cache",
+        "*.log",
+        "*.log.*.gz",
+        ".vscode-server"
+      ],
+      "schedule":  {
+        "maxFrequencyDays":  1
+      },
+      "retention":  {
+        "policyTimeBucketed":  {
+          "daily":  10,
+          "weekly":  4,
+          "monthly":  5
+        }
+      },
+      "backup_flags":  [
+        "--compression max"
+      ]
+    },
+    {
+      "id":  "main__mailru-webdev",
+      "repo":  "main__mailru-webdav",
+      "paths":  [
+        "/hostfs/home",
+        "/hostfs{{ p_apps_data }}",
+        "/hostfs{{ p_backups_root }}/db_dumps"
+      ],
+      "excludes":  [
+        "tmp",
+        "cache",
+        ".cache",
+        "*.log",
+        "*.log.*.gz",
+        ".vscode-server"
+      ],
+      "schedule":  {
+        "disabled":  true
+      },
+      "retention":  {
+        "policyTimeBucketed":  {
+          "daily":  3,
+          "weekly":  4,
+          "monthly":  3
+        }
+      },
+      "backup_flags":  [
+        "--compression max"
+      ]
+    }
+  ],
+  "auth":  {
+    "disabled":  true
+  }
+}

@@ -4,9 +4,9 @@ services:
     container_name: backrest
     hostname: backrest
     volumes:
-      - ${APP_DATA_PATH_1}/data:/data
-      - ${APP_DATA_PATH_1}/config:/config
-      - ${APP_DATA_PATH_1}/cache:/cache
+      - ${APP_DATA_PATH}/data:/data
+      - ${APP_DATA_PATH}/config:/config
+      - ${APP_DATA_PATH}/cache:/cache
       - ${APP_DATA_PATH}/rclone:/app/rclone
 
       - /home:/hostfs/home:ro

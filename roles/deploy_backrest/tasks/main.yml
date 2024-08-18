@@ -23,3 +23,14 @@
   become: true
   tags:
     - backrest
+
+- name: Configure 'backrest'
+  ansible.builtin.template:
+    src: backrest-config.json.j2
+    dest: "{{ p_apps_data }}/backrest/config/config.json"
+    owner: root
+    group: root
+    mode: '{{ p_default_permissions.file }}'
+  become: true
+  tags:
+    - backrest
