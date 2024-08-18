@@ -1,0 +1,9 @@
+---
+- name: Start 'semaphore'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'semaphore'
+    t_app_data_dirs:
+      - '{{ p_apps_data }}/semaphore/pg_data'
+  tags:
+    - semaphore

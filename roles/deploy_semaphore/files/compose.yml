@@ -1,0 +1,38 @@
+services:
+  # uncomment this section and comment out the mysql section to use postgres instead of mysql
+  semaphore_pg:
+    restart: unless-stopped
+    image: postgres:${PG_VERSION}
+    hostname: semaphore_pg
+    volumes:
+      - ${APP_DATA_PATH}/pg_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DB_NAME}
+  # if you wish to use postgres, comment the mysql service section below
+  semaphore:
+    restart: unless-stopped
+    image: semaphoreui/semaphore:${APP_VERSION}
+    environment:
+      SEMAPHORE_DB_USER: ${PG_USER}
+      SEMAPHORE_DB_PASS: ${PG_PASSWORD}
+      SEMAPHORE_DB_HOST: semaphore_pg
+      SEMAPHORE_DB_PORT: 5432
+      SEMAPHORE_DB_DIALECT: postgres
+      SEMAPHORE_DB: ${PG_DB_NAME}
+      SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore/
+      SEMAPHORE_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD}
+      SEMAPHORE_ADMIN_NAME: admin
+      SEMAPHORE_ADMIN_EMAIL: admin@localhost
+      SEMAPHORE_ADMIN: admin
+      SEMAPHORE_ACCESS_KEY_ENCRYPTION: ${APP_ACCESS_KEY_ENCRYPTION}
+      SEMAPHORE_LDAP_ACTIVATED: 'no' # if you wish to use ldap, set to: 'yes'
+      TZ: ${TIMEZONE}
+    depends_on:
+      - semaphore_pg
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

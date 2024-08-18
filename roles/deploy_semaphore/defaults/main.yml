@@ -1,0 +1,12 @@
+---
+smph_app_version: 'v2.10.22'
+smph_pg_version: '14'
+smph_app_port: 3000
+
+smph_postgres:
+  db_name: semaphore
+  user: semaphore
+  password: placeholder
+
+smph_admin_password: placeholder
+smph_access_key_encryption: placeholder

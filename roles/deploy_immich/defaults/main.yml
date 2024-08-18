@@ -1,6 +1,5 @@
 ---
 imch_app_port: 2283
-p_apps_data: placeholder
 imch_store_data_path: placeholder
 
 imch_app_version: v1.100.0

@@ -37,6 +37,20 @@
         - applications
         - backrest
 
+    - name: Deploy semaphore
+      ansible.builtin.include_role:
+        name: deploy_semaphore
+      vars:
+        smph_postgres:
+          db_name: semaphore
+          user: semaphore
+          password: '{{ v_semaphore_pg_password }}'
+        smph_admin_password: '{{ v_semaphore_admin_password }}'
+        smph_access_key_encryption: '{{ v_semaphore_access_key_encryption }}'
+      tags:
+        - applications
+        - semaphore
+
     - name: Setup observability
       ansible.builtin.include_role:
         name: setup_observability
