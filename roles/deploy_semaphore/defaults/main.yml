@@ -6,7 +6,7 @@ smph_app_port: 3000
 smph_postgres:
   db_name: semaphore
   user: semaphore
-  password: placeholder
+smph_pg_password: placeholder
 
 smph_admin_password: placeholder
 smph_access_key_encryption: placeholder
