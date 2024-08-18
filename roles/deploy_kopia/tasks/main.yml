@@ -23,21 +23,3 @@
   become: true
   tags:
     - kopia
-
-- name: Run a simple command (argv)
-  community.docker.docker_container_exec:
-    container: backrest
-    argv:
-      - /bin/bash
-      - "-c"
-      - "sudo -v ; curl https://rclone.org/install.sh | sudo bash"
-    chdir: /root
-  register: result
-
-- name: Print stderr lines
-  ansible.builtin.debug:
-    var: result.stderr_lines
-
-- name: Print stdout lines
-  ansible.builtin.debug:
-    var: result.stdout_lines
