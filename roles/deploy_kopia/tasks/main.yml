@@ -10,8 +10,6 @@
       - '{{ p_apps_data }}/kopia/rclone'
       - '{{ p_apps_data }}/kopia/mounts'
       - '{{ p_backups_root }}/kopia/repositiory'
-  tags:
-    - kopia
 
 - name: Configure 'rclone'
   ansible.builtin.template:
@@ -21,5 +19,3 @@
     group: root
     mode: '{{ p_default_permissions.file }}'
   become: true
-  tags:
-    - kopia

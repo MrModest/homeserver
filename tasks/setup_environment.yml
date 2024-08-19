@@ -2,8 +2,6 @@
 - name: Ininitial checks
   ansible.builtin.include_role:
     name: init_checks
-  tags:
-    - server_init
 
 - name: Setup users
   ansible.builtin.include_role:
@@ -22,8 +20,6 @@
       group: '{{ g_apps_user.group }}'
       password: '{{ v_user_passwords.apps }}'
     susr_ssh_public_key: '{{ v_ssh_public_key }}'
-  tags:
-    - server_init
 
 - name: Setup ZFS pools
   ansible.builtin.include_role:
@@ -38,8 +34,6 @@
         mount_path: '{{ g_pools.slow.mount_path }}'
         drives: '{{ g_pools.slow.drives }}'
         mirror: '{{ g_pools.slow.mirror }}'
-  tags:
-    - server_init
 
 - name: Setup samba shared folder
   ansible.builtin.include_role:
@@ -52,9 +46,6 @@
       user: '{{ g_smb_user.user }}'
       group: '{{ g_smb_user.group }}'
       password: '{{ v_user_passwords.smb }}'
-  tags:
-    - server_init
-    - samba
 
 - name: Setup docker
   ansible.builtin.include_role:
@@ -65,9 +56,6 @@
     dcr_dirs:
       docker_root: '{{ g_pools.fast.custom_dirs.docker_root }}'
       compose_root: '{{ g_pools.fast.custom_dirs.compose_files }}'
-  tags:
-    - server_init
-    - docker
 
 - name: Setup reverse proxy
   ansible.builtin.include_role:

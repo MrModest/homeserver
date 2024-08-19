@@ -10,8 +10,6 @@
       - '{{ p_apps_data }}/backrest/rclone'
       - '{{ p_apps_data }}/backrest/mounts'
       - '{{ p_backups_root }}/backrest/repos'
-  tags:
-    - backrest
 
 - name: Configure 'rclone'
   ansible.builtin.template:
@@ -21,8 +19,6 @@
     group: root
     mode: '{{ p_default_permissions.file }}'
   become: true
-  tags:
-    - backrest
 
 - name: Configure 'backrest'
   ansible.builtin.template:
@@ -32,5 +28,3 @@
     group: root
     mode: '{{ p_default_permissions.file }}'
   become: true
-  tags:
-    - backrest
