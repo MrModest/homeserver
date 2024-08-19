@@ -7,27 +7,9 @@ services:
   immich-server:
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION}
     container_name: immich_server
+    hostname: immich_server
     user: ${APP_USER}
     restart: 'unless-stopped'
-    command: [ "start.sh", "immich" ]
-    volumes:
-      - ${UPLOAD_LOCATION}:/usr/src/app/upload
-      - /etc/localtime:/etc/localtime:ro
-    env_file:
-      - .env
-    depends_on:
-      - redis
-      - database
-
-  immich-microservices:
-    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION}
-    container_name: immich_microservices
-    user: ${APP_USER}
-    restart: 'unless-stopped'
-    # extends:
-    #   file: hwaccel.yml
-    #   service: hwaccel
-    command: [ "start.sh", "microservices" ]
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
@@ -48,18 +30,18 @@ services:
       - .env
 
   redis:
-    image: registry.hub.docker.com/library/redis:${REDIS_VERSION}
+    image: docker.io/redis:${REDIS_VERSION}
     container_name: immich_redis
     user: redis
     restart: 'unless-stopped'
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: redis-cli ping || exit 1
       interval: 10s
       timeout: 5s
       retries: 5
 
   database:
-    image: registry.hub.docker.com/tensorchord/pgvecto-rs:${POSTGRES_VERSION}
+    image: docker.io/tensorchord/pgvecto-rs:${POSTGRES_VERSION}
     container_name: immich_postgres
     user: ${APP_USER}
     restart: 'unless-stopped'
@@ -72,10 +54,10 @@ services:
     volumes:
       - ${PG_DATA_PATH}:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: pg_isready --dbname='${DB_DATABASE_NAME}' --username='${DB_USERNAME}' || exit 1; Chksum="$$(psql --dbname='${DB_DATABASE_NAME}' --username='${DB_USERNAME}' --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')"; echo "checksum failure count is $$Chksum"; [ "$$Chksum" = '0' ] || exit 1
+      interval: 5m
+      start_interval: 30s
+      start_period: 5m
 
 networks:
   default:
