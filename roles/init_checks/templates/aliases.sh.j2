@@ -18,6 +18,10 @@ alias d-ps='docker ps | bat'
 alias d-logs='docker logs | bat'
 alias d-logs-f='docker logs -f'
 
+function d-logs() {
+  docker logs $1 | bat
+}
+
 function d-sh() {
   docker exec -it $1 sh
 }

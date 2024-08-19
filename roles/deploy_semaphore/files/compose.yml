@@ -3,6 +3,7 @@ services:
   semaphore_pg:
     restart: unless-stopped
     image: postgres:${PG_VERSION}
+    container_name: semaphore_pg
     hostname: semaphore_pg
     volumes:
       - ${APP_DATA_PATH}/pg_data:/var/lib/postgresql/data
@@ -14,6 +15,8 @@ services:
   semaphore:
     restart: unless-stopped
     image: semaphoreui/semaphore:${APP_VERSION}
+    hostname: semaphore
+    container_name: semaphore
     environment:
       SEMAPHORE_DB_USER: ${PG_USER}
       SEMAPHORE_DB_PASS: ${PG_PASSWORD}
