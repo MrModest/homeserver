@@ -6,4 +6,5 @@
     t_app_data_dirs:
       - '{{ p_apps_data }}/immich/db'
       - '{{ p_apps_data }}/immich/model-cache'
+      - '{{ p_apps_data }}/immich/matplotlib'
       - '{{ imch_store_data_path }}/immich/upload'

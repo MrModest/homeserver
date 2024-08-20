@@ -11,7 +11,7 @@ services:
     user: ${APP_USER}
     restart: 'unless-stopped'
     volumes:
-      - ${UPLOAD_LOCATION}:/usr/src/app/upload
+      - ${DATA_PATH}/upload:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
@@ -25,7 +25,8 @@ services:
     user: ${APP_USER}
     restart: 'unless-stopped'
     volumes:
-      - ${MODEL_CACHE_PATH}:/cache
+      - ${APP_DATA_PATH}/model-cache:/cache
+      - ${APP_DATA_PATH}/matplotlib:/usr/src/app/matplotlib
     env_file:
       - .env
 
@@ -52,7 +53,7 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_DB: ${DB_DATABASE_NAME}
     volumes:
-      - ${PG_DATA_PATH}:/var/lib/postgresql/data
+      - ${APP_DATA_PATH}/db:/var/lib/postgresql/data
     healthcheck:
       test: pg_isready --dbname='${DB_DATABASE_NAME}' --username='${DB_USERNAME}' || exit 1; Chksum="$$(psql --dbname='${DB_DATABASE_NAME}' --username='${DB_USERNAME}' --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')"; echo "checksum failure count is $$Chksum"; [ "$$Chksum" = '0' ] || exit 1
       interval: 5m
