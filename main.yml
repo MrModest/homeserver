@@ -26,7 +26,7 @@
       ansible.builtin.import_role:
         name: deploy_backrest
       vars:
-        bkrs_repo_password: '{{ v_kopia_repo_password }}'
+        bkrs_repo_password: '{{ v_backup_repo_password }}'
         bkrs_rclone_config:
           mailru:
             backup_path: NoSync/Backups/HomeServer/backrest
