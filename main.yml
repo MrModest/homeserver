@@ -9,6 +9,7 @@
 
     p_apps_data: '{{ g_pools.fast.custom_dirs.apps_data }}'
     p_compose_files: '{{ g_pools.fast.custom_dirs.compose_files }}'
+    p_slow_data: '{{ g_pools.slow.custom_dirs.apps_data }}'
     p_backups_root: '{{ g_pools.slow.custom_dirs.backups_root }}'
 
     p_apps_user: '{{ g_apps_user }}'

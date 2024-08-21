@@ -5,3 +5,4 @@
     t_app_name: 'semaphore'
     t_app_data_dirs:
       - '{{ p_apps_data }}/semaphore/pg_data'
+      - '{{ p_apps_data }}/semaphore/playbooks'

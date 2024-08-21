@@ -1,5 +1,4 @@
 services:
-  # uncomment this section and comment out the mysql section to use postgres instead of mysql
   semaphore_pg:
     restart: unless-stopped
     image: postgres:${PG_VERSION}
@@ -7,16 +6,20 @@ services:
     hostname: semaphore_pg
     volumes:
       - ${APP_DATA_PATH}/pg_data:/var/lib/postgresql/data
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_DB: ${PG_DB_NAME}
-  # if you wish to use postgres, comment the mysql service section below
   semaphore:
     restart: unless-stopped
     image: semaphoreui/semaphore:${APP_VERSION}
     hostname: semaphore
     container_name: semaphore
+    user: '0' #root
+    env_file:
+      - .env
     environment:
       SEMAPHORE_DB_USER: ${PG_USER}
       SEMAPHORE_DB_PASS: ${PG_PASSWORD}
@@ -32,6 +35,14 @@ services:
       SEMAPHORE_ACCESS_KEY_ENCRYPTION: ${APP_ACCESS_KEY_ENCRYPTION}
       SEMAPHORE_LDAP_ACTIVATED: 'no' # if you wish to use ldap, set to: 'yes'
       TZ: ${TIMEZONE}
+    volumes:
+      - ${APP_DATA_PATH}/playbooks:/home/semaphore/playbooks
+
+      - ${APPS_DATA_ROOT}:/hostfs/apps-data:ro
+      - ${APPS_SLOW_DATA_ROOT}:/hostfs/apps-slow-data:ro
+      - ${DB_DUMP_PATH}:/hostfs/db_dumps
+
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - semaphore_pg
 
