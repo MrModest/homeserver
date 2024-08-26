@@ -77,8 +77,8 @@
 - [x] Configure HTTPS
 - [ ] Configure backups
   - [x] Install [backrest](https://github.com/garethgeorge/backrest)
-  - [x] Scheduled local backups
-  - [ ] Sheduled remove backups
+  - [x] Schedule local backups
+  - [ ] Shedule remove backups
     - [x] WebDAV MailRu Cloud
     - [ ] Yandex.Disk
     - [ ] Mega
