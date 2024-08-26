@@ -1,10 +1,12 @@
 ---
 - name: Ininitial checks
-  ansible.builtin.include_role:
-    name: init_checks
+  ansible.builtin.import_role:
+    name: init_setup
+  tags:
+    - init_setup
 
 - name: Setup users
-  ansible.builtin.include_role:
+  ansible.builtin.import_role:
     name: setup_users
   vars:
     susr_ssh_user:
@@ -20,9 +22,11 @@
       group: '{{ g_apps_user.group }}'
       password: '{{ v_user_passwords.apps }}'
     susr_ssh_public_key: '{{ v_ssh_public_key }}'
+  tags:
+    - setup_users
 
 - name: Setup ZFS pools
-  ansible.builtin.include_role:
+  ansible.builtin.import_role:
     name: setup_pools
   vars:
     pls_pools:
@@ -34,9 +38,11 @@
         mount_path: '{{ g_pools.slow.mount_path }}'
         drives: '{{ g_pools.slow.drives }}'
         mirror: '{{ g_pools.slow.mirror }}'
+  tags:
+    - zfs_pools
 
 - name: Setup samba shared folder
-  ansible.builtin.include_role:
+  ansible.builtin.import_role:
     name: setup_smb
   when: ansible_check_mode is false # https://github.com/vladgh/ansible-collection-vladgh-samba/pull/122
   vars:
@@ -46,9 +52,11 @@
       user: '{{ g_smb_user.user }}'
       group: '{{ g_smb_user.group }}'
       password: '{{ v_user_passwords.smb }}'
+  tags:
+    - samba
 
 - name: Setup docker
-  ansible.builtin.include_role:
+  ansible.builtin.import_role:
     name: setup_docker
   when: ansible_check_mode is false
   vars:
@@ -56,11 +64,15 @@
     dcr_dirs:
       docker_root: '{{ g_pools.fast.custom_dirs.docker_root }}'
       compose_root: '{{ g_pools.fast.custom_dirs.compose_files }}'
+  tags:
+    - docker
 
 - name: Setup reverse proxy
-  ansible.builtin.include_role:
+  ansible.builtin.import_role:
     name: setup_proxy
   vars:
     prx_my_domain: '{{ g_domain }}'
     prx_duckdns_api_token: '{{ v_duckdns_api_token }}'
     prx_duckdns_domain: '{{ g_duckdns_domain }}'
+  tags:
+    - reverse_proxy

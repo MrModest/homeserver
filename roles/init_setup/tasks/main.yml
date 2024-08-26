@@ -1,0 +1,59 @@
+---
+- name: Set timezone
+  become: true
+  community.general.timezone:
+    name: '{{ p_timezone }}'
+
+- name: Update and upgrade apt packages
+  become: true
+  ansible.builtin.apt:
+    upgrade: true
+    update_cache: true
+    cache_valid_time: 86400 # One day
+
+- name: Install required system packages
+  ansible.builtin.apt:
+    pkg:
+      - python3
+      - python3-pip
+      - jq
+      - bat
+      - tree
+      - acl # Access Control List
+    state: present
+  become: true
+
+- name: Install Node.js
+  ansible.builtin.import_tasks: install_node.yml
+  vars:
+    t_node_version: 20
+  become: true
+  tags:
+    - node
+
+- name: Install Cronicle
+  ansible.builtin.import_tasks: install_Cronicle.yml
+  vars:
+    t_cronicle_version: v0.9.59
+    t_cronicle_path: /opt/cronicle
+  become: true
+  tags:
+    - cronicle
+
+- name: Setup aliases
+  ansible.builtin.template:
+    src: aliases.sh.j2
+    dest: /etc/profile.d/aliases.sh
+    owner: root
+    group: root
+    mode: '{{ p_default_permissions.file }}'
+  become: true
+
+- name: Setup root aliases
+  ansible.builtin.template:
+    src: aliases.sh.j2
+    dest: /root/.bash_aliases
+    owner: root
+    group: root
+    mode: '0550'
+  become: true

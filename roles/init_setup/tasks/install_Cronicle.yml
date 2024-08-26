@@ -1,0 +1,39 @@
+---
+- name: Create directory /opt/cronicle
+  ansible.builtin.file:
+    path: '{{ t_cronicle_path }}'
+    state: directory
+    mode: '0755'
+
+- name: Download and extract Cronicle
+  ansible.builtin.unarchive:
+    src: https://github.com/jhuckaby/Cronicle/archive/{{ t_cronicle_version }}.tar.gz
+    dest: '{{ t_cronicle_path }}'
+    remote_src: yes
+    extra_opts: [--strip-components=1]
+    creates: /opt/cronicle/package.json  # Ensures it's not run if already extracted
+
+- name: Install npm dependencies
+  community.general.npm:
+    path: '{{ t_cronicle_path }}'
+    state: present
+
+- name: Build Cronicle distribution
+  ansible.builtin.command: node bin/build.js dist
+  args:
+    chdir: '{{ t_cronicle_path }}'
+  changed_when: true
+
+- name: Setup Cronicle
+  ansible.builtin.command: bin/control.sh setup
+  args:
+    chdir: '{{ t_cronicle_path }}'
+  changed_when: '"Setup completed successfully!" in cronicle_start_result.stdout'
+  register: cronicle_setup_result
+
+- name: Run Cronicle
+  ansible.builtin.command: bin/control.sh start
+  args:
+    chdir: '{{ t_cronicle_path }}'
+  changed_when: '"Cronicle Server started" in cronicle_start_result.stdout'
+  register: cronicle_start_result
