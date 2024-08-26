@@ -69,14 +69,26 @@
     - [x] Install Promtail to push `/var/log/*` logs to Loki
     - [x] Push Storage/RAM/CPU of host machine to Prometheus
     - [ ] Collect ZFS related metrics
+      - [ ] Error rate
+      - [ ] Datasets
+      - [ ] Snapshots
 - [x] Configure Samba
 - [x] Configure reverse-proxy
 - [x] Configure HTTPS
 - [ ] Configure backups
   - [x] Install [backrest](https://github.com/garethgeorge/backrest)
-  - [x] Configure scheduled local backups
-  - [ ] Configure `rclone` to copy local repo to Remote (Cloude/WebDAV/S3)
-- [ ] Configure Tailscale
+  - [x] Scheduled local backups
+  - [ ] Sheduled remove backups
+    - [x] WebDAV MailRu Cloud
+    - [ ] Yandex.Disk
+    - [ ] Mega
+    - [ ] Backblaze B2 (?)
+  - [ ] Configure DB dumps
+  - [ ] Configure auto snapshoting
+  - [ ] Configure backuping from snapshots
+- [ ] Configure Tailscale/Wireguard
+- [ ] Configure local DNS
+  - [ ] Setup [PiHole](https://github.com/pi-hole/docker-pi-hole/?tab=readme-ov-file#quick-start)
 
 ### Docker Applications
 - [x] [Immich](https://github.com/immich-app/immich)
@@ -85,6 +97,8 @@
 - [ ] [Nextcloud](https://github.com/nextcloud/all-in-one)
 - [ ] [homepage](https://github.com/gethomepage/homepage)
 - [x] [Portainer](https://docs.portainer.io/v/2.20/start/install-ce/server/docker/linux)
+- [ ] [Cronicle](https://github.com/jhuckaby/Cronicle)
+  - [ ] Move to docker container
 - [ ] [AriaNg](https://hub.docker.com/r/hurlenko/aria2-ariang)
 - [ ] [metube](https://github.com/alexta69/metube)
 - [ ] [Stirling-PDF](https://github.com/Stirling-Tools/Stirling-PDF/tree/main)
@@ -93,7 +107,6 @@
 - [ ] [n8n](https://docs.n8n.io/hosting/installation/docker/)
 - [ ] [NoteCalc](https://github.com/bbodi/notecalc3)
 - [ ] [Open Speed Test](https://hub.docker.com/r/openspeedtest/latest)
-- [ ] [PiHole](https://github.com/pi-hole/docker-pi-hole/?tab=readme-ov-file#quick-start) (for local DNS)
 
 ### "Bare metal" Applications
   - [ ] [Cockpit](https://cockpit-project.org/)
