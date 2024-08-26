@@ -86,7 +86,8 @@
   - [ ] Configure DB dumps
   - [ ] Configure auto snapshoting
   - [ ] Configure backuping from snapshots
-- [ ] Configure Tailscale/Wireguard
+- [ ] Configure remote access without public exposure
+  - [ ] Choose between Tailscale and Wireguard
 - [ ] Configure local DNS
   - [ ] Setup [PiHole](https://github.com/pi-hole/docker-pi-hole/?tab=readme-ov-file#quick-start)
 
