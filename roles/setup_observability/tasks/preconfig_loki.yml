@@ -12,6 +12,7 @@
       - loki
     append: true
     state: present
+  become: true
 
 - name: Create Loki user
   ansible.builtin.user:

@@ -33,3 +33,4 @@
     - '{{ p_dirs.apps_data }}'
     - '{{ p_dirs.slow_data }}'
     - '{{ p_dirs.backups_root }}'
+  when: false

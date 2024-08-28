@@ -31,12 +31,23 @@
   tags:
     - node
 
+- name: Check if Cronicle is installed and running
+  ansible.builtin.service:
+    state: started
+    name: cronicle
+  become: true
+  ignore_errors: true
+  register: cronicle_service_check_result
+  tags:
+    - cronicle
+
 - name: Install Cronicle
   ansible.builtin.import_tasks: install_Cronicle.yml
   vars:
     t_cronicle_version: v0.9.59
     t_cronicle_path: /opt/cronicle
   become: true
+  when: cronicle_service_check_result.failed | bool
   tags:
     - cronicle
 

@@ -4,6 +4,7 @@
     path: '{{ t_cronicle_path }}'
     state: directory
     mode: '0755'
+  become: true
 
 - name: Download and extract Cronicle
   ansible.builtin.unarchive:
@@ -12,28 +13,40 @@
     remote_src: yes
     extra_opts: [--strip-components=1]
     creates: /opt/cronicle/package.json  # Ensures it's not run if already extracted
+  become: true
 
 - name: Install npm dependencies
   community.general.npm:
     path: '{{ t_cronicle_path }}'
     state: present
+  become: true
 
 - name: Build Cronicle distribution
   ansible.builtin.command: node bin/build.js dist
   args:
     chdir: '{{ t_cronicle_path }}'
   changed_when: true
+  become: true
 
 - name: Setup Cronicle
   ansible.builtin.command: bin/control.sh setup
   args:
     chdir: '{{ t_cronicle_path }}'
-  changed_when: '"Setup completed successfully!" in cronicle_start_result.stdout'
   register: cronicle_setup_result
+  changed_when: '"Setup completed successfully!" in cronicle_start_result.stdout'
+  become: true
 
-- name: Run Cronicle
-  ansible.builtin.command: bin/control.sh start
+- name: Setup service for Cronicle
+  ansible.builtin.command: npm run boot
   args:
     chdir: '{{ t_cronicle_path }}'
-  changed_when: '"Cronicle Server started" in cronicle_start_result.stdout'
-  register: cronicle_start_result
+  register: cronicle_service_setup_result
+  changed_when: '"Successfully registered startup service" in cronicle_service_setup_result'
+  become: true
+
+- name: Run Cronicle
+  ansible.builtin.service:
+    name: cronicle
+    state: started
+    enabled: yes
+  become: true

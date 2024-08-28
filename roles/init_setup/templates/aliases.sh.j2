@@ -103,3 +103,5 @@ function docker-compose-stop-all() {
     find /mnt/pools/fast/docker/compose-files/*/compose.yml | xargs -I {} docker compose -f {} down
   fi
 }
+
+alias zfs-docker-cleanup='sudo zfs get mounted | grep "mounted   no" | awk '{print $1}' | xargs -I {} sudo zfs destroy {} -R'
