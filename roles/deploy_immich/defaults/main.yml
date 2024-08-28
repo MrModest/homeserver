@@ -1,6 +1,5 @@
 ---
 imch_app_port: 2283
-imch_store_data_path: placeholder
 
 imch_app_version: v1.112.1
 imch_redis_version: 6.2-alpine@sha256:e3b17ba9479deec4b7d1eeec1548a253acc5374d68d3b27937fcfe4df8d18c7e

@@ -7,7 +7,6 @@
   vars:
     p_timezone: '{{ g_timezone }}'
 
-    p_slow_data: '{{ g_pools.slow.custom_dirs.apps_data }}'
     p_backups_root: '{{ g_pools.slow.custom_dirs.backups_root }}'
 
     p_dirs:
@@ -76,7 +75,6 @@
       ansible.builtin.import_role:
         name: deploy_immich
       vars:
-        imch_store_data_path: '{{ g_pools.slow.custom_dirs.apps_data }}'
         imch_db_password: '{{ v_db_passwords.immich }}'
       tags:
         - applications
