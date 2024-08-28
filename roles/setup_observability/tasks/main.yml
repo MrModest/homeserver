@@ -16,4 +16,4 @@
   vars:
     t_app_name: 'observability'
     t_app_data_dirs:
-      - '{{ p_apps_data }}/observability/grafana/data'
+      - '{{ p_dirs.apps_data }}/observability/grafana/data'

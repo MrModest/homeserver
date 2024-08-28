@@ -4,4 +4,4 @@
   vars:
     t_app_name: 'portainer'
     t_app_data_dirs:
-      - '{{ p_apps_data }}/portainer/data'
+      - '{{ p_dirs.apps_data }}/portainer/data'

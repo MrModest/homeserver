@@ -4,4 +4,4 @@
   vars:
     t_app_name: 'homepage'
     t_app_data_dirs:
-      - '{{ p_apps_data }}/homepage/config'
+      - '{{ p_dirs.apps_data }}/homepage/config'

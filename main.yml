@@ -7,10 +7,16 @@
   vars:
     p_timezone: '{{ g_timezone }}'
 
-    p_apps_data: '{{ g_pools.fast.custom_dirs.apps_data }}'
     p_compose_files: '{{ g_pools.fast.custom_dirs.compose_files }}'
     p_slow_data: '{{ g_pools.slow.custom_dirs.apps_data }}'
     p_backups_root: '{{ g_pools.slow.custom_dirs.backups_root }}'
+
+    p_dirs:
+      apps_data: '{{ g_pools.fast.custom_dirs.apps_data }}'
+      docker_root: '{{ g_pools.fast.custom_dirs.docker_root }}'
+      compose_files: '{{ g_pools.fast.custom_dirs.compose_files }}'
+      slow_data: '{{ g_pools.slow.custom_dirs.apps_data  }}'
+      backups_root: '{{ g_pools.slow.custom_dirs.backups_root }}'
 
     p_apps_user: '{{ g_apps_user }}'
 

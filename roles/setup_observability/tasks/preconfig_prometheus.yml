@@ -1,7 +1,7 @@
 ---
 - name: Create Prometheus conf directory
   ansible.builtin.file:
-    path: '{{ p_apps_data }}/observability/prometheus/config'
+    path: '{{ p_dirs.apps_data }}/observability/prometheus/config'
     state: directory
     mode: '{{ p_default_permissions.directory }}'
     owner: '{{ p_apps_user.user }}'
@@ -12,7 +12,7 @@
 - name: Copy Prometheus config file
   ansible.builtin.copy:
     src: prometheus.yml
-    dest: '{{ p_apps_data }}/observability/prometheus/config/prometheus.yml'
+    dest: '{{ p_dirs.apps_data }}/observability/prometheus/config/prometheus.yml'
     mode: '{{ p_default_permissions.file }}'
     owner: '{{ p_apps_user.user }}'
     group: '{{ p_apps_user.group }}'

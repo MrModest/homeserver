@@ -20,13 +20,13 @@ scrape_configs:
       - targets: [localhost]
         labels:
           job: kopia_cli_logs
-          __path__: {{ p_apps_data }}/kopia/logs/cli-logs/*log
+          __path__: {{ p_dirs.apps_data }}/kopia/logs/cli-logs/*log
   - job_name: kopia_content_logs
     static_configs:
       - targets: [localhost]
         labels:
           job: kopia_content_logs
-          __path__: {{ p_apps_data }}/kopia/logs/content-logs/*log
+          __path__: {{ p_dirs.apps_data }}/kopia/logs/content-logs/*log
   - job_name: docker_log_scrape
     docker_sd_configs:
       - host: unix:///var/run/docker.sock

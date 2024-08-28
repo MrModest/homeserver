@@ -4,4 +4,4 @@
   vars:
     t_app_name: 'dockge'
     t_app_data_dirs:
-      - '{{ p_apps_data }}/dockge/data'
+      - '{{ p_dirs.apps_data }}/dockge/data'

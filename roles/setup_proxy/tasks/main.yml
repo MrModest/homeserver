@@ -8,6 +8,6 @@
   vars:
     t_app_name: 'nginx'
     t_app_data_dirs:
-      - '{{ p_apps_data }}/nginx'
-      - '{{ p_apps_data }}/nginx/data'
-      - '{{ p_apps_data }}/nginx/letsencrypt'
+      - '{{ p_dirs.apps_data }}/nginx'
+      - '{{ p_dirs.apps_data }}/nginx/data'
+      - '{{ p_dirs.apps_data }}/nginx/letsencrypt'

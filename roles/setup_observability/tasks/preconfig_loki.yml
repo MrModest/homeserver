@@ -35,16 +35,16 @@
     recurse: true
   become: true
   loop:
-    - '{{ p_apps_data }}/observability/loki'
-    - '{{ p_apps_data }}/observability/loki/config'
-    - '{{ p_apps_data }}/observability/loki/data'
-    - '{{ p_apps_data }}/observability/promtail'
-    - '{{ p_apps_data }}/observability/promtail/config'
+    - '{{ p_dirs.apps_data }}/observability/loki'
+    - '{{ p_dirs.apps_data }}/observability/loki/config'
+    - '{{ p_dirs.apps_data }}/observability/loki/data'
+    - '{{ p_dirs.apps_data }}/observability/promtail'
+    - '{{ p_dirs.apps_data }}/observability/promtail/config'
 
 - name: Copy Loki config file into the directory
   ansible.builtin.copy:
     src: loki-config.yaml
-    dest: '{{ p_apps_data }}/observability/loki/config/loki-config.yaml'
+    dest: '{{ p_dirs.apps_data }}/observability/loki/config/loki-config.yaml'
     mode: '{{ p_default_permissions.file }}'
     owner: loki
     group: loki
@@ -53,7 +53,7 @@
 - name: Copy Promtail config file into the directory
   ansible.builtin.template:
     src: promtail.yaml.j2
-    dest: '{{ p_apps_data }}/observability/promtail/config/promtail.yaml'
+    dest: '{{ p_dirs.apps_data }}/observability/promtail/config/promtail.yaml'
     mode: '{{ p_default_permissions.file }}'
     owner: loki
     group: loki

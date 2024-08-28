@@ -4,17 +4,17 @@
   vars:
     t_app_name: 'kopia'
     t_app_data_dirs:
-      - '{{ p_apps_data }}/kopia/config'
-      - '{{ p_apps_data }}/kopia/cache'
-      - '{{ p_apps_data }}/kopia/logs'
-      - '{{ p_apps_data }}/kopia/rclone'
-      - '{{ p_apps_data }}/kopia/mounts'
+      - '{{ p_dirs.apps_data }}/kopia/config'
+      - '{{ p_dirs.apps_data }}/kopia/cache'
+      - '{{ p_dirs.apps_data }}/kopia/logs'
+      - '{{ p_dirs.apps_data }}/kopia/rclone'
+      - '{{ p_dirs.apps_data }}/kopia/mounts'
       - '{{ p_backups_root }}/kopia/repositiory'
 
 - name: Configure 'rclone'
   ansible.builtin.template:
     src: rclone.conf.j2
-    dest: "{{ p_apps_data }}/kopia/rclone/rclone.conf"
+    dest: "{{ p_dirs.apps_data }}/kopia/rclone/rclone.conf"
     owner: root
     group: root
     mode: '{{ p_default_permissions.file }}'
