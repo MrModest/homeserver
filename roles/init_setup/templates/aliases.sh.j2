@@ -58,8 +58,43 @@ function d-db-dump() {
   docker exec -t $container_name pg_dumpall -c -U postgres | gzip > "$dumps_root/$app_name/dump-$container_name-$timestamp.sql.gz"
 }
 
+function docker-compose-all() {
+  local find_all_cmd="find /mnt/pools/fast/docker/compose-files/*/compose.yml"
+  local parse_list_cmd="sed 's/.*compose-files\/\(.*\)\/compose.yml/- \1/"
+  local app_list=$("$find_all_cmd | $parse_list_cmd")
+
+  local prompt_msg="unset"
+  local final_cmd="unset"
+  case "$1" in
+    "list")
+      echo "$app_list"
+      return
+      ;;
+    "start")
+      prompt_msg="It will start all following apps:\n$app_list\n"
+      final_cmd="$find_all_cmd | xargs -I {} docker compose -f {} up -d"
+      ;;
+    "stop")
+      prompt_msg="It will stop all following apps:\n$app_list\n"
+      final_cmd="$find_all_cmd | xargs -I {} docker compose -f {} down"
+      ;;
+    *)
+      echo "Usage: docker-compose-all (list|start|stop)"
+      return 1
+      ;;
+  esac
+
+  echo $prompt_msg
+  read -p "Continue? [Y/n] " -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ ]]
+  then
+    $final_cmd
+  fi
+}
+
 function docker-compose-stop-all() {
-  echo "It will stop all following apps?"
+  echo "It will stop all following apps!"
   find /mnt/pools/fast/docker/compose-files/*/compose.yml | sed 's/.*compose-files\/\(.*\)\/compose.yml/- \1/'
   read -p "Continue? [Y/n] " -n 1 -r
   echo
