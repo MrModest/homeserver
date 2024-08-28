@@ -7,7 +7,6 @@
   vars:
     p_timezone: '{{ g_timezone }}'
 
-    p_compose_files: '{{ g_pools.fast.custom_dirs.compose_files }}'
     p_slow_data: '{{ g_pools.slow.custom_dirs.apps_data }}'
     p_backups_root: '{{ g_pools.slow.custom_dirs.backups_root }}'
 

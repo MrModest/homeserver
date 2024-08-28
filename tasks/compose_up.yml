@@ -14,7 +14,7 @@
 
 - name: Create subdirectory for the compose file
   ansible.builtin.file:
-    path: '{{ p_compose_files }}/{{ t_app_name }}'
+    path: '{{ p_dirs.compose_files }}/{{ t_app_name }}'
     state: directory
     owner: '{{ p_apps_user.user }}'
     group: '{{ p_apps_user.group }}'
@@ -25,7 +25,7 @@
 - name: Upload compose file
   ansible.builtin.copy:
     src: compose.yml
-    dest: '{{ p_compose_files }}/{{ t_app_name }}/compose.yml'
+    dest: '{{ p_dirs.compose_files }}/{{ t_app_name }}/compose.yml'
     owner: '{{ p_apps_user.user }}'
     group: '{{ p_apps_user.group }}'
     mode: '{{ p_default_permissions.file }}'
@@ -34,7 +34,7 @@
 - name: Upload env file
   ansible.builtin.template:
     src: .env.j2
-    dest: '{{ p_compose_files }}/{{ t_app_name }}/.env'
+    dest: '{{ p_dirs.compose_files }}/{{ t_app_name }}/.env'
     owner: '{{ p_apps_user.user }}'
     group: '{{ p_apps_user.group }}'
     mode: '{{ p_default_permissions.file }}'
@@ -52,20 +52,20 @@
 
 - name: Replace user with UID
   ansible.builtin.lineinfile:
-    path: '{{ p_compose_files }}/{{ t_app_name }}/.env'
+    path: '{{ p_dirs.compose_files }}/{{ t_app_name }}/.env'
     regexp: '^APP_USER=.*$'
     line: "APP_USER='{{ t_tmp_app_data_uid.stdout }}'"
   become: true
 
 - name: Replace group with GID
   ansible.builtin.lineinfile:
-    path: '{{ p_compose_files }}/{{ t_app_name }}/.env'
+    path: '{{ p_dirs.compose_files }}/{{ t_app_name }}/.env'
     regexp: '^APP_GROUP=.*$'
     line: "APP_GROUP='{{ t_tmp_app_data_gid.stdout }}'"
   become: true
 
 - name: Create and start services
   community.docker.docker_compose_v2:
-    project_src: '{{ p_compose_files }}/{{ t_app_name }}'
+    project_src: '{{ p_dirs.compose_files }}/{{ t_app_name }}'
   become: true
   when: ansible_check_mode is false
