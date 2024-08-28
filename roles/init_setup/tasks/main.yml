@@ -55,5 +55,5 @@
     dest: /root/.bash_aliases
     owner: root
     group: root
-    mode: '0550'
+    mode: '0555'
   become: true

@@ -22,3 +22,14 @@
   ansible.builtin.command: zpool list
   become: true
   changed_when: false
+
+- name: Create datasets
+  community.general.zfs:
+    name: '{{ item }}'
+    state: present
+  become: true
+  loop:
+    - '{{ p_dirs.docker_root }}'
+    - '{{ p_dirs.apps_data }}'
+    - '{{ p_dirs.slow_data }}'
+    - '{{ p_dirs.backups_root }}'
