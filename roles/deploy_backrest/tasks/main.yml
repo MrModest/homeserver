@@ -9,7 +9,7 @@
       - '{{ p_dirs.apps_data }}/backrest/logs'
       - '{{ p_dirs.apps_data }}/backrest/rclone'
       - '{{ p_dirs.apps_data }}/backrest/mounts'
-      - '{{ p_backups_root }}/backrest/repos'
+      - '{{ p_dirs.backups_root }}/backrest/repos'
 
 - name: Configure 'rclone'
   ansible.builtin.template:

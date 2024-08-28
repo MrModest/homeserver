@@ -47,7 +47,7 @@ function cd-compose() {
 }
 
 function d-db-dump() {
-  local dumps_root='{{ p_backups_root }}/db_dumps'
+  local dumps_root='{{ p_dirs.backups_root }}/db_dumps'
 
   local app_name=$1
   local container_name=$2

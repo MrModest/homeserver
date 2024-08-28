@@ -7,8 +7,6 @@
   vars:
     p_timezone: '{{ g_timezone }}'
 
-    p_backups_root: '{{ g_pools.slow.custom_dirs.backups_root }}'
-
     p_dirs:
       apps_data: '{{ g_pools.fast.custom_dirs.apps_data }}'
       docker_root: '{{ g_pools.fast.custom_dirs.docker_root }}'
