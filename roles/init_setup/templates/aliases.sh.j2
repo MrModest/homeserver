@@ -104,4 +104,12 @@ function docker-compose-stop-all() {
   fi
 }
 
-alias zfs-docker-cleanup='sudo zfs get mounted | grep "mounted   no" | awk '{print $1}' | xargs -I {} sudo zfs destroy {} -R'
+function zfs-docker-cleanup() {
+  local snapshots_count=$(zfs get mounted | grep "mounted   no" | awk '{print $1}' | wc -l)
+
+  echo "Docker lagacy snapshots before: $snapshots_count"
+  sudo zfs get mounted | grep "mounted   no" | awk '{print $1}' | xargs -I {} sudo zfs destroy {} -R
+
+  snapshots_count=$(zfs get mounted | grep "mounted   no" | awk '{print $1}' | wc -l)
+  echo "Docker lagacy snapshots after: $snapshots_count"
+}

@@ -4,7 +4,7 @@
   vars:
     t_app_name: 'immich'
     t_app_data_dirs:
-      - '{{ p_dirs.apps_dataa }}/immich/db'
-      - '{{ p_dirs.apps_dataa }}/immich/model-cache'
-      - '{{ p_dirs.apps_dataa }}/immich/matplotlib'
-      - '{{ imch_store_data_path }}/immich/upload'
+      - '{{ p_dirs.apps_data }}/immich/db'
+      - '{{ p_dirs.apps_data }}/immich/model-cache'
+      - '{{ p_dirs.apps_data }}/immich/matplotlib'
+      - '{{ p_dirs.slow_data }}/immich/upload'
