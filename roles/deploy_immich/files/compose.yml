@@ -12,6 +12,7 @@ services:
     restart: 'unless-stopped'
     volumes:
       - ${DATA_PATH}/upload:/usr/src/app/upload
+      - ${DATA_PATH}/external:/usr/src/app/external:ro # https://immich.app/docs/guides/external-library/
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env

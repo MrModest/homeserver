@@ -59,6 +59,8 @@
     group: root
     mode: '{{ p_default_permissions.file }}'
   become: true
+  tags:
+    - aliases
 
 - name: Setup root aliases
   ansible.builtin.template:
@@ -68,3 +70,5 @@
     group: root
     mode: '0555'
   become: true
+  tags:
+    - aliases
