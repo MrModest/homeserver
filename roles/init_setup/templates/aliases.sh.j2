@@ -15,7 +15,6 @@ alias dcu='docker compose up -d'
 alias dcd='docker compose down'
 
 alias d-ps='docker ps | bat'
-alias d-logs='docker logs | bat'
 alias d-logs-f='docker logs -f'
 
 function d-logs() {
@@ -72,11 +71,13 @@ function docker-compose-all() {
       return
       ;;
     "start")
-      prompt_msg="It will START all following apps:\n$app_list\n"
+      echo "It will START all following apps:"
+      echo "$app_list"
       final_cmd="find $compose_files_path | xargs -I {} docker compose -f {} up -d"
       ;;
     "stop")
-      prompt_msg="It will STOP all following apps:\n$app_list\n"
+      echo "It will STOP all following apps:"
+      echo "$app_list"
       final_cmd="find $compose_files_path | xargs -I {} docker compose -f {} down"
       ;;
     *)
@@ -85,23 +86,11 @@ function docker-compose-all() {
       ;;
   esac
 
-  echo -e $prompt_msg
   read -p "Continue? [Y/n] " -n 1 -r
   echo
   if [[ $REPLY =~ ^[Yy]$ ]]
   then
-    $final_cmd
-  fi
-}
-
-function docker-compose-stop-all() {
-  echo "It will stop all following apps!"
-  find /mnt/pools/fast/docker/compose-files/*/compose.yml | sed 's/.*compose-files\/\(.*\)\/compose.yml/- \1/'
-  read -p "Continue? [Y/n] " -n 1 -r
-  echo
-  if [[ $REPLY =~ ^[Yy]$ ]]
-  then
-    find /mnt/pools/fast/docker/compose-files/*/compose.yml | xargs -I {} docker compose -f {} down
+    eval "$final_cmd"
   fi
 }
 
