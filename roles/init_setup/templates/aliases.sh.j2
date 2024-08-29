@@ -59,9 +59,10 @@ function d-db-dump() {
 }
 
 function docker-compose-all() {
-  local find_all_cmd="find /mnt/pools/fast/docker/compose-files/*/compose.yml"
-  local parse_list_cmd="sed 's/.*compose-files\/\(.*\)\/compose.yml/- \1/"
-  local app_list=$("$find_all_cmd | $parse_list_cmd")
+  local compose_files_path="/mnt/pools/fast/docker/compose-files/*/compose.yml"
+  local sed_regexp=".*compose-files\/\(.*\)\/compose.yml"
+
+  local app_list=$(find $compose_files_path | sed "s/$sed_regexp/- \1/")
 
   local prompt_msg="unset"
   local final_cmd="unset"
@@ -71,12 +72,12 @@ function docker-compose-all() {
       return
       ;;
     "start")
-      prompt_msg="It will start all following apps:\n$app_list\n"
-      final_cmd="$find_all_cmd | xargs -I {} docker compose -f {} up -d"
+      prompt_msg="It will START all following apps:\n$app_list\n"
+      final_cmd="find $compose_files_path | xargs -I {} docker compose -f {} up -d"
       ;;
     "stop")
-      prompt_msg="It will stop all following apps:\n$app_list\n"
-      final_cmd="$find_all_cmd | xargs -I {} docker compose -f {} down"
+      prompt_msg="It will STOP all following apps:\n$app_list\n"
+      final_cmd="find $compose_files_path | xargs -I {} docker compose -f {} down"
       ;;
     *)
       echo "Usage: docker-compose-all (list|start|stop)"
@@ -84,7 +85,7 @@ function docker-compose-all() {
       ;;
   esac
 
-  echo $prompt_msg
+  echo -e $prompt_msg
   read -p "Continue? [Y/n] " -n 1 -r
   echo
   if [[ $REPLY =~ ^[Yy]$ ]]
