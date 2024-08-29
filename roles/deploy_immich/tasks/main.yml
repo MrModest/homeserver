@@ -8,3 +8,4 @@
       - '{{ p_dirs.apps_data }}/immich/model-cache'
       - '{{ p_dirs.apps_data }}/immich/matplotlib'
       - '{{ p_dirs.slow_data }}/immich/upload'
+      - '{{ p_dirs.slow_data }}/immich/external'
