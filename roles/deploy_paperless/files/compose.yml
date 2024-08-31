@@ -1,0 +1,76 @@
+# More info: https://github.com/paperless-ngx/paperless-ngx/blob/dev/docker/compose/docker-compose.postgres-tika.yml
+
+services:
+  broker:
+    image: docker.io/library/redis:${REDIS_VERSION}
+    container_name: paperless_redis
+    hostname: paperless_redis
+    user: ${APP_USER}
+    restart: unless-stopped
+    volumes:
+      - ${APP_DATA_PATH}/redisdata:/data
+
+  db:
+    image: docker.io/library/postgres:${POSTGRES_VERSION}
+    container_name: paperless_db
+    hostname: paperless_db
+    user: ${APP_USER}
+    restart: unless-stopped
+    volumes:
+      - ${APP_DATA_PATH}/pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: paperless
+
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:${APP_VERSION}
+    container_name: paperless_app
+    hostname: paperless_app
+    user: ${APP_USER}
+    restart: unless-stopped
+    depends_on:
+      - db
+      - broker
+      - gotenberg
+      - tika
+    volumes:
+      - ${APP_DATA_PATH}/data:/usr/src/paperless/data # https://docs.paperless-ngx.com/configuration/#PAPERLESS_DATA_DIR
+
+      - ${DATA_PATH}/media:/usr/src/paperless/media # https://docs.paperless-ngx.com/configuration/#PAPERLESS_MEDIA_ROOT
+      - ${DATA_PATH}/trash:/usr/src/paperless/trash # https://docs.paperless-ngx.com/configuration/#PAPERLESS_EMPTY_TRASH_DIR
+      - ${DATA_PATH}/export:/usr/src/paperless/export # https://docs.paperless-ngx.com/administration/#exporter
+
+      - ${SMB_PATH}/consume:/usr/src/paperless/consume # https://docs.paperless-ngx.com/configuration/#PAPERLESS_CONSUMPTION_DIR
+    env_file:
+      - .env
+    environment:
+      PAPERLESS_REDIS: redis://paperless_redis:6379
+      PAPERLESS_DBHOST: paperless_db
+      PAPERLESS_TIKA_ENABLED: 1
+      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless_gotenberg:3000
+      PAPERLESS_TIKA_ENDPOINT: http://paperless_tika:9998
+      PAPERLESS_EMPTY_TRASH_DIR: /usr/src/paperless/trash
+      PAPERLESS_FILENAME_FORMAT: '{created_year}/{title}_{original_name}'
+
+  gotenberg:
+    image: docker.io/gotenberg/gotenberg:${GOTENBERG_VERSION}
+    container_name: paperless_gotenberg
+    hostname: paperless_gotenberg
+    user: ${APP_USER}
+    restart: unless-stopped
+
+    # The gotenberg chromium route is used to convert .eml files. We do not
+    # want to allow external content like tracking pixels or even javascript.
+    command:
+      - "gotenberg"
+      - "--chromium-disable-javascript=true"
+      - "--chromium-allow-list=file:///tmp/.*"
+
+  tika:
+    image: docker.io/apache/tika:${TIKA_VERSION}
+    container_name: paperless_tika
+    hostname: paperless_tika
+    user: ${APP_USER}
+    restart: unless-stopped
+

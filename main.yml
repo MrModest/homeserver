@@ -14,6 +14,7 @@
       compose_files: '{{ g_pools.fast.custom_dirs.compose_files }}'
       slow_data: '{{ g_pools.slow.custom_dirs.apps_data  }}'
       backups_root: '{{ g_pools.slow.custom_dirs.backups_root }}'
+      smb_root: '{{ g_pools.slow.custom_dirs.shared }}/shared'
 
     p_apps_user: '{{ g_apps_user }}'
 
@@ -78,3 +79,10 @@
       tags:
         - applications
         - homepage
+
+    - name: Deploy 'paperless'
+      ansible.builtin.import_role:
+        name: deploy_paperless
+      tags:
+        - applications
+        - paperless

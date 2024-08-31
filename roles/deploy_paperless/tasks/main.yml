@@ -1,0 +1,13 @@
+---
+- name: Start 'paperless'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'paperless'
+    t_app_data_dirs:
+      - '{{ p_dirs.apps_data }}/paperless/redisdata'
+      - '{{ p_dirs.apps_data }}/paperless/pgdata'
+      - '{{ p_dirs.apps_data }}/paperless/data'
+      - '{{ p_dirs.slow_data }}/paperless/media'
+      - '{{ p_dirs.slow_data }}/paperless/trash'
+      - '{{ p_dirs.slow_data }}/paperless/export'
+      - '{{ p_dirs.smb_root }}/paperless/consume'
