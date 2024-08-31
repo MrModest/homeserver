@@ -18,8 +18,8 @@
       - python3-pip
       - jq
       - bat
-      - tree
       - acl # Access Control List
+      - exa # 'ls' and 'tree' replacement
     state: present
   become: true
 

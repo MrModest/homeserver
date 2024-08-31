@@ -1,5 +1,7 @@
-alias ll='ls -lah'
-alias sll='sudo ls -lah'
+alias ll='exa -lahg --time-style=long-iso'
+alias sll='sudo exa -lahg --time-style=long-iso'
+alias tree='exa --tree -g --time-style=long-iso'
+alias tree-l='exa --tree --long -g --time-style=long-iso'
 
 alias cp='rsync -a --info=progress2'
 
