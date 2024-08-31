@@ -30,6 +30,10 @@ services:
       - ${APP_DATA_PATH}/matplotlib:/usr/src/app/matplotlib
     env_file:
       - .env
+    deploy: # https://github.com/immich-app/immich/discussions/2368#discussioncomment-5952765
+      resources:
+        limits:
+          cpus: '2'
 
   redis:
     image: docker.io/redis:${REDIS_VERSION}
