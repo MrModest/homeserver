@@ -8,6 +8,7 @@
     p_timezone: '{{ g_timezone }}'
 
     p_dirs:
+      apps_data_ds: '{{ g_pools.fast.custom_dirs.apps_data_ds }}'
       apps_data: '{{ g_pools.fast.custom_dirs.apps_data }}'
       docker_root: '{{ g_pools.fast.custom_dirs.docker_root }}'
       compose_files: '{{ g_pools.fast.custom_dirs.compose_files }}'

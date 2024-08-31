@@ -1,4 +1,10 @@
 ---
+- name: Create datasets
+  community.general.zfs:
+    name: '{{ p_dirs.apps_data_ds }}/{{ t_app_name }}'
+    state: present
+  become: true
+
 - name: Create directory for the app's data
   ansible.builtin.file:
     path: '{{ dir_path }}'
