@@ -20,6 +20,7 @@
       - bat
       - acl # Access Control List
       - exa # 'ls' and 'tree' replacement
+      - tmux
     state: present
   become: true
 
