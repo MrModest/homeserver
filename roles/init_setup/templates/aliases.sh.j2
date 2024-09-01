@@ -58,7 +58,10 @@ function d-db-dump() {
   local container_name=$2
   local timestamp=$(date +%Y-%m-%d_%H-%M-%S)
 
-    echo "Running 'pg_dumpall -c -U postgres' for $2 of $1 at $timestamp"
+  mkdir -p $dumps_root/$app_name
+  chown -R {{ p_apps_user.user }}:{{ p_apps_user.group }}
+
+  echo "Running 'pg_dumpall -c -U postgres' for $2 of $1 at $timestamp"
 
   docker exec -t $container_name pg_dumpall -c -U postgres | gzip > "$dumps_root/$app_name/dump-$container_name-$timestamp.sql.gz"
 }
