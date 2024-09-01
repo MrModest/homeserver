@@ -83,6 +83,10 @@
     - name: Deploy 'paperless'
       ansible.builtin.import_role:
         name: deploy_paperless
+      vars:
+        ppls_secretkey: '{{ v_paperless_secretkey }}'
+        ppls_app_host: 'paperless.{{ g_duckdns_domain }}'
+        ppls_admin_password: '{{ v_paperless_admin_password }}'
       tags:
         - applications
         - paperless

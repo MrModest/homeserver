@@ -27,7 +27,7 @@ services:
     image: ghcr.io/paperless-ngx/paperless-ngx:${APP_VERSION}
     container_name: paperless_app
     hostname: paperless_app
-    user: ${APP_USER}
+    user: '0' # root
     restart: unless-stopped
     depends_on:
       - db
@@ -52,6 +52,18 @@ services:
       PAPERLESS_TIKA_ENDPOINT: http://paperless_tika:9998
       PAPERLESS_EMPTY_TRASH_DIR: /usr/src/paperless/trash
       PAPERLESS_FILENAME_FORMAT: '{created_year}/{title}_{original_name}'
+      PAPERLESS_OCR_LANGUAGE: deu+eng+rus
+      PAPERLESS_OCR_LANGUAGES: rus
+      PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true}'
+      PAPERLESS_SECRET_KEY: ${SECRET_KEY}
+      PAPERLESS_URL: ${APP_DOMAIN}
+      PAPERLESS_ADMIN_USER: admin
+      PAPERLESS_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD}
+      PAPERLESS_TIME_ZONE: ${TZ}
+      PAPERLESS_CONSUMER_RECURSIVE: true
+      PAPERLESS_FILENAME_DATE_ORDER: YMD
+      USERMAP_UID: ${APP_USER}
+      USERMAP_GID: ${APP_GROUP}
 
   gotenberg:
     image: docker.io/gotenberg/gotenberg:${GOTENBERG_VERSION}
