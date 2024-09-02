@@ -42,6 +42,8 @@
             webdav_url: https://webdav.cloud.mail.ru
             user: '{{ v_rclone_config.mailru.user }}'
             password_enc: '{{ v_rclone_config.mailru.password_enc }}'
+          gdrive:
+            token_json: '{{ v_rclone_config.gdrive.token_json }}'
       tags:
         - applications
         - backrest

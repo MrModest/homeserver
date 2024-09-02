@@ -3,3 +3,9 @@ type = webdav
 url = {{ bkrs_rclone_config.mailru.webdav_url }}
 user = {{ bkrs_rclone_config.mailru.user }}
 pass = {{ bkrs_rclone_config.mailru.password_enc }}
+
+[gdrive]
+type = drive
+scope = drive
+token = {{ bkrs_rclone_config.gdrive.token_json }}
+team_drive =

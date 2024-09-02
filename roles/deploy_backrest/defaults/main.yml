@@ -10,3 +10,5 @@ bkrs_rclone_config:
     webdav_url: placeholder
     user: placeholder
     password_enc: placeholder
+  gdrive:
+    token_json: placeholder # run `rclone authorize "drive"` on machine with browser to get the json with token
