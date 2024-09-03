@@ -23,6 +23,22 @@
   - `apps` to run all non-priviliged contaners
   - `homessh` to connect via ssh
   - `sambashare` to connect to SMB share via clients
+- Variables
+  - with prefix `g_`
+    - described in `group_vars/all.yml`
+    - meant to be "global" across the whole homeserver
+    - to store all global values except passwords/secrets
+  - with prefix `v_`
+    - described in `vars/vault.yml`
+    - meant to store passwords and secrets
+    - encrypted with password written in `.vault_pass` file
+    - not supposed to be shared and should be stored only localy
+  - with prefix `p_`
+    - described in `main.yaml` (the entrypoint-playbook) in `vars` section
+    - meant to be playbook-run scoped variables
+  - another prefixes like `bkrs_`
+    - described in a dedicated role's `defaults` directory
+    - meant to be a role-scoped variables aka "role's input parameters"
 - Permissions
   - `0644` - More relevant for files
     - Owner can read & write.
@@ -78,12 +94,13 @@
 - [ ] Configure backups
   - [x] Install [backrest](https://github.com/garethgeorge/backrest)
   - [x] Schedule local backups
-  - [ ] Shedule remove backups
+  - [ ] Shedule remote backups
     - [x] WebDAV MailRu Cloud
+    - [x] Google Drive
     - [ ] Yandex.Disk
     - [ ] Mega
     - [ ] Backblaze B2 (?)
-  - [ ] Configure DB dumps
+  - [x] Configure DB dumps
   - [ ] Configure auto snapshoting
   - [ ] Configure backuping from snapshots
 - [ ] Configure remote access without public exposure

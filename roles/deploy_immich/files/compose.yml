@@ -19,6 +19,10 @@ services:
     depends_on:
       - redis
       - database
+    deploy:
+      resources:
+        limits:
+          cpus: '3'
 
   immich-machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION}
