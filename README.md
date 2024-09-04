@@ -59,7 +59,7 @@
 ```jsonc
 {
   "data-root": "/mnt/pools/fast/docker/data-root",
-  "storage-driver": "overlay2", # use don't have to use zfs-driver since zfs 2.0
+  "storage-driver": "overlay2", // no needs to use zfs-driver since zfs 2.0
   "log-driver": "json-file",
   "log-opts": {
     "max-size": "1m",
