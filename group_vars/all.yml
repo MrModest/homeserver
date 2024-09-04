@@ -34,6 +34,7 @@ g_pools:
       - /dev/disk/by-id/ata-WDC_WD20EZAZ-00L9GB0_WD-WXC2A51F94ST
     mirror: false # ToDo: change to 'true' once buy a redundant HDD
     custom_dirs:
+      apps_data_ds: slow-tank/apps-data
       apps_data: '/mnt/pools/slow/apps-data'
       shared: '/mnt/pools/slow/shared'
       backups_root: '/mnt/pools/slow/backups'

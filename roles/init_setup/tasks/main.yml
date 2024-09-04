@@ -16,11 +16,12 @@
     pkg:
       - python3
       - python3-pip
-      - jq
-      - bat
+      - jq # to pipe jsons
+      - bat # 'cat' replacement
       - acl # Access Control List
       - exa # 'ls' and 'tree' replacement
-      - tmux
+      - tmux # keep long cli sessions running with laptop turned off
+      - ncdu # check free disk space
     state: present
   become: true
 
