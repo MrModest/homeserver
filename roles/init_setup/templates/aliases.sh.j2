@@ -103,6 +103,14 @@ function docker-compose-all() {
   fi
 }
 
+function docker-used-volumes() {
+  for v in $(docker volume ls --format {% raw %}'{{.Name}}'{% endraw %})
+  do
+    containers="$(docker ps -a --filter volume=$v --format {% raw %}'{{.Names}}'{% endraw %})"
+    echo "volume $v is used by $containers"
+  done
+}
+
 function zfs-docker-cleanup() {
   local snapshots_count=$(zfs get mounted | grep "mounted   no" | grep "fast-tank/docker/data-root" | awk '{print $1}' | wc -l)
 

@@ -44,6 +44,8 @@ services:
     container_name: immich_redis
     user: redis
     restart: 'unless-stopped'
+    volumes:
+      - ${APP_DATA_PATH}/redis:/data
     healthcheck:
       test: redis-cli ping || exit 1
       interval: 10s

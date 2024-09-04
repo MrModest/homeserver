@@ -59,6 +59,7 @@ services:
     env_file:
       - .env
     volumes:
+      - ${APP_DATA}/prometheus/data:/prometheus
       - ${APP_DATA}/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'

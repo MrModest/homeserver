@@ -56,10 +56,10 @@
 
 ## Docker daemon configuration
 
-```json
+```jsonc
 {
   "data-root": "/mnt/pools/fast/docker/data-root",
-  "storage-driver": "zfs",
+  "storage-driver": "overlay2", # use don't have to use zfs-driver since zfs 2.0
   "log-driver": "json-file",
   "log-opts": {
     "max-size": "1m",
@@ -110,6 +110,7 @@
 
 ### Docker Applications
 - [x] [Immich](https://github.com/immich-app/immich)
+  - [ ] Migrate albums information from Google Photos
 - [ ] ~~[Dockge](https://github.com/louislam/dockge)~~
 - [ ] [Paperless](https://github.com/paperless-ngx/paperless-ngx)
 - [ ] [Nextcloud](https://github.com/nextcloud/all-in-one)
