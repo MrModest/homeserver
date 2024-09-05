@@ -23,13 +23,13 @@
 │       └── data-root <-- `/var/lib/docker`
 └── slow <-- HDD pool
     ├── apps-data <-- same as '/fast/apps-data', but in HDD drives
-    │   └── immich
+    │   ├── immich
     │   └── paperless
     ├── backups
-    │   └── backrest
+    │   ├── backrest
     │   │   └── repos
     │   └── db_dumps
-    │       └── immich
+    │       ├── immich
     │       └── paperless
     └── shared <-- SMB shares' root
         └── shared
