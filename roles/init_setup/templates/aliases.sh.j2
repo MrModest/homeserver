@@ -111,6 +111,10 @@ function docker-used-volumes() {
   done
 }
 
+function docker-overlay-ls() {
+  docker inspect $(docker ps -qa) |  jq -r 'map([.Name, .GraphDriver.Data.MergedDir]) | .[] | "\(.[0])\t\(.[1])"' | column -t
+}
+
 function zfs-docker-cleanup() {
   local snapshots_count=$(zfs get mounted | grep "mounted   no" | grep "fast-tank/docker/data-root" | awk '{print $1}' | wc -l)
 
