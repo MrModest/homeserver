@@ -18,6 +18,7 @@ services:
     environment:
       PUID: ${APP_USER}
       PGID: ${APP_GROUP}
+      LOG_TARGETS: stdout
     volumes:
       - ${APP_DATA_PATH}/config:/app/config
     restart: unless-stopped
