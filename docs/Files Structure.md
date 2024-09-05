@@ -12,15 +12,14 @@
 │   │   │   └── promtail
 │   │   └── portainer
 │   └── docker
-│       ├── compose-files
-│       │   ├── homepage
-│       │   │   ├── compose.yml
-│       │   │   └── .env
-│       │   ├── immich
-│       │   ├── nginx
-│       │   ├── observability
-│       │   └── portainer
-│       └── data-root <-- `/var/lib/docker`
+│       └── compose-files
+│           ├── homepage
+│           │   ├── compose.yml
+│           │   └── .env
+│           ├── immich
+│           ├── nginx
+│           ├── observability
+│           └── portainer
 └── slow <-- HDD pool
     ├── apps-data <-- same as '/fast/apps-data', but in HDD drives
     │   ├── immich
