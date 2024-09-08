@@ -1,0 +1,83 @@
+services:
+  grist:
+    image: gristlabs/grist:${APP_VERSION}
+    container_name: grist_app
+    user: ${APP_USER}
+    cap_add:
+      - SYS_PTRACE
+    env_file:
+      - .env
+    environment:
+      GRIST_SANDBOX_FLAVOR: gvisor
+      GRIST_SINGLE_ORG: default-team
+      GRIST_DOCKER_USER: ${APP_USER}
+      GRIST_DOCKER_GROUP: ${APP_GROUP}
+      APP_HOME_URL: ${APP_HOST}
+
+      # Redis setup
+      REDIS_URL: redis://grist-redis
+
+      # MinIO setup. This requires the bucket set up on the MinIO instance with versioning enabled.
+      GRIST_DOCS_MINIO_ACCESS_KEY: grist
+      GRIST_DOCS_MINIO_SECRET_KEY: ${MINIO_PASSWORD}
+      GRIST_DOCS_MINIO_USE_SSL: 0
+      GRIST_DOCS_MINIO_BUCKET: grist-docs
+      GRIST_DOCS_MINIO_ENDPOINT: grist-minio
+      GRIST_DOCS_MINIO_PORT: 9000
+
+    volumes:
+      # Where to store persistent data, such as documents.
+      - ${APP_DATA_PATH}/grist:/persist
+    restart: unless-stopped
+    depends_on:
+      - grist-redis
+      - grist-minio
+      - minio-setup
+
+  grist-redis:
+    image: redis:${REDIS_VERSION}
+    container_name: grist_redis
+    user: ${APP_USER}
+    restart: unless-stopped
+    volumes:
+      - ${APP_DATA_PATH}/redis:/data
+
+  grist-minio:
+    image: minio/minio:${MINIO_VERSION}
+    container_name: grist_minio
+    env_file:
+      - .env
+    environment:
+      MINIO_ROOT_USER: grist
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
+    restart: unless-stopped
+    volumes:
+      - ${APP_DATA_PATH}/minio:/data
+    command:
+      server /data --console-address=":9001"
+
+  # This sets up the buckets required in MinIO. It is only needed to make this example work.
+  # It isn't necessary for deployment and can be safely removed.
+  minio-setup:
+    image: minio/mc:${MINIO_MC_VERSION}
+    container_name: grist_minio_init
+    env_file:
+      - .env
+    environment:
+      MINIO_PASSWORD: ${MINIO_PASSWORD}
+    depends_on:
+      grist-minio:
+        condition: service_started
+    restart: on-failure
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://grist-minio:9000 grist '$MINIO_PASSWORD';
+      /usr/bin/mc mb myminio/grist-docs;
+      /usr/bin/mc anonymous set public myminio/grist-docs;
+      /usr/bin/mc version enable myminio/grist-docs;
+      "
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

@@ -112,9 +112,9 @@
 - [x] [Immich](https://github.com/immich-app/immich)
   - [ ] Migrate albums information from Google Photos
 - [ ] ~~[Dockge](https://github.com/louislam/dockge)~~
-- [ ] [Paperless](https://github.com/paperless-ngx/paperless-ngx)
+- [x] [Paperless](https://github.com/paperless-ngx/paperless-ngx)
 - [ ] [Nextcloud](https://github.com/nextcloud/all-in-one)
-- [ ] [homepage](https://github.com/gethomepage/homepage)
+- [x] [homepage](https://github.com/gethomepage/homepage)
 - [x] [Portainer](https://docs.portainer.io/v/2.20/start/install-ce/server/docker/linux)
 - [ ] [Cronicle](https://github.com/jhuckaby/Cronicle)
   - [ ] Move to docker container
@@ -122,7 +122,7 @@
 - [ ] [metube](https://github.com/alexta69/metube)
 - [ ] [Stirling-PDF](https://github.com/Stirling-Tools/Stirling-PDF/tree/main)
 - [ ] [Jellyfin](https://jellyfin.org/docs/general/installation/container)
-- [ ] [Grist](https://github.com/gristlabs/grist-core)
+- [x] [Grist](https://github.com/gristlabs/grist-core)
 - [ ] [n8n](https://docs.n8n.io/hosting/installation/docker/)
 - [ ] [NoteCalc](https://github.com/bbodi/notecalc3)
 - [ ] [Open Speed Test](https://hub.docker.com/r/openspeedtest/latest)

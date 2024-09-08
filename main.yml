@@ -93,3 +93,13 @@
       tags:
         - applications
         - paperless
+
+    - name: Deploy 'grist'
+      ansible.builtin.import_role:
+        name: deploy_grist
+      vars:
+        grst_app_host: 'grist.{{ g_duckdns_domain }}'
+        grst_minio_password: '{{ v_grist_minio_password }}'
+      tags:
+        - applications
+        - grist
