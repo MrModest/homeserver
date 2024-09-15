@@ -34,7 +34,7 @@ services:
       - grist-minio
       - minio-setup
 
-  grist-redis:
+  grist-redis: # document imports doesn't work if minio enabled without redis
     image: redis:${REDIS_VERSION}
     container_name: grist_redis
     user: ${APP_USER}

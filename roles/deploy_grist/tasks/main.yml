@@ -15,7 +15,7 @@
     argv:
       - /bin/bash
       - "-c"
-      - "apt update && apt install -y openssl && python3 -m pip install numpy"
+      - "apt update && apt install -y openssl && python3 -m pip install numpy holidays"
   register: result
 
 - name: Print stdout lines
