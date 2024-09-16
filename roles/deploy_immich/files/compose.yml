@@ -42,7 +42,7 @@ services:
   redis:
     image: docker.io/redis:${REDIS_VERSION}
     container_name: immich_redis
-    user: redis
+    user: ${APP_USER}
     restart: 'unless-stopped'
     volumes:
       - ${APP_DATA_PATH}/redis:/data
