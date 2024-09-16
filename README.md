@@ -126,6 +126,7 @@
 - [ ] [n8n](https://docs.n8n.io/hosting/installation/docker/)
 - [ ] [NoteCalc](https://github.com/bbodi/notecalc3)
 - [ ] [Open Speed Test](https://hub.docker.com/r/openspeedtest/latest)
+- [ ] [pgAdmin](https://hub.docker.com/r/dpage/pgadmin4/)
 
 ### "Bare metal" Applications
   - [ ] [Cockpit](https://cockpit-project.org/)
