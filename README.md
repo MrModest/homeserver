@@ -60,7 +60,7 @@
 {
   "data-root": "/mnt/pools/fast/docker/data-root",
   "storage-driver": "overlay2", // no needs to use zfs-driver since zfs 2.0
-  "log-driver": "json-file",
+  "log-driver": "json-file", // for 'promtail' and 'loki'
   "log-opts": {
     "max-size": "1m",
     "max-file": "1"
