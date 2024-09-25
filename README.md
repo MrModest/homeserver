@@ -65,7 +65,7 @@
     "max-size": "1m",
     "max-file": "1"
   },
-  "metrics-addr" : "0.0.0.0:9323",
+  "metrics-addr" : "0.0.0.0:9323", // for 'prometheus'
   "experimental" : true
 }
 ```
