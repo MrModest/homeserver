@@ -5,6 +5,8 @@
     - vars/vault.yml
     - vars/apps.yml
   vars:
+    p_host_id: '{{ g_host_ip }}'
+
     p_timezone: '{{ g_timezone }}'
 
     p_dirs:

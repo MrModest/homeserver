@@ -76,3 +76,11 @@
     prx_duckdns_domain: '{{ g_duckdns_domain }}'
   tags:
     - reverse_proxy
+
+- name: Setup Pi-Hole
+  ansible.builtin.import_role:
+    name: deploy_pihole
+  vars:
+    phl_web_password: '{{ v_pihole_web_password }}'
+  tags:
+    - pihole
