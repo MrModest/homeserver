@@ -63,6 +63,7 @@ services:
       - ${APP_DATA}/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=180d'
     extra_hosts: # https://stackoverflow.com/a/67158212/7422280
       - "host.docker.internal:host-gateway"
   cadvisor:
