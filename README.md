@@ -89,6 +89,7 @@
       - [ ] Datasets
       - [ ] Snapshots
 - [x] Configure Samba
+  - [ ] Configure MacOS TimeMachine backup
 - [x] Configure reverse-proxy
 - [x] Configure HTTPS
 - [ ] Configure backups
