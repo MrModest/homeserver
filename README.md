@@ -127,6 +127,10 @@
 - [ ] [NoteCalc](https://github.com/bbodi/notecalc3)
 - [ ] [Open Speed Test](https://hub.docker.com/r/openspeedtest/latest)
 - [ ] [pgAdmin](https://hub.docker.com/r/dpage/pgadmin4/)
+- [ ] Nextcloud
+  - [ ] or Owncloud
+- [ ] Syncthings
+  - [ ] Configure sync Paperless folders to NextCloud
 
 ### "Bare metal" Applications
   - [ ] [Cockpit](https://cockpit-project.org/)
