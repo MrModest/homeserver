@@ -4,3 +4,6 @@ collections:
     version: '>=3.8.0'
   - name: vladgh.samba
     version: '>=3.1.1'
+roles:
+  - name: artis3n.tailscale
+    version: 'v4.5.0'

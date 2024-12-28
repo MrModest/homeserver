@@ -1,4 +1,12 @@
 ---
+- name: Install and run 'Tailscale'
+  ansible.builtin.import_role:
+    name: artis3n.tailscale
+  vars:
+    tailscale_authkey: "{{ v_tailscale_api_token }}"
+  tags:
+    - tailscale
+
 - name: Create a docker network
   community.docker.docker_network:
     name: nginxnetwork
