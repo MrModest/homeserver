@@ -60,7 +60,7 @@ function d-db-dump() {
   local timestamp=$(date +%Y-%m-%d_%H-%M-%S)
 
   mkdir -p $dumps_root/$app_name
-  chown -R {{ p_apps_user.user }}:{{ p_apps_user.group }}
+  chown -R {{ p_apps_user.user }}:{{ p_apps_user.group }} $dumps_root/$app_name
 
   echo "Running 'pg_dumpall -c -U postgres' for $2 of $1 at $timestamp"
 

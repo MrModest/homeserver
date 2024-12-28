@@ -19,37 +19,15 @@
       - jq # to pipe jsons
       - bat # 'cat' replacement
       - acl # Access Control List
-      - exa # 'ls' and 'tree' replacement
+      - eza # 'ls' and 'tree' replacement
       - tmux # keep long cli sessions running with laptop turned off
       - ncdu # check free disk space
     state: present
   become: true
 
 - name: Install Node.js
-  ansible.builtin.import_tasks: install_node.yml
-  vars:
-    t_node_version: 20
+  ansible.builtin.import_tasks: cronicle.yml
   become: true
-  tags:
-    - node
-
-- name: Check if Cronicle is installed and running
-  ansible.builtin.service:
-    state: started
-    name: cronicle
-  become: true
-  ignore_errors: true
-  register: cronicle_service_check_result
-  tags:
-    - cronicle
-
-- name: Install Cronicle
-  ansible.builtin.import_tasks: install_Cronicle.yml
-  vars:
-    t_cronicle_version: v0.9.59
-    t_cronicle_path: /opt/cronicle
-  become: true
-  when: cronicle_service_check_result.failed | bool
   tags:
     - cronicle
 

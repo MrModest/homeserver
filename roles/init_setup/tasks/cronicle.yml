@@ -1,0 +1,22 @@
+---
+- name: Install Node.js
+  ansible.builtin.import_tasks: install_node.yml
+  vars:
+    t_node_version: 20
+  become: true
+
+- name: Check if Cronicle is installed and running
+  ansible.builtin.service:
+    state: started
+    name: cronicle
+  become: true
+  ignore_errors: true
+  register: cronicle_service_check_result
+
+- name: Install Cronicle
+  ansible.builtin.import_tasks: install_Cronicle.yml
+  vars:
+    t_cronicle_version: v0.9.59
+    t_cronicle_path: /opt/cronicle
+  become: true
+  when: cronicle_service_check_result.failed | bool
