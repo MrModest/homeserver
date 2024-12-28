@@ -60,7 +60,7 @@
     path: /etc/sudoers
     state: present
     regexp: '^%{{ susr_sudo_group }}'
-    line: '%{{ susr_sudo_group }} ALL=(ALL) NOPASSWD: ALL'
+    line: '%{{ susr_sudo_group }} ALL=(ALL) NOPASSWD: ALL' # FIXME: https://serverfault.com/questions/160581/how-to-setup-passwordless-sudo-on-linux
     validate: '/usr/sbin/visudo -cf %s'
   become: true
 
