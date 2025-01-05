@@ -105,3 +105,17 @@
       tags:
         - applications
         - grist
+
+    - name: Deploy 'hoarder'
+      ansible.builtin.import_role:
+        name: deploy_hoarder
+      vars:
+        hrdr_nextauth_secret: '{{ v_hoarder.nextauth_secret }}'
+        hrdr_meili_master_key: '{{ v_hoarder.meili_master_key }}'
+
+        hrdr_api_token: '{{ v_hoarder.api_token }}'
+        hrdr_bot_tg_token: '{{ v_hoarder.tg_bot_token }}'
+        hrdr_bot_tg_allowlist: '{{ v_hoarder.tg_bot_allowlist }}'
+      tags:
+        - applications
+        - hoarder

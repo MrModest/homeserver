@@ -1,0 +1,12 @@
+---
+hrdr_app_version: 0.21.0
+hrdr_chrome_version: 123
+hrdr_meilisearch_version: v1.11.1
+hrdr_hoarderbot_version: 0.1.0
+
+hrdr_nextauth_secret: placeholder
+hrdr_meili_master_key: placeholder
+
+hrdr_api_token: placeholder
+hrdr_bot_tg_token: placeholder
+hrdr_bot_tg_allowlist: placeholder
