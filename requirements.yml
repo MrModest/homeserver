@@ -7,3 +7,5 @@ collections:
 roles:
   - name: artis3n.tailscale
     version: 'v4.5.0'
+  - name: darkwizard242.lazydocker
+    version: '2.6.1'

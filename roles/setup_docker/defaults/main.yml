@@ -8,3 +8,5 @@ dcr_dirs:
 dcr_arch_mapping:  # Map ansible architecture {{ ansible_architecture }} names to Docker's architecture names
   x86_64: amd64
   aarch64: arm64
+
+dcr_lazydocker_version: 0.24.1

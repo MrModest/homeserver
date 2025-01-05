@@ -110,3 +110,11 @@
   loop:
     - docker.service
     - containerd.service
+
+- name: Install 'lazydocker' utility
+  ansible.builtin.import_role:
+    name: darkwizard242.lazydocker
+  vars:
+    lazydocker_version: '{{ dcr_lazydocker_version }}'
+  tags:
+    - lazydocker
