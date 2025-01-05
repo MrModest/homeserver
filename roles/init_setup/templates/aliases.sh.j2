@@ -32,8 +32,16 @@ function d-sh() {
   docker exec -it $1 sh
 }
 
+function d-root-sh() {
+  docker exec -it --user 0 $1 sh
+}
+
 function d-bash() {
   docker exec -it $1 bash
+}
+
+function d-root-bash() {
+  docker exec -it --user 0 $1 bash
 }
 
 function d-envs() {

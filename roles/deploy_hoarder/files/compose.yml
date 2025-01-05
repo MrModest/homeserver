@@ -1,6 +1,9 @@
 services:
   hoarder-app:
     image: ghcr.io/hoarder-app/hoarder:${HOARDER_VERSION}
+    container_name: hoarder_app
+    hostname: hoarder_app
+    user: ${APP_USER}:${APP_GROUP}
     restart: unless-stopped
     volumes:
       - ${APP_DATA_PATH}/data:/data
@@ -13,6 +16,9 @@ services:
       MAX_ASSET_SIZE_MB: 2048
   chrome:
     image: gcr.io/zenika-hub/alpine-chrome:${CHROME_VERSION}
+    container_name: hoarder_chrome
+    hostname: hoarder_chrome
+    user: ${APP_USER}:${APP_GROUP}
     restart: unless-stopped
     command:
       - --no-sandbox
@@ -23,6 +29,9 @@ services:
       - --hide-scrollbars
   meilisearch:
     image: getmeili/meilisearch:${MEILISEARCH_VERSION}
+    container_name: hoarder_meilisearch
+    hostname: hoarder_meilisearch
+    user: ${APP_USER}:${APP_GROUP}
     restart: unless-stopped
     env_file:
       - .env
@@ -32,6 +41,9 @@ services:
       - ${APP_DATA_PATH}/meilisearch:/meili_data
   hoarderbot:
     image: ghcr.io/madh93/hoarderbot:${HOARDERBOT_VERSION}
+    container_name: hoarderbot
+    hostname: hoarderbot
+    user: ${APP_USER}:${APP_GROUP}
     restart: unless-stopped
     env_file:
       - .env

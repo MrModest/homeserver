@@ -56,18 +56,24 @@
   changed_when: false
   register: t_tmp_app_data_gid
 
+- name: Set UID and GUID variables
+  ansible.builtin.set_fact:
+    p_apps_user:
+      uid: '{{ t_tmp_app_data_uid.stdout }}'
+      gid: '{{ t_tmp_app_data_gid.stdout }}'
+
 - name: Replace user with UID
   ansible.builtin.lineinfile:
     path: '{{ p_dirs.compose_files }}/{{ t_app_name }}/.env'
     regexp: '^APP_USER=.*$'
-    line: "APP_USER='{{ t_tmp_app_data_uid.stdout }}'"
+    line: "APP_USER='{{ p_apps_user.uid }}'"
   become: true
 
 - name: Replace group with GID
   ansible.builtin.lineinfile:
     path: '{{ p_dirs.compose_files }}/{{ t_app_name }}/.env'
     regexp: '^APP_GROUP=.*$'
-    line: "APP_GROUP='{{ t_tmp_app_data_gid.stdout }}'"
+    line: "APP_GROUP='{{ p_apps_user.gid }}'"
   become: true
 
 - name: Create and start services

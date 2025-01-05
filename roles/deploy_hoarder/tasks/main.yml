@@ -6,3 +6,14 @@
     t_app_data_dirs:
       - '{{ p_dirs.apps_data }}/hoarder/data'
       - '{{ p_dirs.apps_data }}/hoarder/meilisearch'
+- name: Fix permissions
+  community.docker.docker_container_exec:
+    container: hoarder_app
+    user: root
+    argv:
+      - /bin/sh
+      - "-c"
+      - "mkdir -p {{ item }} && chown -R {{ p_apps_user.uid }}:{{ p_apps_user.gid }} {{ item }}"
+  loop:
+    - /.cache/node
+    - /app
