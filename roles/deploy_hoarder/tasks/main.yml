@@ -15,5 +15,5 @@
       - "-c"
       - "mkdir -p {{ item }} && chown -R {{ p_apps_user.uid }}:{{ p_apps_user.gid }} {{ item }}"
   loop:
-    - /.cache/node
+    - /.cache
     - /app
