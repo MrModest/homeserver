@@ -117,6 +117,7 @@
 - [ ] [Nextcloud](https://github.com/nextcloud/all-in-one)
 - [x] [homepage](https://github.com/gethomepage/homepage)
 - [x] [Portainer](https://docs.portainer.io/v/2.20/start/install-ce/server/docker/linux)
+- [x] [Hoarder](https://github.com/hoarder-app/hoarder)
 - [ ] [Cronicle](https://github.com/jhuckaby/Cronicle)
   - [ ] Move to docker container
 - [ ] [AriaNg](https://hub.docker.com/r/hurlenko/aria2-ariang)
