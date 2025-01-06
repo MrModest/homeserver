@@ -31,6 +31,15 @@
   tags:
     - cronicle
 
+- name: Install 'docker ps' alternative
+  ansible.builtin.get_url:
+    url: https://github.com/Mikescher/better-docker-ps/releases/download/v1.12/dops_linux-amd64-static
+    dest: /usr/local/bin/dops
+    mode: '0555'
+  become: true
+  tags:
+    - dops
+
 - name: Setup aliases
   ansible.builtin.template:
     src: aliases.sh.j2

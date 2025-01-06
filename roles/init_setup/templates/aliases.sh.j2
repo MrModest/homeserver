@@ -20,8 +20,9 @@ alias d-container-restart='docker container restart'
 
 alias dcu='docker compose up -d'
 alias dcd='docker compose down'
-
-alias d-ps='docker ps | bat'
+{% raw %}
+alias d-ps='dops --color true --sort Status --format "table {{.Names}}\\t{{.State}}\\t{{.Status}}\\t{{.IP}}\\t{{.ExposedPorts}}\\t{{.CreatedAt}}"'
+{% endraw %}
 alias d-logs-f='docker logs -f'
 
 function d-logs() {
