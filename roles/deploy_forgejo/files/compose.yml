@@ -10,6 +10,9 @@ services:
       - FORGEJO__database__NAME=forgejo
       - FORGEJO__database__USER=forgejo
       - FORGEJO__database__PASSWD=forgejo
+      - FORGEJO__server_ROOT_URL=https://${APP_HOST}/
+      - FORGEJO__server_SSH_DOMAIN=${APP_HOST}
+      - FORGEJO__server_DOMAIN=${APP_HOST}
     restart: unless-stopped
     volumes:
       - ${APP_DATA_PATH}/data:/var/lib/gitea

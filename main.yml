@@ -123,6 +123,8 @@
     - name: Deploy 'forgejo'
       ansible.builtin.import_role:
         name: deploy_forgejo
+      vars:
+        frgj_app_host: 'forgejo.{{ g_duckdns_domain }}'
       tags:
         - applications
         - forgejo
