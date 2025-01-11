@@ -19,7 +19,6 @@
       - jq # to pipe jsons
       - bat # 'cat' replacement
       - acl # Access Control List
-      - eza # 'ls' and 'tree' replacement
       - tmux # keep long cli sessions running with laptop turned off
       - ncdu # check free disk space
     state: present
@@ -30,6 +29,12 @@
   become: true
   tags:
     - cronicle
+
+- name: Install 'eza' # 'ls' and 'tree' replacement
+  ansible.builtin.import_tasks: install_eza.yml
+  become: true
+  tags:
+    - eza
 
 - name: Install 'docker ps' alternative
   ansible.builtin.get_url:
