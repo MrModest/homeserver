@@ -128,3 +128,10 @@
       tags:
         - applications
         - forgejo
+
+    - name: Deploy 'readeck'
+      ansible.builtin.import_role:
+        name: deploy_readeck
+      tags:
+        - applications
+        - readeck

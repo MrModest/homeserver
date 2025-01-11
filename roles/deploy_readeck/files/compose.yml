@@ -1,0 +1,14 @@
+services:
+  readeck:
+    image: codeberg.org/readeck/readeck:${APP_VERSION}
+    restart: unless-stopped
+    user: ${APP_USER}:${APP_GROUP}
+    container_name: readeck
+    hostname: readeck
+    volumes:
+      - ${APP_DATA_PATH}/data:/readeck
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

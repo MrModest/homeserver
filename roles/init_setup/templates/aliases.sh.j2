@@ -24,6 +24,7 @@ alias dcu='docker compose up -d'
 alias dcd='docker compose down'
 {% raw %}
 alias d-ps='dops --color true --sort Status --format "table {{.Names}}\\t{{.State}}\\t{{.Status}}\\t{{.IP}}\\t{{.ExposedPorts}}\\t{{.CreatedAt}}"'
+alias d-ps-l='dops --color true --sort Status --format "table {{.Names}}\\t{{.State}}\\t{{.Status}}\\t{{.IP}}\\t{{.ExposedPorts}}\\t{{.CreatedAt}}\\t{{.Mounts}}" | bat'
 {% endraw %}
 alias d-logs-f='docker logs -f'
 
