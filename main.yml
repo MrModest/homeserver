@@ -119,3 +119,10 @@
       tags:
         - applications
         - hoarder
+
+    - name: Deploy 'forgejo'
+      ansible.builtin.import_role:
+        name: deploy_forgejo
+      tags:
+        - applications
+        - forgejo
