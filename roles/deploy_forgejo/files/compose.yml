@@ -6,7 +6,7 @@ services:
     user: ${APP_USER}:${APP_GROUP}
     environment:
       - FORGEJO__database__DB_TYPE=postgres
-      - FORGEJO__database__HOST=db:5432
+      - FORGEJO__database__HOST=forgejo-db:5432
       - FORGEJO__database__NAME=forgejo
       - FORGEJO__database__USER=forgejo
       - FORGEJO__database__PASSWD=forgejo
@@ -21,6 +21,9 @@ services:
 
   forgejo-db:
     image: postgres:${PG_VERSION}
+    container_name: forgejo_pg
+    hostname: forgejo_pg
+    user: ${APP_USER}:${APP_GROUP}
     restart: unless-stopped
     environment:
       - POSTGRES_USER=forgejo
