@@ -62,3 +62,4 @@ compactor:
 limits_config:
   retention_period: 180d
   max_query_series: 100000
+  reject_old_samples: false
