@@ -1,9 +1,9 @@
 ---
 obs_apps_version:
-  grafana: '10.1.9'
-  loki: '2.8.11'
-  promtail: '3.0.0'
-  prometheus: 'v2.51.1'
+  grafana: '11.4.0'
+  loki: '3.1.2'
+  promtail: '3.1.2'
+  prometheus: 'v3.1.0'
   cadvisor: 'v0.49.1'
 # obs_grafana_user:
 #   name: grafana

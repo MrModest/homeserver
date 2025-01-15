@@ -40,13 +40,20 @@ schema_config:
       index:
         prefix: index_
         period: 24h
+    - from: 2025-01-15
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
 
 ruler:
   alertmanager_url: http://localhost:9093
 
 compactor:
   working_directory: /data/loki/retention
-  shared_store: filesystem
+  delete_request_store: filesystem
   compaction_interval: 10m
   retention_enabled: true
   retention_delete_delay: 2h
