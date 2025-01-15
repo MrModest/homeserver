@@ -20,7 +20,7 @@ scrape_configs:
       - targets: ['host.docker.internal:9100']
   - job_name: immich_api
     static_configs:
-      - targets: ['immich-server:8081']
+      - targets: ['immich_server:8081']
   - job_name: immich_microservices
     static_configs:
-      - targets: ['immich-server:8082']
+      - targets: ['immich_server:8082']
