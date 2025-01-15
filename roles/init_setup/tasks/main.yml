@@ -21,6 +21,7 @@
       - acl # Access Control List
       - tmux # keep long cli sessions running with laptop turned off
       - ncdu # check free disk space
+      - smartmontools # check disk health
     state: present
   become: true
 

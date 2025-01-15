@@ -137,3 +137,7 @@ function zfs-docker-cleanup() {
   snapshots_count=$(zfs get mounted | grep "mounted   no" | grep "fast-tank/docker/data-root" | awk '{print $1}' | wc -l)
   echo "Docker lagacy snapshots after: $snapshots_count"
 }
+
+function smartctl-selftest-status(){
+  sudo smartctl -aj $1 | jq .ata_smart_data.self_test.status
+}

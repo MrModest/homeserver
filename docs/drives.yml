@@ -35,3 +35,16 @@
     - scsi-350014ee269be2a21
     - scsi-SATA_WDC_WD20EZAZ-00L_WD-WXC2A51F94ST
     - wwn-0x50014ee269be2a21
+
+- name: Seagate ST2000VM003-1ET164
+  serial: W5238D50
+  dev: sdd
+  size: 1.8T
+  purpose: slow pool
+  by-ids:
+    - ata-ST2000VM003-1ET164_W5238D50
+    - scsi-0ATA_ST2000VM003-1ET1_W5238D50
+    - scsi-1ATA_ST2000VM003-1ET164_W5238D50
+    - scsi-35000c5009bbb5049
+    - scsi-SATA_ST2000VM003-1ET1_W5238D50
+    - wwn-0x5000c5009bbb5049
