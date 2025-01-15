@@ -1,8 +1,8 @@
 ---
 imch_app_port: 2283
 
-imch_app_version: v1.113.0
-imch_redis_version: 6.2-alpine@sha256:e3b17ba9479deec4b7d1eeec1548a253acc5374d68d3b27937fcfe4df8d18c7e
+imch_app_version: v1.124.2
+imch_redis_version: 6.2-alpine@sha256:eaba718fecd1196d88533de7ba49bf903ad33664a92debb24660a922ecd9cac8
 imch_postgres_version: pg14-v0.2.0@sha256:90724186f0a3517cf6914295b5ab410db9ce23190a2d9d0b9dd6463e3fa298f0
 
 imch_db_password: placeholder
