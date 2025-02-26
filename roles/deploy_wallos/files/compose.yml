@@ -6,6 +6,8 @@ services:
     user: '0' #root
     environment:
       TZ: ${TIMEZONE}
+      PUID: ${APP_USER}
+      PGID: ${APP_GROUP}
     env_file:
       - .env
     volumes:
