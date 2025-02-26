@@ -135,3 +135,10 @@
       tags:
         - applications
         - readeck
+
+    - name: Deploy 'wallos'
+      ansible.builtin.import_role:
+        name: deploy_wallos
+      tags:
+        - applications
+        - wallos

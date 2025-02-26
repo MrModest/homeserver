@@ -1,0 +1,19 @@
+services:
+  wallos:
+    image: bellamy/wallos:${APP_VERSION}
+    container_name: wallos
+    hostname: wallos
+    user: '0' #root
+    environment:
+      TZ: ${TIMEZONE}
+    env_file:
+      - .env
+    volumes:
+      - '${APP_DATA_PATH}/db:/var/www/html/db'
+      - '${APP_DATA_PATH}/logos:/var/www/html/images/uploads/logos'
+    restart: unless-stopped
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork
