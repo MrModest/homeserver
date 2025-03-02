@@ -114,6 +114,8 @@
 - [ ] ~~[Dockge](https://github.com/louislam/dockge)~~
 - [x] [Paperless](https://github.com/paperless-ngx/paperless-ngx)
 - [ ] [Nextcloud](https://github.com/nextcloud/all-in-one)
+  - or OwnCloud Infinite Scale 
+  - or OpenCloud
 - [x] [homepage](https://github.com/gethomepage/homepage)
 - [x] [Portainer](https://docs.portainer.io/v/2.20/start/install-ce/server/docker/linux)
 - [x] [Hoarder](https://github.com/hoarder-app/hoarder)
@@ -129,11 +131,9 @@
 - [ ] [NoteCalc](https://github.com/bbodi/notecalc3)
 - [ ] [Open Speed Test](https://hub.docker.com/r/openspeedtest/latest)
 - [ ] [pgAdmin](https://hub.docker.com/r/dpage/pgadmin4/)
-- [ ] Nextcloud
-  - [ ] or Owncloud
 - [ ] Syncthings
   - [ ] Configure sync Paperless folders to NextCloud
 
 ### "Bare metal" Applications
-  - [ ] [Cockpit](https://cockpit-project.org/)
+  - [ ] ~~[Cockpit](https://cockpit-project.org/)~~
   - [ ] [Kasm](https://www.kasmweb.com/docs/latest/install/single_server_install.html)
