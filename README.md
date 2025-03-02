@@ -104,10 +104,9 @@
   - [x] Configure DB dumps
   - [ ] Configure auto snapshoting
   - [ ] Configure backuping from snapshots
-- [ ] Configure remote access without public exposure
-  - [ ] Choose between Tailscale and Wireguard
-- [ ] Configure local DNS
-  - [ ] Setup [PiHole](https://github.com/pi-hole/docker-pi-hole/?tab=readme-ov-file#quick-start)
+- [x] Configure remote access without public exposure (Tailscale)
+- [x] Configure local DNS
+  - [x] Setup [PiHole](https://github.com/pi-hole/docker-pi-hole/?tab=readme-ov-file#quick-start)
 
 ### Docker Applications
 - [x] [Immich](https://github.com/immich-app/immich)
@@ -118,6 +117,7 @@
 - [x] [homepage](https://github.com/gethomepage/homepage)
 - [x] [Portainer](https://docs.portainer.io/v/2.20/start/install-ce/server/docker/linux)
 - [x] [Hoarder](https://github.com/hoarder-app/hoarder)
+- [X] [Wallos](https://github.com/ellite/Wallos)
 - [ ] [Cronicle](https://github.com/jhuckaby/Cronicle)
   - [ ] Move to docker container
 - [ ] [AriaNg](https://hub.docker.com/r/hurlenko/aria2-ariang)
