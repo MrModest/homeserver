@@ -114,7 +114,7 @@
 - [ ] ~~[Dockge](https://github.com/louislam/dockge)~~
 - [x] [Paperless](https://github.com/paperless-ngx/paperless-ngx)
 - [ ] [Nextcloud](https://github.com/nextcloud/all-in-one)
-  - or OwnCloud Infinite Scale 
+  - or OwnCloud Infinite Scale
   - or OpenCloud
 - [x] [homepage](https://github.com/gethomepage/homepage)
 - [x] [Portainer](https://docs.portainer.io/v/2.20/start/install-ce/server/docker/linux)
@@ -127,6 +127,7 @@
 - [ ] [Stirling-PDF](https://github.com/Stirling-Tools/Stirling-PDF/tree/main)
 - [ ] [Jellyfin](https://jellyfin.org/docs/general/installation/container)
 - [x] [Grist](https://github.com/gristlabs/grist-core)
+- [ ] [SilverBullet](https://github.com/silverbulletmd/silverbullet)
 - [ ] [n8n](https://docs.n8n.io/hosting/installation/docker/)
 - [ ] [NoteCalc](https://github.com/bbodi/notecalc3)
 - [ ] [Open Speed Test](https://hub.docker.com/r/openspeedtest/latest)
