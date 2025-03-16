@@ -1,0 +1,22 @@
+services:
+  silverbullet:
+    image: ghcr.io/silverbulletmd/silverbullet:${APP_VERSION}
+    container_name: 'silverbullet'
+    hostname: 'silverbullet'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      TZ: ${TIMEZONE}
+      PUID: ${APP_USER}
+      PGID: ${APP_GROUP}
+
+      SB_INDEX_PAGE: HOME
+    env_file:
+      - .env
+    volumes:
+      - '${APP_DATA_PATH}/space:/space'
+    restart: unless-stopped
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

@@ -142,3 +142,10 @@
       tags:
         - applications
         - wallos
+
+    - name: Deploy 'silverbullet'
+      ansible.builtin.import_role:
+        name: deploy_silverbullet
+      tags:
+        - applications
+        - silverbullet
