@@ -1,0 +1,22 @@
+services:
+  glance:
+    image: glanceapp/glance:${APP_VERSION}
+    container_name: 'glance'
+    hostname: 'glance'
+    user: '0' # root because we need to access docker.sock
+    environment:
+      TZ: ${TIMEZONE}
+      PUID: ${APP_USER}
+      PGID: ${APP_GROUP}
+    env_file:
+      - .env
+    volumes:
+      - '${APP_DATA_PATH}/config:/app/config'
+      - '${APP_DATA_PATH}/assets:/app/assets'
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

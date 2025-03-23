@@ -1,0 +1,8 @@
+server:
+  assets-path: /app/assets
+
+#theme:
+#  custom-css-file: /assets/user.css
+
+pages:
+  !include: home.yml

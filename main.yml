@@ -149,3 +149,10 @@
       tags:
         - applications
         - silverbullet
+
+    - name: Deploy 'glance'
+      ansible.builtin.import_role:
+        name: deploy_glance
+      tags:
+        - applications
+        - glance
