@@ -12,26 +12,41 @@
           feeds:
             - url: https://selfh.st/rss/
               title: selfh.st
-            - url: https://ciechanow.ski/atom.xml
-            - url: https://www.joshwcomeau.com/rss.xml
-              title: Josh Comeau
-            - url: https://samwho.dev/rss.xml
-            - url: https://ishadeed.com/feed.xml
-              title: Ahmad Shadeed
-
-        - type: twitch-channels
-          channels:
-            - theprimeagen
-            - j_blow
-            - piratesoftware
-            - cohhcarnage
-            - christitustech
-            - EJ_SA
 
     - size: full
       widgets:
         - type: group
           widgets:
+            - type: monitor
+              cache: 1m
+              title: Services
+              sites:
+                - title: Immich
+                  icon: di:immich
+                  url: https://immich.mrmodest.duckdns.org
+                - title: Paperless
+                  icon: di:paperless-ngx
+                  url: https://paperless.mrmodest.duckdns.org
+                - title: Grist
+                  icon: di:grist
+                  check-url: http://grist_app:8484/status
+                  url: https://grist.mrmodest.duckdns.org
+                - title: Forgejo
+                  icon: di:forgejo
+                  url: https://forgejo.mrmodest.duckdns.org
+                - title: Hoarder
+                  icon: di:hoarder-light
+                  url: https://hoarder.mrmodest.duckdns.org
+                - title: Readeck
+                  icon: di:readeck
+                  url: https://readeck.mrmodest.duckdns.org
+                - title: Wallos
+                  icon: di:wallos.png
+                  url: https://wallos.mrmodest.duckdns.org
+                - title: SilverBullet
+                  icon: di:silverbullet.png
+                  url: https://silverbullet.mrmodest.duckdns.org
+
             - type: hacker-news
             - type: lobsters
 

@@ -1,0 +1,218 @@
+/* ==========================================================================
+   BASE & GENERAL STYLES
+   ========================================================================== */
+
+   html, body {
+    overflow-x: hidden;
+  }
+
+  body {
+    --color-widget-background: rgba(9, 11, 16, 0);
+    --color-primary: hsl(210.46deg 16% 76.94%);
+    --color-positive: hsl(116.2deg 34.43% 28%);
+    --border-radius: 10px;
+    font-family: system-ui;
+    background-image: url("/assets/glc-wp.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Header & Layout Components */
+  .header {
+    -webkit-box-shadow: 0 7px 9px -1px rgb(0 0 0 / 50%);
+    -moz-box-shadow: 0 7px 9px -1px rgb(0 0 0 / 50%);
+    box-shadow: 0 7px 9px -1px rgb(0 0 0 / 50%);
+  }
+
+  .widget-header {
+    text-shadow: 0 0 5px black !important;
+    overflow: visible !important;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    padding-right: 5px;
+  }
+
+  .widget-header:after {
+    content: "";
+    display: inline-block;
+    height: 5px;
+    background: #5d5d5d33;
+    flex-grow: 1;
+    margin-left: 5px;
+  }
+
+  .widget-group-title {
+    padding-right: 0px;
+  }
+
+  .widget-content:not(.widget-content-frameless) {
+    box-shadow: 0px 3px 18px 0px hsl(var(--bghs), calc(var(--scheme) (var(--scheme) var(--bgl)) - 4.5%));
+    background: rgba(0, 0, 0, 0.70);
+  }
+
+  .widget-content-frame {
+    background: rgba(0, 0, 0, 0.70);
+  }
+
+  /* ==========================================================================
+     COMPONENT STYLES
+     ========================================================================== */
+
+  /* iFrame Widget */
+
+  /* Proxmox Widget */
+  iframe[src="https://your_iframe_url_1"] {
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.5s forwards;
+    width: 800px;
+    height: 700px;
+    overflow: hidden;
+    transform: scale(0.4);
+    transform-origin: 0 0;
+  }
+
+  /* Weather Widget */
+  iframe[src="https://your_iframe_url_2"] {
+    opacity: 0;
+    animation: fadeIn 0.5s ease 0.5s forwards;
+    overflow: hidden;
+    transform: scale(0.8);
+    transform-origin: 0 0;
+    width: 380px;
+    height: 160px;
+  }
+
+  .widget-content.widget-content-frameless:has(iframe[src="https://your_iframe_url_2"]) {
+    height: 130px;
+  }
+
+  /* Cards & List Items */
+  .cards-grid.collapsible-container + .expand-toggle-button {
+    background: rgba(0, 0, 0, 0.70);
+    border-radius: 10px;
+  }
+
+  li {
+    transition: all 200ms ease;
+  }
+
+  li:hover:not(.flex) {
+    background-color: color-mix(in srgb, var(--color-widget-background) 95%, white 5%);
+    padding-left: 5px;
+    border-radius: 5px;
+    transition: all 200ms ease;
+  }
+
+  li.flex {
+    position: relative;
+  }
+
+  li.flex:hover {
+    background-color: color-mix(in srgb, var(--color-widget-background) 95%, white 5%);
+    border-radius: 5px;
+  }
+
+  li.flex.items-center.gap-10 {
+    display: inline-block;
+    width: calc(50% - 1rem);
+    place-items: center;
+  }
+
+  /* Bookmarks */
+  li.flex a.bookmarks-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column-reverse;
+  }
+
+  li.flex .bookmarks-icon-container img {
+    transition: transform 0.2s ease;
+  }
+
+  li.flex:hover .bookmarks-icon-container img {
+    transform: scale(1.2);
+  }
+
+  .bookmarks-group .list.list-gap-2 li:nth-child(2n+3) {
+    margin-top: 1rem;
+  }
+
+  .bookmarks-icon {
+    opacity: 1;
+  }
+
+  .bookmarks-icon-container {
+    margin-bottom: 2rem;
+  }
+
+  .items-center {
+    transition: all 200ms ease;
+  }
+
+  /* Forum & Dynamic Columns */
+  .forum-post-list-thumbnail {
+    width: 10rem;
+    height: 6rem;
+  }
+
+  .dynamic-columns > :not(:nth-child(3n+1)):hover:not(.bookmarks-group) {
+    background-color: color-mix(in srgb, var(--color-widget-background) 95%, white 5%);
+    padding-left: calc(var(--widget-content-horizontal-padding) + 5px);
+    border-radius: 10px;
+    transition: all 200ms ease;
+  }
+
+  .dynamic-columns > :nth-child(3n+1):hover:not(.bookmarks-group) {
+    background-color: color-mix(in srgb, var(--color-widget-background) 95%, white 5%);
+    padding-left: 5px;
+    border-radius: 10px;
+    transition: all 200ms ease;
+  }
+
+  /* ==========================================================================
+     MEDIA QUERIES (OPTIONAL)
+     ========================================================================== */
+
+  @media (max-width: 650px) {
+    html {
+      scrollbar-width: none;
+    }
+
+    body {
+      --color-background: transparent;
+      background-image: none !important;
+    }
+
+    .page {
+      padding-block: unset !important;
+    }
+
+    .header {
+      display: none;
+    }
+
+    .widget-header {
+      display: none !important;
+    }
+
+    .mobile-navigation {
+      display: none !important;
+    }
+  }

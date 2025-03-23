@@ -1,13 +1,16 @@
 ---
-- name: Create conf directory
+- name: Create directories
   ansible.builtin.file:
-    path: '{{ p_dirs.apps_data }}/glance/config'
+    path: '{{ p_dirs.apps_data }}/glance/{{ item }}'
     state: directory
     mode: '{{ p_default_permissions.directory }}'
     owner: '{{ p_apps_user.user }}'
     group: '{{ p_apps_user.group }}'
     recurse: true
   become: true
+  loop:
+    - 'config'
+    - 'assets'
 
 - name: Copy config files
   ansible.builtin.copy:
@@ -22,6 +25,8 @@
       dest: '{{ p_dirs.apps_data }}/glance/config/glance.yml'
     - src: 'home.yml'
       dest: '{{ p_dirs.apps_data }}/glance/config/home.yml'
+    - src: 'style.css'
+      dest: '{{ p_dirs.apps_data }}/glance/assets/style.css'
 
 - name: Start 'glance'
   ansible.builtin.import_tasks: tasks/compose_up.yml
