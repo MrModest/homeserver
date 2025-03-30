@@ -15,8 +15,8 @@
   ansible.builtin.template:
     src: rclone.conf.j2
     dest: "{{ p_dirs.apps_data }}/backrest/rclone/rclone.conf"
-    owner: root
-    group: root
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
     mode: '{{ p_default_permissions.file }}'
   become: true
 
@@ -24,7 +24,7 @@
   ansible.builtin.template:
     src: backrest-config.json.j2
     dest: "{{ p_dirs.apps_data }}/backrest/config/config.json"
-    owner: root
-    group: root
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
     mode: '{{ p_default_permissions.file }}'
   become: true
