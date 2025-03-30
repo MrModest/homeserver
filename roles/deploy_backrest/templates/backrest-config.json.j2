@@ -5,6 +5,7 @@
   "repos":  [
     {
       "id":  "main__local",
+      "guid": "7c7b38bd692bc129b2634562fcc543f37960adce48529db19d26e81687d27ba1",
       "uri":  "/repos/main",
       "prunePolicy":  {
         "maxUnusedPercent":  10
@@ -19,6 +20,7 @@
     },
     {
       "id":  "main__mailru-webdav",
+      "guid": "eb974d82f45f660be250877977f9c21130d233cc309cf60f8efa7d9f11f2a08c",
       "uri":  "rclone:mailru-webdav:{{ bkrs_rclone_config.mailru.backup_path }}/main",
       "prunePolicy":  {
         "maxUnusedPercent":  10
@@ -27,6 +29,47 @@
         "readDataSubsetPercent":  100
       },
       "commandPrefix":  {}
+    },
+    {
+      "id": "paperless_docs__local",
+      "guid": "3f5c1d2e16f1fcfe96d5ea707cd6644bf8db30292e3a9899302e301bd2e920a8",
+      "uri": "/repos/paperless_docs",
+      "prunePolicy": {
+        "maxUnusedPercent": 10
+      },
+      "checkPolicy": {
+        "readDataSubsetPercent": 100,
+        "schedule": {
+          "clock": "CLOCK_LAST_RUN_TIME",
+          "maxFrequencyDays": 1
+        }
+      },
+      "commandPrefix": {
+        "ioNice": "IO_DEFAULT",
+        "cpuNice": "CPU_DEFAULT"
+      }
+    },
+    {
+      "id": "paperless_docs__mailru-webdav",
+      "guid": "5cd8530ac6e17cd34fe7785f4c89c2b63c468d3e119c4098646d4507d58cfece",
+      "uri": "rclone:mailru-webdav:{{ bkrs_rclone_config.mailru.backup_path }}/paperless_docs",
+      "prunePolicy": {
+        "maxUnusedPercent": 10,
+        "schedule": {
+          "clock": "CLOCK_DEFAULT"
+        }
+      },
+      "checkPolicy": {
+        "readDataSubsetPercent": 100,
+        "schedule": {
+          "clock": "CLOCK_LAST_RUN_TIME",
+          "maxFrequencyDays": 30
+        }
+      },
+      "commandPrefix": {
+        "ioNice": "IO_DEFAULT",
+        "cpuNice": "CPU_DEFAULT"
+      }
     }
   ],
   "plans":  [
@@ -89,6 +132,59 @@
       "backup_flags":  [
         "--compression max"
       ]
+    },
+    {
+      "id": "paperless_docs__local__weekly",
+      "repo": "paperless_docs__local",
+      "paths": [
+        "/hostfs{{ p_dirs.slow_data }}/paperless/media/documents/originals",
+        "/hostfs{{ p_dirs.slow_data }}/paperless/trash"
+      ],
+      "excludes": [],
+      "iexcludes": [],
+      "schedule": {
+        "clock": "CLOCK_DEFAULT",
+        "cron": "0 3 * * 1"
+      },
+      "backup_flags": [
+        "--compression max"
+      ],
+      "retention": {
+        "policyTimeBucketed": {
+          "yearly": 1,
+          "monthly": 2,
+          "weekly": 4,
+          "daily": 0,
+          "hourly": 0
+        }
+      },
+      "hooks": []
+    },
+    {
+      "id": "paperless_docs__mailru-webdav",
+      "repo": "paperless_docs__mailru-webdav",
+      "paths": [
+        "/hostfs{{ p_dirs.slow_data }}/paperless/media/documents/originals",
+        "/hostfs{{ p_dirs.slow_data }}/paperless/trash"
+      ],
+      "excludes": [],
+      "iexcludes": [],
+      "schedule": {
+        "clock": "CLOCK_DEFAULT"
+      },
+      "backup_flags": [
+        "--compression max"
+      ],
+      "retention": {
+        "policyTimeBucketed": {
+          "yearly": 1,
+          "monthly": 2,
+          "weekly": 4,
+          "daily": 0,
+          "hourly": 0
+        }
+      },
+      "hooks": []
     }
   ],
   "auth":  {
