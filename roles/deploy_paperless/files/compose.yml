@@ -51,7 +51,7 @@ services:
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless_gotenberg:3000
       PAPERLESS_TIKA_ENDPOINT: http://paperless_tika:9998
       PAPERLESS_EMPTY_TRASH_DIR: /usr/src/paperless/trash
-      PAPERLESS_FILENAME_FORMAT: '{correspondent}/{created_year}/[{created}] {title}'
+      PAPERLESS_FILENAME_FORMAT: '{{correspondent}}/{{created_year}}/[{{created}}] {{title}}'
       PAPERLESS_OCR_LANGUAGE: deu+eng+rus
       PAPERLESS_OCR_LANGUAGES: rus
       PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true, "continue_on_soft_render_error": true}'
