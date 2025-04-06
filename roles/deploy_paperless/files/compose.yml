@@ -54,7 +54,7 @@ services:
       PAPERLESS_FILENAME_FORMAT: '{correspondent}/{created_year}/[{created}] {title}'
       PAPERLESS_OCR_LANGUAGE: deu+eng+rus
       PAPERLESS_OCR_LANGUAGES: rus
-      PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true}'
+      PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true, "continue_on_soft_render_error": true}'
       PAPERLESS_SECRET_KEY: ${SECRET_KEY}
       PAPERLESS_URL: ${APP_DOMAIN}
       PAPERLESS_ADMIN_USER: admin
