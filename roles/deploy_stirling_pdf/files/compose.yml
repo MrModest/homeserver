@@ -1,0 +1,26 @@
+services:
+  stirling_pdf:
+    image: docker.stirlingpdf.com/stirlingtools/stirling-pdf:${APP_VERSION}
+    container_name: 'stirling_pdf'
+    hostname: 'stirling_pdf'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      TZ: ${TIMEZONE}
+      PUID: ${APP_USER}
+      PGID: ${APP_GROUP}
+      LANGS: en_GB
+      DOCKER_ENABLE_SECURITY: false
+    env_file:
+      - .env
+    volumes:
+      - '${APP_DATA_PATH}/trainingData:/usr/share/tessdata'
+      - '${APP_DATA_PATH}/extraConfigs:/configs'
+      - '${APP_DATA_PATH}/customFiles:/customFiles'
+      - '${APP_DATA_PATH}/logs:/logs'
+      - '${APP_DATA_PATH}/pipeline:/pipeline'
+    restart: unless-stopped
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

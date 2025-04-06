@@ -156,3 +156,10 @@
       tags:
         - applications
         - glance
+
+    - name: Deploy 'stirling_pdf'
+      ansible.builtin.import_role:
+        name: deploy_stirling_pdf
+      tags:
+        - applications
+        - stirling_pdf

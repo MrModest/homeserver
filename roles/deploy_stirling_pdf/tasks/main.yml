@@ -1,0 +1,21 @@
+---
+- name: Copy OCR training data
+  ansible.builtin.copy:
+    src: 'ocr/'
+    dest: '{{ p_dirs.apps_data }}/stirling_pdf/trainingData/'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.directory }}'
+  become: true
+
+- name: Start 'stirling_pdf'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'stirling_pdf'
+    t_app_data_dirs:
+      - '{{ p_dirs.apps_data }}/stirling_pdf/trainingData'
+      - '{{ p_dirs.apps_data }}/stirling_pdf/extraConfigs'
+      - '{{ p_dirs.apps_data }}/stirling_pdf/customFiles'
+      - '{{ p_dirs.apps_data }}/stirling_pdf/logs'
+      - '{{ p_dirs.apps_data }}/stirling_pdf/pipeline'
+  become: true
