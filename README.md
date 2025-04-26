@@ -128,6 +128,7 @@
 - [ ] [Jellyfin](https://jellyfin.org/docs/general/installation/container)
 - [x] [Grist](https://github.com/gristlabs/grist-core)
 - [x] [SilverBullet](https://github.com/silverbulletmd/silverbullet)
+- [x] [Planka](https://github.com/plankanban/planka)
 - [ ] [n8n](https://docs.n8n.io/hosting/installation/docker/)
 - [ ] [NoteCalc](https://github.com/bbodi/notecalc3)
 - [ ] [Open Speed Test](https://hub.docker.com/r/openspeedtest/latest)
