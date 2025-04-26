@@ -1,0 +1,43 @@
+services:
+  planka:
+    image: ghcr.io/plankanban/planka:${APP_VERSION}
+    container_name: 'planka'
+    hostname: 'planka'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      TZ: ${TIMEZONE}
+      BASE_URL: ${BASE_URL}
+      DATABASE_URL: postgresql://postgres@planka-db/planka
+      SECRET_KEY: '${SECRET_KEY}'
+    env_file:
+      - .env
+    volumes:
+      - ${APP_DATA_PATH}/user-avatars:/app/public/user-avatars
+      - ${APP_DATA_PATH}/project-bg-images:/app/public/project-background-images
+      - ${APP_DATA_PATH}/attachments:/app/private/attachments
+    restart: unless-stopped
+    depends_on:
+      planka-db:
+        condition: service_healthy
+
+  planka-db:
+    image: postgres:${DB_VERSION}
+    container_name: 'planka-db'
+    hostname: 'planka-db'
+    user: '${APP_USER}:${APP_GROUP}'
+    restart: unless-stopped
+    volumes:
+      - ${APP_DATA_PATH}/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: planka
+      POSTGRES_HOST_AUTH_METHOD: trust
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d planka']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

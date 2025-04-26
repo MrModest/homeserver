@@ -163,3 +163,12 @@
       tags:
         - applications
         - stirling_pdf
+
+    - name: Deploy 'planka'
+      ansible.builtin.import_role:
+        name: deploy_planka
+      vars:
+        pnk_app_host: 'https://planka.{{ g_duckdns_domain }}'
+      tags:
+        - applications
+        - planka
