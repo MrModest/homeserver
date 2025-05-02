@@ -133,6 +133,7 @@
 - [ ] [NoteCalc](https://github.com/bbodi/notecalc3)
 - [ ] [Open Speed Test](https://hub.docker.com/r/openspeedtest/latest)
 - [ ] [pgAdmin](https://hub.docker.com/r/dpage/pgadmin4/)
+- [ ] [changedetection.io](https://github.com/dgtlmoon/changedetection.io)
 - [ ] Syncthings
   - [ ] Configure sync Paperless folders to NextCloud
 
