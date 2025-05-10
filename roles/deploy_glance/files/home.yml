@@ -5,6 +5,15 @@
         - type: calendar
           first-day-of-week: monday
 
+        - type: extension
+          title: To Do
+          title-url: https://app.todoist.com/
+          cache: 1m
+          url: http://glance-ext:9999/todoist
+          allow-potentially-dangerous-html: true
+          parameters:
+            filter: PrivateToday
+
         - type: rss
           limit: 10
           collapse-after: 3

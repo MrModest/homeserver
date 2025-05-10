@@ -15,6 +15,17 @@ services:
       - '${APP_DATA_PATH}/assets:/app/assets'
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
+  glance-ext:
+    build:
+      context: https://github.com/MrModest/glance-extensions.git#09927b183adc22cfb93b37125ae6cb340bca2918
+      dockerfile: Dockerfile
+    container_name: glance-ext
+    hostname: glance-ext
+    environment:
+      APP__PORT: 9999
+      TODOIST__TOKEN: 955fae3fbc1f01f9e3528c25712e31b114370757
+      TODOIST__FILTER__WORKTODAY: '(Overdue | Today) & (workspace: Work | @💼 WorkTime)'
+      TODOIST__FILTER__PRIVATETODAY: '(Overdue | Today) & !workspace: Work'
 
 networks:
   default:
