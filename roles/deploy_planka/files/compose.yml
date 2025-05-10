@@ -13,6 +13,7 @@ services:
       - .env
     volumes:
       - ${APP_DATA_PATH}/user-avatars:/app/public/user-avatars
+      - ${APP_DATA_PATH}/logs:/app/logs
       - ${APP_DATA_PATH}/project-bg-images:/app/public/project-background-images
       - ${APP_DATA_PATH}/attachments:/app/private/attachments
     restart: unless-stopped

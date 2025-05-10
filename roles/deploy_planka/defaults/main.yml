@@ -1,4 +1,4 @@
 ---
-pnk_app_version: '1.26.1'
+pnk_app_version: '1.26.2'
 pnk_db_version: '16-alpine'
 pnk_app_host: 'PLACEHOLDER'
