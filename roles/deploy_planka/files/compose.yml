@@ -6,15 +6,17 @@ services:
     user: '${APP_USER}:${APP_GROUP}'
     environment:
       TZ: ${TIMEZONE}
+      DEFAULT_LANGUAGE: en-US
       BASE_URL: ${BASE_URL}
       DATABASE_URL: postgresql://postgres@planka-db/planka
       SECRET_KEY: '${SECRET_KEY}'
     env_file:
       - .env
     volumes:
+      - ${APP_DATA_PATH}/favicons:/app/public/favicons
       - ${APP_DATA_PATH}/user-avatars:/app/public/user-avatars
       - ${APP_DATA_PATH}/logs:/app/logs
-      - ${APP_DATA_PATH}/project-bg-images:/app/public/project-background-images
+      - ${APP_DATA_PATH}/bg-images:/app/public/background-images
       - ${APP_DATA_PATH}/attachments:/app/private/attachments
     restart: unless-stopped
     depends_on:
