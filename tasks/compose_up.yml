@@ -76,8 +76,8 @@
     line: "APP_GROUP='{{ p_apps_user.gid }}'"
   become: true
 
-# - name: Create and start services
-#   community.docker.docker_compose_v2:
-#     project_src: '{{ p_dirs.compose_files }}/{{ t_app_name }}'
-#   become: true
-#   when: ansible_check_mode is false
+- name: Create and start services
+  community.docker.docker_compose_v2:
+    project_src: '{{ p_dirs.compose_files }}/{{ t_app_name }}'
+  become: true
+  when: ansible_check_mode is false
