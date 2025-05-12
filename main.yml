@@ -153,6 +153,8 @@
     - name: Deploy 'glance'
       ansible.builtin.import_role:
         name: deploy_glance
+      vars:
+        glnc_todoist_token: '{{ v_glance.todoist_token }}'
       tags:
         - applications
         - glance
