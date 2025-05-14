@@ -2,17 +2,36 @@
   columns:
     - size: small
       widgets:
-        - type: calendar
-          first-day-of-week: monday
 
-        - type: extension
-          title: To Do
-          title-url: https://app.todoist.com/
-          cache: 1m
-          url: http://glance-ext:9999/todoist
-          allow-potentially-dangerous-html: true
-          parameters:
-            filter: PrivateToday
+        - type: group
+          widgets:
+            - type: extension
+              title: To Do
+              title-url: https://app.todoist.com/
+              cache: 1m
+              url: http://glance-ext:9999/todoist
+              allow-potentially-dangerous-html: true
+              parameters:
+                filter: PrivateToday
+
+            - type: calendar
+              first-day-of-week: monday
+
+        - type: weather
+          location: Berlin, Germany
+          units: metric
+          hour-format: 24h
+
+        - type: markets
+          markets:
+            - symbol: DHER.DE
+              name: Delivery Hero
+
+        - type: releases
+          cache: 1d
+          repositories:
+            - glanceapp/glance
+            - immich-app/immich
 
         - type: rss
           limit: 10
@@ -61,47 +80,12 @@
 
         - type: videos
           channels:
-            - UCXuqSBlHAE6Xw-yeJA0Tunw # Linus Tech Tips
-            - UCR-DXc1voovS8nhAvccRZhg # Jeff Geerling
-            - UCsBjURrPoezykLs9EqgamOA # Fireship
-            - UCBJycsmduvYEL83R_U4JriQ # Marques Brownlee
-            - UCHnyfMqiRRG1u-2MsSQLbXA # Veritasium
+            - UCGKEMK3s-ZPbjVOIuAV8clQ # Core Dumped
+            - UC_gKMJFeCf1bKzZr_fICkig # TheDRZJ
+            - UCBfZ377Tp-L-YYpAKtpSHcg # HUDAKOV
 
         - type: group
           widgets:
             - type: reddit
-              subreddit: technology
-              show-thumbnails: true
-            - type: reddit
               subreddit: selfhosted
               show-thumbnails: true
-
-    - size: small
-      widgets:
-        - type: weather
-          location: Berlin, Germany
-          units: metric
-          hour-format: 24h
-          # Optionally hide the location from being displayed in the widget
-          # hide-location: true
-
-        - type: markets
-          markets:
-            - symbol: SPY
-              name: S&P 500
-            - symbol: BTC-USD
-              name: Bitcoin
-            - symbol: NVDA
-              name: NVIDIA
-            - symbol: AAPL
-              name: Apple
-            - symbol: MSFT
-              name: Microsoft
-
-        - type: releases
-          cache: 1d
-          repositories:
-            - glanceapp/glance
-            - go-gitea/gitea
-            - immich-app/immich
-            - syncthing/syncthing
