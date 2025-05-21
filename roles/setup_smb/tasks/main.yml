@@ -18,6 +18,7 @@
     samba_netbios_name: '{{ smb_hostname }}'
     samba_server_string: '{{ smb_hostname }}'
     samba_workgroup: '{{ smb_hostname }}'
+    samba_server_min_protocol: SMB2
     samba_global_include: global-include.conf
     samba_load_homes: false
     samba_load_printers: false
@@ -31,8 +32,37 @@
         password: '{{ smb_samba_user.password }}'
     samba_shares_root: '{{ smb_share_root_path }}'
     samba_shares:
-      - name: shared
-        comment: '{{ smb_hostname }} Shared'
+      - name: misc
+        public: false
+        samba_wins_support: true
+        comment: '{{ smb_hostname }} Misc'
+        write_list: '+{{ smb_samba_user.group }}'
+        browseable: true
+        # Note: When used in the [global] section this parameter may have unwanted side effects.
+        # For example: If samba is configured as a MASTER BROWSER (see local master, os level, domain master, preferred master)
+        # this option will prevent workstations from being able to browse the network.
+        valid_users: '+{{ smb_samba_user.group }}'
+      - name: time-machine
+        public: false
+        samba_apple_extensions: true
+        vfs_objects:
+          - name: catia
+          - name: fruit
+            options:
+              - name: time machine
+                value: 'yes'
+              - name: model
+                value: 'MacSamba'
+              - name: nfs_aces
+                value: 'no'
+              - name: advertise_fullsync
+                value: 'true'
+              - name: metadata
+                value: 'stream'
+              - name: posix_rename
+                value: 'yes'
+          - name: streams_xattr
+        comment: '{{ smb_hostname }} TimeMachine'
         write_list: '+{{ smb_samba_user.group }}'
         browseable: true
         # Note: When used in the [global] section this parameter may have unwanted side effects.
@@ -46,4 +76,5 @@
     owner: '{{ smb_samba_user.user }}'
     group: '{{ smb_samba_user.group }}'
     mode: '{{ p_default_permissions.directory }}'
+    recurse: true
   become: true
