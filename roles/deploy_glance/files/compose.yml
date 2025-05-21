@@ -16,9 +16,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
   glance-ext:
-    build:
-      context: https://github.com/MrModest/glance-extensions.git#b6ed2b52fa33a2f6268cfc81f50ad58191656ef8
-      dockerfile: Dockerfile
+    image: ghcr.io/mrmodest/glance-extensions:${EXT_VERSION}
     container_name: glance-ext
     hostname: glance-ext
     user: ${APP_USER}:${APP_GROUP}
