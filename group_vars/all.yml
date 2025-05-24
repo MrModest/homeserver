@@ -21,7 +21,8 @@ g_pools:
     mount_path: /mnt/pools/fast
     drives:
       - /dev/disk/by-id/ata-INTENSO_SSD_1642312002004838
-    mirror: false # ToDo: change to 'true' once buy a redundant SSD
+      - /dev/disk/by-id/ata-INTENSO_SSD_1642410001006905
+    mirror: true
     custom_dirs:
       apps_data_ds: fast-tank/apps-data
       apps_data: '/mnt/pools/fast/apps-data'
