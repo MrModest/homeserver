@@ -1,0 +1,19 @@
+---
+- name: Start 'opencloud'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'opencloud'
+    t_app_data_dirs:
+      - '{{ p_dirs.apps_data }}/opencloud/config'
+      - '{{ p_dirs.apps_data }}/opencloud/data'
+
+- name: Fix permissions
+  community.docker.docker_container_exec:
+    container: collabora
+    user: root
+    argv:
+      - /bin/sh
+      - "-c"
+      - "mkdir -p {{ item }} && chown -R {{ p_apps_user.uid }}:{{ p_apps_user.gid }} {{ item }}"
+  loop:
+    - /etc/coolwsd

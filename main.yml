@@ -24,6 +24,8 @@
     p_default_permissions:
       file: '0644'
       directory: '0754'
+
+    p_base_domain: '{{ g_duckdns_domain }}'
   tasks:
     - name: Show all facts first
       ansible.builtin.debug:
@@ -174,3 +176,13 @@
       tags:
         - applications
         - planka
+
+    - name: Deploy 'opencloud'
+      ansible.builtin.import_role:
+        name: deploy_opencloud
+      vars:
+        opcd_collabora_admin_user: '{{ v_admin_login_user.login }}'
+        opcd_collabora_admin_password: '{{ v_admin_login_user.password }}'
+      tags:
+        - applications
+        - opencloud

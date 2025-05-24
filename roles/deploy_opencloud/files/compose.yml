@@ -1,0 +1,103 @@
+services:
+  opencloud:
+    image: opencloudeu/opencloud-rolling:${APP_VERSION}
+    container_name: 'opencloud'
+    hostname: 'opencloud'
+    user: '${APP_USER}:${APP_GROUP}'
+    entrypoint:
+      - /bin/sh
+    # run opencloud init to initialize a configuration file with random secrets
+    # it will fail on subsequent runs, because the config file already exists
+    # therefore we ignore the error and then start the opencloud server
+    command: ['-c', 'opencloud init || true; opencloud server']
+    environment:
+      # enable services that are not started automatically
+      OC_ADD_RUN_SERVICES: ${START_ADDITIONAL_SERVICES}
+      OC_URL: ${OC_HOST}
+      OC_LOG_LEVEL: info
+      # do not use SSL between the reverse proxy and OpenCloud
+      PROXY_TLS: 'false'
+      # INSECURE: needed if OpenCloud / reverse proxy is using self generated certificates
+      OC_INSECURE: 'true'
+      # basic auth (not recommended, but needed for eg. WebDav clients that do not support OpenID Connect)
+      PROXY_ENABLE_BASIC_AUTH: 'true'
+      # admin user password
+      IDM_ADMIN_PASSWORD: '${ADMIN_PASSWORD:-admin}' # this overrides the admin password from the configuration file
+
+      # Collabora
+      COLLABORA_DOMAIN: ${COLLABORA_HOST}
+      # expose nats and the reva gateway for the collaboration service
+      NATS_NATS_HOST: 0.0.0.0
+      GATEWAY_GRPC_ADDR: 0.0.0.0:9142
+      # make collabora the secure view app
+      FRONTEND_APP_HANDLER_SECURE_VIEW_APP_ADDR: eu.opencloud.api.collaboration.CollaboraOnline
+      GRAPH_AVAILABLE_ROLES: 'b1e2218d-eef8-4d4c-b82d-0f1a1b48f3b5,a8d5fe5e-96e3-418d-825b-534dbdf22b99,fb6c3e19-e378-47e5-b277-9732f9de6e21,58c63c02-1d89-4572-916a-870abc5a1b7d,2d00ce52-1fc2-4dbc-8b95-a73b73395f5a,1c996275-f1c9-4e71-abdf-a42f6495e960,312c0871-5ef7-4b3a-85b6-0e4074c64049,aa97fe03-7980-45ac-9e50-b325749fd7e6'
+    volumes:
+      - ${APP_DATA_PATH}/config:/etc/opencloud
+      - ${APP_DATA_PATH}/data:/var/lib/opencloud
+    restart: unless-stopped
+
+  collaboration: # wopiserver
+    image: opencloudeu/opencloud-rolling:${APP_VERSION}
+    container_name: 'collaboration'
+    hostname: 'collaboration'
+    user: '${APP_USER}:${APP_GROUP}'
+    depends_on:
+      opencloud:
+        condition: service_started
+      collabora:
+        condition: service_healthy
+    entrypoint:
+      - /bin/sh
+    command: ['-c', 'opencloud collaboration server']
+    environment:
+      COLLABORATION_GRPC_ADDR: 0.0.0.0:9301
+      COLLABORATION_HTTP_ADDR: 0.0.0.0:9300
+      MICRO_REGISTRY: 'nats-js-kv'
+      MICRO_REGISTRY_ADDRESS: 'opencloud:9233'
+      COLLABORATION_WOPI_SRC: ${WOPISERVER_HOST}
+      COLLABORATION_APP_NAME: 'CollaboraOnline'
+      COLLABORATION_APP_PRODUCT: 'Collabora'
+      COLLABORATION_APP_ADDR: ${COLLABORA_HOST}
+      COLLABORATION_APP_ICON: ${COLLABORA_HOST}/favicon.ico
+      COLLABORATION_APP_INSECURE: 'true'
+      COLLABORATION_CS3API_DATAGATEWAY_INSECURE: 'true'
+      COLLABORATION_LOG_LEVEL: info
+      OC_URL: ${OC_HOST}
+    volumes:
+      - ${APP_DATA_PATH}/config:/etc/opencloud
+    restart: unless-stopped
+  collabora:
+    image: collabora/code:${COLLABORA_VERSION}
+    container_name: 'collabora'
+    hostname: 'collabora'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      aliasgroup1: ${WOPISERVER_HOST}:443
+      DONT_GEN_SSL_CERT: 'YES'
+      extra_params: |
+        --o:ssl.enable=false \
+        --o:ssl.ssl_verification=false \
+        --o:ssl.termination=true \
+        --o:welcome.enable=false \
+        --o:net.frame_ancestors=${OC_HOST}
+      username: ${COLLABORA_ADMIN_USER}
+      password: ${COLLABORA_ADMIN_PASSWORD}
+    cap_add:
+      - MKNOD
+    restart: unless-stopped
+    entrypoint: ['/bin/bash', '-c']
+    command: ['coolconfig generate-proof-key && /start-collabora-online.sh']
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'bash',
+          '-c',
+          "exec 3<>/dev/tcp/127.0.0.1/9980 && echo -e 'GET /hosting/discovery HTTP/1.1\r\nHost: localhost:9980\r\n\r\n' >&3 && head -n 1 <&3 | grep '200 OK'",
+        ]
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork
