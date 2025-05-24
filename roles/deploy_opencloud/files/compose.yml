@@ -71,7 +71,7 @@ services:
     image: collabora/code:${COLLABORA_VERSION}
     container_name: 'collabora'
     hostname: 'collabora'
-    user: '${APP_USER}:${APP_GROUP}'
+    #user: '${APP_USER}:${APP_GROUP}' - hardcoded in the image
     environment:
       aliasgroup1: ${WOPISERVER_HOST}:443
       DONT_GEN_SSL_CERT: 'YES'
