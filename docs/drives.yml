@@ -2,7 +2,7 @@
 - name: SanDisk SD9SB8W1
   serial: 181156802064
   dev: sda
-  size: 119.2G
+  size: 119GiB (128GB)
   purpose: OS
   by-ids:
     - ata-SanDisk_SD9SB8W128G1001_181156802064
@@ -15,7 +15,7 @@
 - name: INTENSO SSD
   serial: 1642312002004838
   dev: sdc
-  size: 232.9G
+  size: 232GiB (250GB)
   purpose: fast pool
   by-ids:
     - ata-INTENSO_SSD_1642312002004838
@@ -23,10 +23,21 @@
     - scsi-1ATA_INTENSO_SSD_1642312002004838
     - scsi-SATA_INTENSO_SSD_1642312002004838
 
+- name: INTENSO SSD
+  serial: 1642410001006905
+  dev: sdd
+  size: 238GiB (256GB)
+  purpose: fast pool
+  by-ids:
+    - ata-INTENSO_SSD_1642410001006905
+    - scsi-0ATA_INTENSO_SSD_1642410001006905
+    - scsi-1ATA_INTENSO_SSD_1642410001006905
+    - scsi-SATA_INTENSO_SSD_1642410001006905
+
 - name: WDC WD20EZAZ-00L
   serial: WD-WXC2A51F94ST
   dev: sdb
-  size: 1.8T
+  size: 1863GiB (2TB)
   purpose: slow pool
   by-ids:
     - ata-WDC_WD20EZAZ-00L9GB0_WD-WXC2A51F94ST
@@ -38,8 +49,8 @@
 
 - name: Seagate ST2000VM003-1ET164
   serial: W5238D50
-  dev: sdd
-  size: 1.8T
+  dev: sde
+  size: 1863GiB (2TB)
   purpose: slow pool
   by-ids:
     - ata-ST2000VM003-1ET164_W5238D50
