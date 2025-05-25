@@ -14,7 +14,7 @@
     recurse: true
     mode: '{{ p_default_permissions.directory }}'
   become: true
-  loop: '{{ t_app_data_dirs }}'
+  loop: '{{ t_app_data_dirs | default([]) }}'
   loop_control:
     loop_var: dir_path
 

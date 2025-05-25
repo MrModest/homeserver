@@ -17,6 +17,7 @@ services:
       OC_LOG_LEVEL: info
       # do not use SSL between the reverse proxy and OpenCloud
       PROXY_TLS: 'false'
+      PROXY_CSP_CONFIG_FILE_LOCATION: /etc/opencloud/csp.yaml
       # INSECURE: needed if OpenCloud / reverse proxy is using self generated certificates
       OC_INSECURE: 'true'
       # basic auth (not recommended, but needed for eg. WebDav clients that do not support OpenID Connect)
@@ -51,6 +52,7 @@ services:
       - /bin/sh
     command: ['-c', 'opencloud collaboration server']
     environment:
+      OC_URL: ${OC_HOST}
       COLLABORATION_GRPC_ADDR: 0.0.0.0:9301
       COLLABORATION_HTTP_ADDR: 0.0.0.0:9300
       MICRO_REGISTRY: 'nats-js-kv'
@@ -60,10 +62,6 @@ services:
       COLLABORATION_APP_PRODUCT: 'Collabora'
       COLLABORATION_APP_ADDR: ${COLLABORA_HOST}
       COLLABORATION_APP_ICON: ${COLLABORA_HOST}/favicon.ico
-      COLLABORATION_APP_INSECURE: 'true'
-      COLLABORATION_CS3API_DATAGATEWAY_INSECURE: 'true'
-      COLLABORATION_LOG_LEVEL: info
-      OC_URL: ${OC_HOST}
     volumes:
       - ${APP_DATA_PATH}/config:/etc/opencloud
     restart: unless-stopped
