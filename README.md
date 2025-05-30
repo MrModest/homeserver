@@ -111,6 +111,7 @@
   - [ ] Configure [OAuth2](https://docs.goauthentik.io/docs/add-secure-apps/providers/oauth2/create-oauth2-provider)
     - [ ] [twik](https://docs.goauthentik.io/docs/install-config/reverse-proxy) for reverse-proxy support
   - [ ] Configure [LDAP](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap/)
+  - [ ] Configure SSO for Immich as a first app ([doc](https://docs.goauthentik.io/integrations/services/immich/))
 - [x] Configure local DNS
   - [x] Setup [PiHole](https://github.com/pi-hole/docker-pi-hole/?tab=readme-ov-file#quick-start)
 
