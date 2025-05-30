@@ -2,7 +2,6 @@
   columns:
     - size: small
       widgets:
-
         - type: group
           widgets:
             - type: extension
@@ -69,11 +68,14 @@
                   icon: di:readeck
                   url: https://readeck.mrmodest.duckdns.org
                 - title: Wallos
-                  icon: di:wallos.png
+                  icon: di:wallos
                   url: https://wallos.mrmodest.duckdns.org
                 - title: SilverBullet
-                  icon: di:silverbullet.png
+                  icon: di:silverbullet
                   url: https://silverbullet.mrmodest.duckdns.org
+                - title: OpenCloud
+                  icon: di:open-cloud-dark
+                  url: https://opencloud.mrmodest.duckdns.org
 
             - type: hacker-news
             - type: lobsters

@@ -10,6 +10,7 @@
   become: true
   loop:
     - '{{ p_dirs.apps_data }}/opencloud/config'
+    - '{{ p_dirs.apps_data }}/opencloud/apps'
     - '{{ p_dirs.slow_data }}/opencloud/data'
   loop_control:
     loop_var: dir_path

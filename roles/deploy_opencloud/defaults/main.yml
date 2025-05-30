@@ -1,5 +1,9 @@
 ---
 opcd_app_version: '2.3.0'
 opcd_collabora_version: '25.04.2.1.1'
+opcd_ext_versions:
+  unzip: '1.0.2'
+  jsonviewer: '1.0.0'
+  drawio: '1.0.0'
 opcd_collabora_admin_user: 'admin'
 opcd_collabora_admin_password: 'admin'
