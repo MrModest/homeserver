@@ -17,8 +17,10 @@
               first-day-of-week: monday
 
         - type: server-stats
+          hide-header: true
           servers:
             - type: local
+              name: HomeServer
               hide-mountpoints-by-default: true
               mountpoints:
                 '/host_fs':
@@ -83,10 +85,10 @@
                   icon: di:readeck
                   url: https://readeck.mrmodest.duckdns.org
                 - title: Wallos
-                  icon: di:wallos
+                  icon: di:wallos.png
                   url: https://wallos.mrmodest.duckdns.org
                 - title: SilverBullet
-                  icon: di:silverbullet
+                  icon: di:silverbullet.png
                   url: https://silverbullet.mrmodest.duckdns.org
                 - title: OpenCloud
                   icon: di:open-cloud-dark

@@ -5,4 +5,4 @@ server:
 #  custom-css-file: /assets/user.css
 
 pages:
-  !include: home.yml
+  - $include: home.yml
