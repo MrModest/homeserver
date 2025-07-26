@@ -57,6 +57,11 @@
           title: Links
           groups:
             - links:
+                - title: Notion
+                  url: https://www.notion.so/Dashboard-1e43bf9f4bff80be9111d2127963e218
+                  description: Life Management
+                  icon: di:notion
+            - links:
                 - title: HomeServer
                   url: https://github.com/MrModest/homeserver
                   description: Ansible Playbook
