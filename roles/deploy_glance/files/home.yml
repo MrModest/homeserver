@@ -49,62 +49,40 @@
             - glanceapp/glance
             - immich-app/immich
 
-        - type: rss
-          limit: 10
-          collapse-after: 3
-          cache: 12h
-          feeds:
-            - url: https://selfh.st/rss/
-              title: selfh.st
-
     - size: full
       widgets:
-        - type: group
-          widgets:
-            - type: monitor
-              cache: 1m
-              title: Services
-              sites:
-                - title: Immich
-                  icon: di:immich
-                  url: https://immich.mrmodest.duckdns.org
-                - title: Paperless
-                  icon: di:paperless-ngx
-                  url: https://paperless.mrmodest.duckdns.org
-                - title: Grist
-                  icon: di:grist
-                  check-url: http://grist_app:8484/status
-                  url: https://grist.mrmodest.duckdns.org
-                - title: Forgejo
-                  icon: di:forgejo
-                  url: https://forgejo.mrmodest.duckdns.org
-                - title: Hoarder
-                  icon: di:hoarder-light
-                  url: https://hoarder.mrmodest.duckdns.org
-                - title: Readeck
-                  icon: di:readeck
-                  url: https://readeck.mrmodest.duckdns.org
-                - title: Wallos
-                  icon: di:wallos.png
-                  url: https://wallos.mrmodest.duckdns.org
-                - title: SilverBullet
-                  icon: di:silverbullet.png
-                  url: https://silverbullet.mrmodest.duckdns.org
-                - title: OpenCloud
-                  icon: di:open-cloud-dark
-                  url: https://opencloud.mrmodest.duckdns.org
+        - $include: services.yml
 
-            - type: hacker-news
-            - type: lobsters
+        - type: bookmarks
+          title: Links
+          groups:
+            - links:
+                - title: HomeServer
+                  url: https://github.com/MrModest/homeserver
+                  description: Ansible Playbook
+                  icon: di:github-light
+            - links:
+                - title: Homepage
+                  url: https://homepage.mrmodest.duckdns.org
+                  description: Old dashboard
+                  icon: di:homepage.png
 
         - type: videos
           channels:
             - UCGKEMK3s-ZPbjVOIuAV8clQ # Core Dumped
             - UC_gKMJFeCf1bKzZr_fICkig # TheDRZJ
             - UCBfZ377Tp-L-YYpAKtpSHcg # HUDAKOV
+            - UC5UAwBUum7CPN5buc-_N1Fw # The Linux Experiment
 
         - type: group
           widgets:
             - type: reddit
               subreddit: selfhosted
               show-thumbnails: true
+            - type: rss
+              limit: 10
+              collapse-after: 3
+              cache: 12h
+              feeds:
+                - url: https://selfh.st/rss/
+                  title: selfh.st

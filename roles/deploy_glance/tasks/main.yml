@@ -25,6 +25,8 @@
       dest: '{{ p_dirs.apps_data }}/glance/config/glance.yml'
     - src: 'home.yml'
       dest: '{{ p_dirs.apps_data }}/glance/config/home.yml'
+    - src: 'services.yml'
+      dest: '{{ p_dirs.apps_data }}/glance/config/services.yml'
     - src: 'style.css'
       dest: '{{ p_dirs.apps_data }}/glance/assets/style.css'
 
