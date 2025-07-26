@@ -27,6 +27,7 @@ services:
       APP__PORT: 9999
       TODOIST__FILTER__WORKTODAY: '(Overdue | Today) & (workspace: Work | @💼 WorkTime)'
       TODOIST__FILTER__PRIVATETODAY: '(Overdue | Today) & !workspace: Work'
+      TODOIST__FILTER__PRIVATEWEEK: '(overdue | today | /week) & !workspace:work'
     restart: unless-stopped
 
 networks:

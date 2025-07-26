@@ -11,7 +11,7 @@
               url: http://glance-ext:9999/todoist
               allow-potentially-dangerous-html: true
               parameters:
-                filter: PrivateToday
+                filter: PrivateWeek
 
             - type: calendar
               first-day-of-week: monday
