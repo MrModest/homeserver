@@ -11,7 +11,7 @@ services:
     user: ${APP_USER}
     restart: 'unless-stopped'
     volumes:
-      - ${DATA_PATH}/upload:/usr/src/app/upload
+      - ${DATA_PATH}/data:/data
       - ${DATA_PATH}/external:/usr/src/app/external # https://immich.app/docs/guides/external-library/
       - /etc/localtime:/etc/localtime:ro
     env_file:
@@ -23,6 +23,8 @@ services:
       resources:
         limits:
           cpus: '3'
+    healthcheck:
+      disable: false
 
   immich-machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION}
@@ -38,9 +40,11 @@ services:
       resources:
         limits:
           cpus: '2'
+    healthcheck:
+      disable: false
 
   redis:
-    image: docker.io/redis:${REDIS_VERSION}
+    image: docker.io/valkey/valkey:${REDIS_VERSION}
     container_name: immich_redis
     user: ${APP_USER}
     restart: 'unless-stopped'
@@ -53,7 +57,7 @@ services:
       retries: 5
 
   database:
-    image: docker.io/tensorchord/pgvecto-rs:${POSTGRES_VERSION}
+    image: ghcr.io/immich-app/postgres:${POSTGRES_VERSION}
     container_name: immich_postgres
     user: ${APP_USER}
     restart: 'unless-stopped'
@@ -66,23 +70,7 @@ services:
       POSTGRES_INITDB_ARGS: '--data-checksums'
     volumes:
       - ${APP_DATA_PATH}/db:/var/lib/postgresql/data
-    healthcheck:
-      test: >-
-        pg_isready --dbname="$${POSTGRES_DB}" --username="$${POSTGRES_USER}" || exit 1;
-        Chksum="$$(psql --dbname="$${POSTGRES_DB}" --username="$${POSTGRES_USER}" --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')";
-        echo "checksum failure count is $$Chksum";
-        [ "$$Chksum" = '0' ] || exit 1
-      interval: 5m
-      start_interval: 30s
-      start_period: 5m
-    command: >-
-      postgres
-      -c shared_preload_libraries=vectors.so
-      -c 'search_path="$$user", public, vectors'
-      -c logging_collector=on
-      -c max_wal_size=2GB
-      -c shared_buffers=512MB
-      -c wal_compression=on
+    shm_size: 128mb
 
 networks:
   default:
