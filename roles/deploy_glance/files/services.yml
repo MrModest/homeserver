@@ -65,3 +65,6 @@
         - title: Cronicle
           icon: di:cronicle
           url: http://cronicle.home.lab
+        - title: Authentik
+          icon: di:authentik
+          url: https://authentik.mrmodest.duckdns.org
