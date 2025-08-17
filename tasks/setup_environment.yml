@@ -76,3 +76,12 @@
     prx_duckdns_domain: '{{ g_duckdns_domain }}'
   tags:
     - reverse_proxy
+
+- name: Setup SSO (authentik)
+  ansible.builtin.import_role:
+    name: deploy_authentik
+  vars:
+    authk_secret_key: '{{ v_authentik.secret_key }}'
+    authk_pg_pass: '{{ v_authentik.pg_pass }}'
+  tags:
+    - authentik

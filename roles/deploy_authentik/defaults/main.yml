@@ -1,0 +1,7 @@
+---
+authk_app_version: '2025.6.4'
+authk_pg_version: '16-alpine'
+authk_redis_version: 'alpine'
+
+authk_secret_key: placeholder
+authk_pg_pass: placeholder

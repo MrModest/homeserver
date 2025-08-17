@@ -1,0 +1,94 @@
+services:
+  authentik-server:
+    image: ghcr.io/goauthentik/server:${APP_VERSION}
+    command: server
+    container_name: 'authentik-server'
+    hostname: 'authentik-server'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      TZ: ${TIMEZONE}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_REDIS__HOST: authentik-redis
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgres
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:?database user required}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:?database name required}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS:?database password required}
+    env_file:
+      - .env
+    volumes:
+      - ${APP_DATA_PATH}/media:/media
+      - ${APP_DATA_PATH}/custom-templates:/templates
+    restart: unless-stopped
+    depends_on:
+      authentik-postgres:
+        condition: service_healthy
+      authentik-redis:
+        condition: service_healthy
+
+  authentik-worker:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.6.4}
+    container_name: 'authentik-worker'
+    hostname: 'authentik-worker'
+    restart: unless-stopped
+    command: worker
+    environment:
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_REDIS__HOST: authentik-redis
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgres
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:?database user required}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:?database name required}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS:?database password required}
+    user: '${APP_USER}:${APP_GROUP}'
+    volumes:
+      - ${APP_DATA_PATH}/media:/media
+      - ${APP_DATA_PATH}/certs:/certs
+      - ${APP_DATA_PATH}/custom-templates:/templates
+    env_file:
+      - .env
+    depends_on:
+      authentik-postgres:
+        condition: service_healthy
+      authentik-redis:
+        condition: service_healthy
+
+  authentik-postgres:
+    image: docker.io/library/postgres:${PG_VERSION}
+    container_name: 'authentik-postgres'
+    hostname: 'authentik-postgres'
+    user: '${APP_USER}:${APP_GROUP}'
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+    volumes:
+      - ${APP_DATA_PATH}/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASS:?database password required}
+      POSTGRES_USER: ${PG_USER:?database user required}
+      POSTGRES_DB: ${PG_DB:?database name required}
+    env_file:
+      - .env
+
+  authentik-redis:
+    image: docker.io/library/redis:${REDIS_VERSION}
+    container_name: 'authentik-redis'
+    hostname: 'authentik-redis'
+    command: --save 60 1 --loglevel warning
+    user: '${APP_USER}:${APP_GROUP}'
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    volumes:
+      - ${APP_DATA_PATH}/redis:/data
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork
