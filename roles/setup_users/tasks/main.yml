@@ -55,12 +55,13 @@
     recurse: true
   become: true
 
-- name: Allow passwordless sudo for the ssh user
+# https://serverfault.com/questions/160581/how-to-setup-passwordless-sudo-on-linux
+- name: Allow passwordless sudo for users in the '{{ susr_sudo_group }}' group
   ansible.builtin.lineinfile:
     path: /etc/sudoers
     state: present
     regexp: '^%{{ susr_sudo_group }}'
-    line: '%{{ susr_sudo_group }} ALL=(ALL) NOPASSWD: ALL' # FIXME: https://serverfault.com/questions/160581/how-to-setup-passwordless-sudo-on-linux
+    line: '%{{ susr_sudo_group }} ALL=(ALL) NOPASSWD: ALL'
     validate: '/usr/sbin/visudo -cf %s'
   become: true
 
