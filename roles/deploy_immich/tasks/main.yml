@@ -5,7 +5,10 @@
     t_app_name: 'immich'
     t_app_data_dirs:
       - '{{ p_dirs.apps_data }}/immich/db'
-      - '{{ p_dirs.apps_data }}/immich/model-cache'
-      - '{{ p_dirs.apps_data }}/immich/matplotlib'
+      - '{{ p_dirs.apps_data }}/immich/redis'
+      - '{{ p_dirs.apps_data }}/immich/ml/model-cache'
+      - '{{ p_dirs.apps_data }}/immich/ml/matplotlib'
+      - '{{ p_dirs.apps_data }}/immich/ml/dot-config'
+      - '{{ p_dirs.apps_data }}/immich/ml/dot-cache'
       - '{{ p_dirs.slow_data }}/immich/data'
       - '{{ p_dirs.slow_data }}/immich/external'

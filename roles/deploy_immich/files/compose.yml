@@ -8,7 +8,7 @@ services:
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION}
     container_name: immich_server
     hostname: immich_server
-    user: ${APP_USER}
+    user: ${APP_USER}:${APP_GROUP}
     restart: 'unless-stopped'
     volumes:
       - ${DATA_PATH}/data:/data
@@ -29,11 +29,13 @@ services:
   immich-machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION}
     container_name: immich_machine_learning
-    user: ${APP_USER}
+    user: ${APP_USER}:${APP_GROUP}
     restart: 'unless-stopped'
     volumes:
-      - ${APP_DATA_PATH}/model-cache:/cache
-      - ${APP_DATA_PATH}/matplotlib:/usr/src/app/matplotlib
+      - ${APP_DATA_PATH}/ml/model-cache:/cache
+      - ${APP_DATA_PATH}/ml/matplotlib:/usr/src/app/matplotlib
+      - ${APP_DATA_PATH}/ml/dot-config:/.config # https://immich.app/docs/FAQ/#how-can-i-run-immich-as-a-non-root-user
+      - ${APP_DATA_PATH}/ml/dot-cache:/.cache
     env_file:
       - .env
     deploy: # https://github.com/immich-app/immich/discussions/2368#discussioncomment-5952765
@@ -46,7 +48,7 @@ services:
   redis:
     image: docker.io/valkey/valkey:${REDIS_VERSION}
     container_name: immich_redis
-    user: ${APP_USER}
+    user: ${APP_USER}:${APP_GROUP}
     restart: 'unless-stopped'
     volumes:
       - ${APP_DATA_PATH}/redis:/data
@@ -59,7 +61,7 @@ services:
   database:
     image: ghcr.io/immich-app/postgres:${POSTGRES_VERSION}
     container_name: immich_postgres
-    user: ${APP_USER}
+    user: ${APP_USER}:${APP_GROUP}
     restart: 'unless-stopped'
     env_file:
       - .env
