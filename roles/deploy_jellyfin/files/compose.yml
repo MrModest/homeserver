@@ -1,0 +1,28 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:${APP_VERSION}
+    container_name: 'jellyfin'
+    hostname: 'jellyfin'
+    user: '${APP_USER}:${APP_GROUP}'
+    group_add:
+      - '${SMB_GROUP}'
+      - '109'
+      - '44'
+    environment:
+      JELLYFIN_PublishedServerUrl: ${APP_HOST}
+    env_file:
+      - .env
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/card0:/dev/dri/card0
+    volumes:
+      - '${APP_DATA_PATH}/config:/config'
+      - '${APP_DATA_PATH}/cache:/cache'
+      - '${APP_DATA_PATH}/fonts:/usr/local/share/fonts/custom:ro' # Optional - extra fonts to be used during transcoding with subtitle burn-in
+      - '${MEDIA_PATH}:/media'
+    restart: unless-stopped
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

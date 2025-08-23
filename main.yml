@@ -18,8 +18,10 @@
       slow_data_ds: '{{ g_pools.slow.custom_dirs.apps_data_ds  }}'
       backups_root: '{{ g_pools.slow.custom_dirs.backups_root }}'
       smb_root: '{{ g_pools.slow.custom_dirs.shared }}/shared'
+      media_root: '{{ g_pools.slow.custom_dirs.shared }}/media'
 
     p_apps_user: '{{ g_apps_user }}'
+    p_smb_user: '{{ g_smb_user }}'
 
     p_default_permissions:
       file: '0644'
@@ -172,7 +174,7 @@
       ansible.builtin.import_role:
         name: deploy_planka
       vars:
-        pnk_app_host: 'https://planka.{{ g_duckdns_domain }}'
+        pnk_app_host: 'planka.{{ g_duckdns_domain }}'
       tags:
         - applications
         - planka
@@ -186,3 +188,12 @@
       tags:
         - applications
         - opencloud
+
+    - name: Deploy 'jellyfin'
+      ansible.builtin.import_role:
+        name: deploy_jellyfin
+      vars:
+        jlfn_app_host: 'jellyfin.{{ g_duckdns_domain }}'
+      tags:
+        - applications
+        - jellyfin

@@ -1,10 +1,10 @@
 ---
-- name: Create shared folder
+- name: Create root folder for SMB shares
   ansible.builtin.file:
     path: '{{ smb_share_root_path }}'
     owner: '{{ smb_samba_user.user }}'
     group: '{{ smb_samba_user.group }}'
-    mode: 'u=rwX,g=rwX,o=rX'
+    mode: '0774'
     recurse: true
     state: directory
   become: true
@@ -17,7 +17,7 @@
   vars:
     samba_netbios_name: '{{ smb_hostname }}'
     samba_server_string: '{{ smb_hostname }}'
-    samba_workgroup: '{{ smb_hostname }}'
+    samba_workgroup: WORKGROUP
     samba_server_min_protocol: SMB2
     samba_global_include: global-include.conf
     samba_load_homes: false
@@ -32,6 +32,15 @@
         password: '{{ smb_samba_user.password }}'
     samba_shares_root: '{{ smb_share_root_path }}'
     samba_shares:
+      - name: media
+        public: false
+        comment: '{{ smb_hostname }} Media'
+        write_list: '+{{ smb_samba_user.group }}'
+        browseable: true
+        # Note: When used in the [global] section this parameter may have unwanted side effects.
+        # For example: If samba is configured as a MASTER BROWSER (see local master, os level, domain master, preferred master)
+        # this option will prevent workstations from being able to browse the network.
+        valid_users: '+{{ smb_samba_user.group }}'
       - name: misc
         public: false
         samba_wins_support: true
@@ -63,12 +72,7 @@
                 value: 'yes'
           - name: streams_xattr
         comment: '{{ smb_hostname }} TimeMachine'
-        write_list: '+{{ smb_samba_user.group }}'
         browseable: true
-        # Note: When used in the [global] section this parameter may have unwanted side effects.
-        # For example: If samba is configured as a MASTER BROWSER (see local master, os level, domain master, preferred master)
-        # this option will prevent workstations from being able to browse the network.
-        valid_users: '+{{ smb_samba_user.group }}'
 
 - name: Fix permissions for Shared folder
   ansible.builtin.file:

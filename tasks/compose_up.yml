@@ -56,11 +56,18 @@
   changed_when: false
   register: t_tmp_app_data_gid
 
+- name: Fetch Samba user's GID
+  ansible.builtin.command: 'id -g {{ p_smb_user.group }}'
+  changed_when: false
+  register: t_tmp_smb_gid
+
 - name: Set UID and GUID variables
   ansible.builtin.set_fact:
     p_apps_user:
       uid: '{{ t_tmp_app_data_uid.stdout }}'
       gid: '{{ t_tmp_app_data_gid.stdout }}'
+    p_smb_user:
+      gid: '{{ t_tmp_smb_gid.stdout }}'
 
 - name: Replace user with UID
   ansible.builtin.lineinfile:
@@ -74,6 +81,13 @@
     path: '{{ p_dirs.compose_files }}/{{ t_app_name }}/.env'
     regexp: '^APP_GROUP=.*$'
     line: "APP_GROUP='{{ p_apps_user.gid }}'"
+  become: true
+
+- name: Replace Samba group with GID
+  ansible.builtin.lineinfile:
+    path: '{{ p_dirs.compose_files }}/{{ t_app_name }}/.env'
+    regexp: '^SMB_GROUP=.*$'
+    line: "SMB_GROUP='{{ p_smb_user.gid }}'"
   become: true
 
 - name: Create and start services

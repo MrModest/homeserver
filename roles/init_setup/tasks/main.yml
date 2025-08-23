@@ -22,6 +22,7 @@
       - tmux # keep long cli sessions running with laptop turned off
       - ncdu # check free disk space
       - smartmontools # check disk health
+      - intel-opencl-icd # Intel OpenCL runtime - for GPU acceleration in Jellyfin
     state: present
   become: true
 
