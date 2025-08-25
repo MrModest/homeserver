@@ -10,6 +10,12 @@
         - title: Jellyfin
           icon: di:jellyfin
           url: https://jellyfin.mrmodest.duckdns.org
+        - title: RDT Client
+          icon: di:real-debrid
+          url: https://rdt-client.mrmodest.duckdns.org
+        - title: Aria2 NG
+          icon: di:ariang.png
+          url: https://aria-ng.mrmodest.duckdns.org
         - title: Paperless
           icon: di:paperless-ngx
           url: https://paperless.mrmodest.duckdns.org
