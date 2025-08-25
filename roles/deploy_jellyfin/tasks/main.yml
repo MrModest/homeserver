@@ -7,3 +7,5 @@
       - '{{ p_dirs.apps_data }}/jellyfin/config'
       - '{{ p_dirs.apps_data }}/jellyfin/cache'
       - '{{ p_dirs.apps_data }}/jellyfin/fonts'
+      - '{{ p_dirs.apps_data }}/jellyfin/rdtclient'
+      - '{{ p_dirs.media_root }}/downloads'

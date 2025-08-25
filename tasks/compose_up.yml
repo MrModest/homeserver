@@ -56,6 +56,11 @@
   changed_when: false
   register: t_tmp_app_data_gid
 
+- name: Fetch Samba user's UID
+  ansible.builtin.command: 'id -u {{ p_smb_user.user }}'
+  changed_when: false
+  register: t_tmp_smb_uid
+
 - name: Fetch Samba user's GID
   ansible.builtin.command: 'id -g {{ p_smb_user.group }}'
   changed_when: false
@@ -67,6 +72,7 @@
       uid: '{{ t_tmp_app_data_uid.stdout }}'
       gid: '{{ t_tmp_app_data_gid.stdout }}'
     p_smb_user:
+      uid: '{{ t_tmp_smb_uid.stdout }}'
       gid: '{{ t_tmp_smb_gid.stdout }}'
 
 - name: Replace user with UID
@@ -81,6 +87,13 @@
     path: '{{ p_dirs.compose_files }}/{{ t_app_name }}/.env'
     regexp: '^APP_GROUP=.*$'
     line: "APP_GROUP='{{ p_apps_user.gid }}'"
+  become: true
+
+- name: Replace Samba user with UID
+  ansible.builtin.lineinfile:
+    path: '{{ p_dirs.compose_files }}/{{ t_app_name }}/.env'
+    regexp: '^SMB_USER=.*$'
+    line: "SMB_USER='{{ p_smb_user.uid }}'"
   become: true
 
 - name: Replace Samba group with GID

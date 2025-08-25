@@ -21,6 +21,36 @@ services:
       - '${APP_DATA_PATH}/fonts:/usr/local/share/fonts/custom:ro' # Optional - extra fonts to be used during transcoding with subtitle burn-in
       - '${MEDIA_PATH}:/media'
     restart: unless-stopped
+  rdtclient:
+    image: rogerfar/rdtclient:${RDT_CLIENT_VERSION}
+    container_name: 'rdtclient'
+    hostname: 'rdtclient'
+    user: '0' # linuxserver.io images requires root :(
+    environment:
+      - PUID=${APP_USER}
+      - PGID=${APP_GROUP}
+      - UMASK='415' # for '775'
+      - TZ=${TIMEZONE}
+    env_file:
+      - .env
+    volumes:
+      - ${APP_DATA_PATH}/rdtclient:/data/db
+      - ${MEDIA_PATH}/downloads:/data/downloads
+    restart: unless-stopped
+  ariang:
+    image: hurlenko/aria2-ariang:${ARIA_NG_VERSION}
+    container_name: 'ariang'
+    hostname: 'ariang'
+    user: '0' # root
+    volumes:
+      - ${APP_DATA_PATH}/aria2/config:/aria2/conf
+      - ${MEDIA_PATH}/downloads:/aria2/data
+    environment:
+      - PUID=${APP_USER}
+      - PGID=${APP_GROUP}
+      - UMASK='415' # for '775'
+      - ARIA2RPCPORT=443
+    restart: always
 
 networks:
   default:
