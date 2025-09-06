@@ -1,8 +1,8 @@
 ---
 imch_app_port: 2283
 
-imch_app_version: v1.138.0
-imch_redis_version: 8-bookworm@sha256:facc1d2c3462975c34e10fccb167bfa92b0e0dbd992fc282c29a61c3243afb11
+imch_app_version: v1.140.1
+imch_redis_version: 8.1.3-bookworm
 imch_postgres_version: 14-vectorchord0.4.3-pgvectors0.2.0@sha256:32324a2f41df5de9efe1af166b7008c3f55646f8d0e00d9550c16c9822366b4a
 
 imch_db_password: placeholder
