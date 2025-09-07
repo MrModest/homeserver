@@ -1,4 +1,9 @@
 ---
 pnk_app_version: '2.0.0-rc.2'
 pnk_db_version: '16-alpine'
-pnk_app_host: 'PLACEHOLDER'
+pnk_app_host: placeholder
+
+pnk_oidc:
+  client_id: placeholder
+  client_secret: placeholder
+  issuer: placeholder

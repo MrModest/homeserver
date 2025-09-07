@@ -175,6 +175,10 @@
         name: deploy_planka
       vars:
         pnk_app_host: 'planka.{{ g_duckdns_domain }}'
+        pnk_oidc:
+          client_id: '{{ v_planka.oidc_client_id }}'
+          client_secret: '{{ v_planka.oidc_client_secret }}'
+          issuer: 'authentik.{{ g_duckdns_domain }}'
       tags:
         - applications
         - planka
