@@ -15,7 +15,7 @@
 
 - name: Create directory for the app's data (if it does not exist)
   ansible.builtin.file:
-    path: '{{ dir.item }}'
+    path: '{{ dir.dir_path }}'
     state: directory
     owner: '{{ p_apps_user.user }}'
     group: '{{ p_apps_user.group }}'
