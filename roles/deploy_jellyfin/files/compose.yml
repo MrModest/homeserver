@@ -35,7 +35,7 @@ services:
       - .env
     volumes:
       - ${APP_DATA_PATH}/rdtclient:/data/db
-      - ${MEDIA_PATH}/downloads:/data/downloads
+      - ${MEDIA_PATH}:/data
     restart: unless-stopped
   ariang:
     image: hurlenko/aria2-ariang:${ARIA_NG_VERSION}
@@ -51,6 +51,37 @@ services:
       - UMASK='415' # for '775'
       - ARIA2RPCPORT=443
     restart: always
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:${PROWLARR_VERSION}
+    container_name: 'prowlarr'
+    hostname: 'prowlarr'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      - PUID=${APP_USER}
+      - PGID=${APP_GROUP}
+      - TZ=${TIMEZONE}
+      - UMASK='415' # for '775'
+    env_file:
+      - .env
+    volumes:
+      - ${APP_DATA_PATH}/prowlarr/config:/config
+    restart: unless-stopped
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:${SONARR_VERSION}
+    container_name: 'sonarr'
+    hostname: 'sonarr'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      - PUID=${APP_USER}
+      - PGID=${APP_GROUP}
+      - TZ=${TIMEZONE}
+      - UMASK='415' # for '775'
+    env_file:
+      - .env
+    volumes:
+      - ${APP_DATA_PATH}/sonarr/config:/config
+      - ${MEDIA_PATH}:/media
+    restart: unless-stopped
 
 networks:
   default:
