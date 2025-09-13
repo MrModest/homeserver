@@ -5,18 +5,27 @@
     state: present
   become: true
 
-- name: Create directory for the app's data
-  ansible.builtin.file:
+- name: Check if directory exists
+  ansible.builtin.stat:
     path: '{{ dir_path }}'
+  loop: '{{ t_app_data_dirs | default([]) }}'
+  loop_control:
+    loop_var: dir_path
+  register: t_dirs_stat
+
+- name: Create directory for the app's data (if it does not exist)
+  ansible.builtin.file:
+    path: '{{ dir.item }}'
     state: directory
     owner: '{{ p_apps_user.user }}'
     group: '{{ p_apps_user.group }}'
     recurse: true
     mode: '{{ p_default_permissions.directory }}'
   become: true
-  loop: '{{ t_app_data_dirs | default([]) }}'
+  when: not dir.stat.exists
+  loop: '{{ t_dirs_stat.results | default([]) }}'
   loop_control:
-    loop_var: dir_path
+    loop_var: 'dir'
 
 - name: Create subdirectory for the compose file
   ansible.builtin.file:
