@@ -1,7 +1,6 @@
 - type: group
   widgets:
     - type: monitor
-      cache: 1m
       title: Services
       sites:
         - title: Immich
@@ -10,12 +9,6 @@
         - title: Jellyfin
           icon: di:jellyfin
           url: https://jellyfin.mrmodest.duckdns.org
-        - title: RDT Client
-          icon: di:real-debrid
-          url: https://rdt-client.mrmodest.duckdns.org
-        - title: Aria2 NG
-          icon: di:ariang.png
-          url: https://aria-ng.mrmodest.duckdns.org
         - title: Paperless
           icon: di:paperless-ngx
           url: https://paperless.mrmodest.duckdns.org
@@ -48,7 +41,21 @@
           icon: di:stirling-pdf
           url: https://stirling_pdf.mrmodest.duckdns.org/
     - type: monitor
-      cache: 1m
+      title: ServArr
+      sites:
+        - title: RDT Client
+          icon: di:real-debrid
+          url: https://rdt-client.mrmodest.duckdns.org
+        - title: Aria2 NG
+          icon: di:ariang.png
+          url: https://aria-ng.mrmodest.duckdns.org
+        - title: Sonarr
+          icon: di:sonarr
+          url: https://sonarr.mrmodest.duckdns.org
+        - title: Prowlarr
+          icon: di:prowlarr
+          url: https://prowlarr.mrmodest.duckdns.org
+    - type: monitor
       title: Maintenance
       sites:
         - title: Nginx
