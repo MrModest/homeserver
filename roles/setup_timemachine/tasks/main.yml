@@ -1,0 +1,87 @@
+---
+- name: Install packages (Samba + Avahi for mDNS)
+  ansible.builtin.package:
+    name:
+      - samba
+      - avahi-daemon # mDNS helps discovery in TM UI
+    state: present
+  tags:
+    - timemachine
+
+- name: Ensure Time Machine group exists
+  ansible.builtin.group:
+    name: "{{ tmchn_group }}"
+    state: present
+  tags:
+    - timemachine
+
+- name: Ensure Time Machine user exists
+  ansible.builtin.user:
+    name: "{{ tmchn_user }}"
+    group: "{{ tmchn_group }}"
+    create_home: false
+    shell: /usr/sbin/nologin
+    state: present
+  tags:
+    - timemachine
+
+- name: Set UNIX password for tmchn_user (for local PAM/samba sync basis)
+  ansible.builtin.user:
+    name: "{{ tmchn_user }}"
+    password: "{{ tmchn_password | password_hash('sha512') }}"
+  when: tmchn_password | length > 0
+  tags:
+    - timemachine
+
+- name: Ensure Samba user exists with password
+  ansible.builtin.command: "smbpasswd -a -s {{ tmchn_user }}"
+  args:
+    stdin: "{{ tmchn_password }}\n{{ tmchn_password }}\n"
+  changed_when: "'Added user' in smbpasswd_out.stdout or 'Changed user' in smbpasswd_out.stdout"
+  register: smbpasswd_out
+  when: tmchn_password | length > 0
+  tags:
+    - timemachine
+
+- name: Create Time Machine directory
+  ansible.builtin.file:
+    path: "{{ tmchn_path }}"
+    state: directory
+    owner: "{{ tmchn_user }}"
+    group: "{{ tmchn_group }}"
+    mode: "0750"
+  tags:
+    - timemachine
+
+# We keep samba's main config and "include" our share file
+- name: Ensure include line for timemachine.conf exists in smb.conf
+  ansible.builtin.lineinfile:
+    path: /etc/samba/smb.conf
+    regexp: '^\s*include\s*=\s*/etc/samba/timemachine\.conf\s*$'
+    line: "include = /etc/samba/timemachine.conf"
+    insertafter: '^\[global\]'
+  notify: Restart smbd
+  tags:
+    - timemachine
+
+- name: Write Time Machine share config
+  ansible.builtin.template:
+    src: timemachine.conf.j2
+    dest: /etc/samba/timemachine.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart smbd
+  tags:
+    - timemachine
+
+- name: Ensure services enabled and running
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop:
+    - avahi-daemon
+    - smbd
+  tags:
+    - timemachine

@@ -1,0 +1,5 @@
+---
+- name: Restart smbd
+  ansible.builtin.systemd:
+    name: smbd
+    state: restarted

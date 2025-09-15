@@ -1,0 +1,26 @@
+[global]
+   workgroup = WORKGROUP
+   map to guest = Bad User
+{{ tmchn_smb_global_extras | trim }}
+
+[{{ tmchn_share_name }}]
+   path = {{ tmchn_path }}
+   browseable = yes
+   writable = yes
+   read only = no
+   valid users = {{ tmchn_user }}
+   force user = {{ tmchn_user }}
+   force group = {{ tmchn_group }}
+
+   # macOS / Time Machine bits
+   vfs objects = catia fruit streams_xattr
+   fruit:time machine = yes
+{% if tmchn_size | length > 0 %}
+   fruit:time machine max size = {{ tmchn_size }}
+{% endif %}
+
+   # Recommended metadata/stream handling for macOS
+   ea support = yes
+   durable handles = yes
+   kernel oplocks = no
+   posix locking = no

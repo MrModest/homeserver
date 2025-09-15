@@ -1,0 +1,22 @@
+# Share basics
+tmchn_share_name: TimeMachine
+tmchn_path: placeholder
+
+# User that owns the share (macOS will auth with this user)
+tmchn_user: tmuser
+tmchn_group: tmuser
+tmchn_password: placeholder
+
+# Optional size cap (Apple-style size string, e.g. "500G" or empty to disable)
+tmchn_size: "1T" # "" means unlimited
+
+# Samba tuning (sane defaults for macOS TM over SMB)
+tmchn_smb_global_extras: |
+  server min protocol = SMB2
+  ea support = yes
+  fruit:posix_rename = yes
+  fruit:metadata = stream
+  fruit:resource = stream
+  fruit:locking = none
+  fruit:encoding = native
+  vfs objects = catia fruit streams_xattr
