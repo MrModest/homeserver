@@ -1,0 +1,41 @@
+---
+- name: Configure Pi
+  hosts: pi4b
+  vars_files:
+    - vars/vault.yml
+  vars:
+    p_timezone: '{{ g_timezone }}'
+  tasks:
+    - name: Set timezone
+      become: true
+      community.general.timezone:
+        name: '{{ p_timezone }}'
+
+    - name: Update and upgrade apt packages
+      become: true
+      ansible.builtin.apt:
+        upgrade: true
+        update_cache: true
+        cache_valid_time: 86400 # One day
+
+    - name: Install required system packages
+      ansible.builtin.apt:
+        pkg:
+          - python3
+          - python3-pip
+        state: present
+      become: true
+
+    - name: Deploy Pi-hole
+      ansible.builtin.import_role:
+        name: deploy_pihole
+      become: true
+      vars:
+        phl__admin_password: "{{ v_pihole.web_password }}"
+        phl__local_ip4: "{{ g_ips.homelab }}"
+
+    - name: Install and run 'Tailscale'
+      ansible.builtin.import_role:
+        name: artis3n.tailscale
+      vars:
+        tailscale_authkey: "{{ v_tailscale_api_token }}"

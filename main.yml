@@ -5,7 +5,7 @@
     - vars/vault.yml
     - vars/apps.yml
   vars:
-    p_host_id: '{{ g_host_ip }}'
+    p_host_id: '{{ g_ips.homelab }}'
 
     p_timezone: '{{ g_timezone }}'
 

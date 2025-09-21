@@ -1,3 +1,19 @@
 ---
-phl_app_version: '2024.07.0'
-phl_web_password: placeholder
+phl__admin_password: placeholder
+phl__web_port: 80
+phl__dns_upstream:
+  - '8.8.8.8'
+  - '8.8.4.4'
+  - '2001:4860:4860:0:0:0:0:8888'
+  - '2001:4860:4860:0:0:0:0:8844'
+phl__timezone: UTC
+phl__local_ip4: placeholder
+phl__domains:
+  - home.lab
+  - mrmodest.duckdns.org
+  - in-your.mom
+phl_blocklists:
+  - https://easylist.to/easylist/easyprivacy.txt
+  - https://phishing.army/download/phishing_army_blocklist.txt
+  - https://v.firebog.net/hosts/AdguardDNS.txt
+  - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling/hosts

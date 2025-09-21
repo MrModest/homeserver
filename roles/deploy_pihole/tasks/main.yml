@@ -1,40 +1,91 @@
 ---
-- name: Free '53' port from 'systemd-resolved'
-  ansible.builtin.lineinfile:
-    path: /etc/systemd/resolved.conf
-    regexp: '^#DNSStubListener=.*$'
-    line: 'DNSStubListener=no'
-  become: true
+- name: Check if Pi-hole is already installed
+  ansible.builtin.stat:
+    path: /etc/pihole/pihole.toml
+  register: pihole_config
 
-- name: Restart 'systemd-resolved'
-  ansible.builtin.service:
-    name: systemd-resolved
-    state: restarted
-  become: true
+- name: Create Pi-hole user and group
+  when: not pihole_config.stat.exists
+  block:
+    - name: Create pihole group
+      ansible.builtin.group:
+        name: pihole
+        state: present
 
-- name: Pre-create log directory
+    - name: Create pihole user
+      ansible.builtin.user:
+        name: pihole
+        home: "/home/pihole"
+        shell: "/usr/sbin/nologin"
+        comment: "Pi-hole"
+        group: pihole
+        state: present
+        remove: true
+        force: true
+
+- name: Create Pi-hole configuration directory
   ansible.builtin.file:
-    path: '{{ p_dirs.apps_data }}/pihole/var-log'
+    path: /etc/pihole
     state: directory
-    owner: '{{ p_apps_user.user }}'
-    group: '{{ p_apps_user.group }}'
-    recurse: true
-    mode: '{{ p_default_permissions.directory }}'
-  become: true
+    owner: pihole
+    group: pihole
+    mode: '0755'
+  when: not pihole_config.stat.exists
 
-- name: Pre-create log file
-  ansible.builtin.file:
-    path: '{{ p_dirs.apps_data }}/pihole/var-log/pihole.log'
-    state: touch
-    owner: '{{ p_apps_user.user }}'
-    group: '{{ p_apps_user.group }}'
-    mode: '{{ p_default_permissions.file }}'
-  become: true
+- name: Copy customized pihole.toml configuration
+  ansible.builtin.template:
+    src: pihole.toml.j2
+    dest: /etc/pihole/pihole.toml
+    owner: pihole
+    group: pihole
+    mode: '0644'
+  when: not pihole_config.stat.exists
+  notify:
+    - Run Pi-hole installer
 
-- name: Start 'Pi-Hole'
-  ansible.builtin.import_tasks: tasks/compose_up.yml
-  vars:
-    t_app_name: 'pihole'
-    t_app_data_dirs:
-      - '{{ p_dirs.apps_data }}/pihole/etc-pihole'
-      - '{{ p_dirs.apps_data }}/pihole/etc-dnsmasq.d'
+- name: Download and run the Pi-hole unattended installer
+  when: not pihole_installed.stat.exists
+  block:
+    - name: Download the Pi-hole installation script
+      ansible.builtin.get_url:
+        url: https://install.pi-hole.net
+        dest: /tmp/install-pihole.sh
+        mode: '0755'
+
+    - name: Run the Pi-hole installer (Unattended)
+      ansible.builtin.command: /bin/bash /tmp/install-pihole.sh --unattended
+      args:
+        creates: /usr/local/bin/pihole
+      register: installation_result
+      changed_when: installation_result.rc == 0 and "'Installation complete' in installation_result.stdout"
+      notify:
+        - Update gravity lists
+
+    - name: Set Web Admin UI password
+      ansible.builtin.command: sudo pihole setpassword "{{ pihole_admin_password }}"
+      register: changing_password_result
+      changed_when: changing_password_result.rc == 0 and "'[✓] New password set' in changing_password_result.stdout"
+
+- name: Add AdList
+  ttafsir.sqlite_utils.insert:
+    db_path: /etc/pihole/gravity.db
+    table: adlist
+    records: { "address": "{{ item }}", "enabled": 1 }
+  become: true
+  loop: "{{ pihole_blocklists }}"
+
+- name: Ensure Pi-hole services are running
+  ansible.builtin.systemd:
+    name: pihole-FTL
+    state: started
+    enabled: yes
+
+- name: Setup wildcard DNS entries
+  ansible.builtin.template:
+    src: 02-my-wildcard-dns.conf.j2
+    dest: /etc/dnsmasq.d/02-my-wildcard-dns.conf
+    owner: pihole
+    group: pihole
+    mode: '0644'
+  notify:
+    - Restart Pi-hole FTL

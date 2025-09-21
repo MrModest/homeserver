@@ -1,0 +1,5 @@
+{# https://www.reddit.com/r/pihole/comments/jqb2oc/comment/jbkqbu9/ #}
+{% for domain in phl__domains %}
+address=/*.{{ domain }}/
+address=/*.{{ domain }}/{{ phl__local_ip4 }}
+{% endfor %}

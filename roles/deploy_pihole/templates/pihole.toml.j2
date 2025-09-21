@@ -1,0 +1,25 @@
+[dns]
+  upstreams = [ {% for server in pihole_dns_upstream %}"{{ server }}"{% if not loop.last %}, {% endif %}{% endfor %} ]
+  hosts = [
+    "192.168.178.1 fritz.box"
+  ]
+  domainNeeded = true
+  expandHosts = true
+  listeningMode = "ALL"
+
+  port = 53
+
+  [dns.rateLimit]
+  count = 100000
+
+[dhcp]
+  hosts = [
+    "F8:B1:56:9C:D3:22,192.168.178.34",
+    "90:1B:0E:C5:23:73,192.168.178.48"
+  ]
+
+[webserver]
+  port = "80o,443os,[::]:80o,[::]:443os"
+
+[misc]
+etc_dnsmasq_d = true
