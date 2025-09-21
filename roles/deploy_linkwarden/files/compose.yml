@@ -1,0 +1,45 @@
+services:
+  linkwarden:
+    image: ghcr.io/linkwarden/linkwarden:${APP_VERSION}
+    container_name: 'linkwarden'
+    hostname: 'linkwarden'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@linkwarden_db:5432/postgres
+      MEILI_HOST: http://linkwarden_meilisearch:7700
+    env_file:
+      - .env
+    volumes:
+      - '${APP_DATA_PATH}/data:/data/data'
+      - '${APP_DATA_PATH}/cache/cache:/.cache'
+      - '${APP_DATA_PATH}/cache/yarn:/.yarn'
+      - '${APP_DATA_PATH}/cache/next:/data/apps/web/.next/cache'
+      - '${APP_DATA_PATH}/cache/pki:/.pki'
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - meilisearch
+  postgres:
+    image: postgres:${POSTGRES_VERSION}
+    container_name: 'linkwarden_db'
+    hostname: 'linkwarden_db'
+    user: '${APP_USER}:${APP_GROUP}'
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - ${APP_DATA_PATH}/db:/var/lib/postgresql/data
+  meilisearch:
+    image: getmeili/meilisearch:${MEILISEARCH_VERSION}
+    container_name: 'linkwarden_meilisearch'
+    hostname: 'linkwarden_meilisearch'
+    user: '${APP_USER}:${APP_GROUP}'
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ${APP_DATA_PATH}/meili_data:/meili_data
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

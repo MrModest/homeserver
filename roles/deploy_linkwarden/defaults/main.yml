@@ -1,0 +1,8 @@
+---
+lkw_app_version: 'v2.12.2'
+lkw_meilisearch_version: 'v1.12.8'
+lkw_postgres_version: '16-alpine'
+
+lkw_nextauth_secret: placeholder
+lkw_meili_master_key: placeholder
+lkw_postgres_password: placeholder

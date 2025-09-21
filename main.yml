@@ -124,6 +124,17 @@
         - applications
         - hoarder
 
+    - name: Deploy 'linkwarden'
+      ansible.builtin.import_role:
+        name: deploy_linkwarden
+      vars:
+        lkw_nextauth_secret: '{{ v_linkwarden.nextauth_secret }}'
+        lkw_meili_master_key: '{{ v_linkwarden.meili_master_key }}'
+        lkw_postgres_password: '{{ v_linkwarden.postgres_password }}'
+      tags:
+        - applications
+        - linkwarden
+
     - name: Deploy 'forgejo'
       ansible.builtin.import_role:
         name: deploy_forgejo
