@@ -6,6 +6,7 @@
     t_app_data_dirs:
       - '{{ p_dirs.apps_data }}/hoarder/data'
       - '{{ p_dirs.apps_data }}/hoarder/meilisearch'
+      - '{{ p_dirs.apps_data }}/hoarder/cache/nextjs'
 - name: Fix permissions
   community.docker.docker_container_exec:
     container: hoarder_app

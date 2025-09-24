@@ -7,6 +7,7 @@ services:
     restart: unless-stopped
     volumes:
       - ${APP_DATA_PATH}/data:/data
+      - ${APP_DATA_PATH}/cache/nextjs:/app/apps/web/.next/cache
     env_file:
       - .env
     environment:
