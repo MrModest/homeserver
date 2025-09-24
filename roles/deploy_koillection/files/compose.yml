@@ -1,0 +1,38 @@
+services:
+  koillection:
+    image: koillection/koillection:${APP_VERSION}
+    container_name: 'koillection'
+    hostname: 'koillection'
+    environment:
+      APP_DEBUG: 0
+      APP_ENV: prod
+      PHP_TZ: ${TIMEZONE}
+      PHP_MEMORY_LIMIT: 512M
+      HTTPS_ENABLED: 1
+      UPLOAD_MAX_FILESIZE: 20M
+      PUID: ${APP_USER}
+      PGID: ${APP_GROUP}
+    env_file:
+      - .env
+    volumes:
+      - '${APP_DATA_PATH}/uploads:/uploads'
+    restart: unless-stopped
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:${DB_VERSION}
+    container_name: 'koillection_db'
+    hostname: 'koillection_db'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - '${APP_DATA_PATH}/db:/var/lib/postgresql/data'
+    restart: unless-stopped
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

@@ -1,0 +1,9 @@
+---
+koil_app_version: '1.7.0'
+koil_db_version: '16'
+
+koil_app_host: placeholder
+
+koil_app_secret: placeholder
+koil_jwt_passphrase: placeholder
+koil_db_password: placeholder

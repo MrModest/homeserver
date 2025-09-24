@@ -212,3 +212,16 @@
       tags:
         - applications
         - jellyfin
+
+    - name: Deploy 'koillection'
+      ansible.builtin.import_role:
+        name: deploy_koillection
+      vars:
+        koil_app_secret: '{{ v_koillection.app_secret }}'
+        koil_jwt_passphrase: '{{ v_koillection.jwt_passphrase }}'
+        koil_db_password: '{{ v_koillection.db_password }}'
+
+        koil_app_host: 'koillection.{{ g_duckdns_domain }}'
+      tags:
+        - applications
+        - koillection
