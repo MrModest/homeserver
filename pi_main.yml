@@ -23,6 +23,8 @@
         pkg:
           - python3
           - python3-pip
+          - sqlite-utils
+          - python3-click-default-group
         state: present
       become: true
 
@@ -33,9 +35,14 @@
       vars:
         phl__admin_password: "{{ v_pihole.web_password }}"
         phl__local_ip4: "{{ g_ips.homelab }}"
+      when: false
+      tags:
+        - pihole
 
     - name: Install and run 'Tailscale'
       ansible.builtin.import_role:
         name: artis3n.tailscale
       vars:
         tailscale_authkey: "{{ v_tailscale_api_token }}"
+      tags:
+        - tailscale

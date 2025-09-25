@@ -1,11 +1,11 @@
 ---
 - name: Check if Pi-hole is already installed
   ansible.builtin.stat:
-    path: /etc/pihole/pihole.toml
-  register: pihole_config
+    path: /usr/local/bin/pihole
+  register: t_phl_config
 
 - name: Create Pi-hole user and group
-  when: not pihole_config.stat.exists
+  when: not t_phl_config.stat.exists
   block:
     - name: Create pihole group
       ansible.builtin.group:
@@ -30,7 +30,7 @@
     owner: pihole
     group: pihole
     mode: '0755'
-  when: not pihole_config.stat.exists
+  when: not t_phl_config.stat.exists
 
 - name: Copy customized pihole.toml configuration
   ansible.builtin.template:
@@ -39,12 +39,10 @@
     owner: pihole
     group: pihole
     mode: '0644'
-  when: not pihole_config.stat.exists
-  notify:
-    - Run Pi-hole installer
+  when: not t_phl_config.stat.exists
 
 - name: Download and run the Pi-hole unattended installer
-  when: not pihole_installed.stat.exists
+  when: not t_phl_config.stat.exists
   block:
     - name: Download the Pi-hole installation script
       ansible.builtin.get_url:
@@ -62,7 +60,7 @@
         - Update gravity lists
 
     - name: Set Web Admin UI password
-      ansible.builtin.command: sudo pihole setpassword "{{ pihole_admin_password }}"
+      ansible.builtin.command: sudo pihole setpassword "{{ phl__admin_password }}"
       register: changing_password_result
       changed_when: changing_password_result.rc == 0 and "'[✓] New password set' in changing_password_result.stdout"
 
@@ -72,7 +70,7 @@
     table: adlist
     records: { "address": "{{ item }}", "enabled": 1 }
   become: true
-  loop: "{{ pihole_blocklists }}"
+  loop: "{{ phl_blocklists }}"
 
 - name: Ensure Pi-hole services are running
   ansible.builtin.systemd:

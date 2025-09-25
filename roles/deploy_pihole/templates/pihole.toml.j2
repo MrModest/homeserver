@@ -1,5 +1,5 @@
 [dns]
-  upstreams = [ {% for server in pihole_dns_upstream %}"{{ server }}"{% if not loop.last %}, {% endif %}{% endfor %} ]
+  upstreams = [ {% for server in phl__dns_upstream %}"{{ server }}"{% if not loop.last %}, {% endif %}{% endfor %} ]
   hosts = [
     "192.168.178.1 fritz.box"
   ]
