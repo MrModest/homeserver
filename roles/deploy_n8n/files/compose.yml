@@ -1,0 +1,80 @@
+x-shared: &shared
+  image: docker.n8n.io/n8nio/n8n
+  user: '${APP_USER}:${APP_GROUP}'
+  restart: unless-stopped
+  environment:
+    - DB_TYPE=postgresdb
+    - DB_POSTGRESDB_HOST=n8n-db
+    - DB_POSTGRESDB_PORT=5432
+    - DB_POSTGRESDB_DATABASE=${DB_NAME}
+    - DB_POSTGRESDB_USER=${DB_USER}
+    - DB_POSTGRESDB_PASSWORD=${DB_PASSWORD}
+    - EXECUTIONS_MODE=queue
+    - QUEUE_BULL_REDIS_HOST=n8n-redis
+    - QUEUE_HEALTH_CHECK_ACTIVE=true
+    - N8N_ENCRYPTION_KEY=${ENCRYPTION_KEY}
+  volumes:
+    - ${APP_DATA_PATH}/data:/home/node/.n8n
+    - ${APP_DATA_PATH}/dot-n8n:/.n8n
+    - ${APP_DATA_PATH}/dot-cache:/.cache
+  depends_on:
+    n8n-redis:
+      condition: service_healthy
+    n8n-db:
+      condition: service_healthy
+
+services:
+  n8n-db:
+    image: postgres:${DB_VERSION}
+    container_name: n8n-db
+    hostname: n8n-db
+    user: '${APP_USER}:${APP_GROUP}'
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - ${APP_DATA_PATH}/db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  n8n-redis:
+    image: redis:${REDIS_VERSION}
+    container_name: n8n-redis
+    hostname: n8n-redis
+    restart: unless-stopped
+    user: '${APP_USER}:${APP_GROUP}'
+    volumes:
+      - ${APP_DATA_PATH}/redis:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  n8n-server:
+    <<: *shared
+    environment:
+      N8N_RUNNERS_ENABLED: 'true'
+      OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS: 'true'
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: 'true'
+      N8N_GIT_NODE_DISABLE_BARE_REPOS: 'true'
+    container_name: n8n-server
+    hostname: n8n-server
+
+  n8n-worker:
+    <<: *shared
+    container_name: n8n-worker
+    hostname: n8n-worker
+    command: worker
+    depends_on:
+      - n8n-server
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

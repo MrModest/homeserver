@@ -225,3 +225,13 @@
       tags:
         - applications
         - koillection
+
+    - name: Deploy 'n8n'
+      ansible.builtin.import_role:
+        name: deploy_n8n
+      vars:
+        n8n_encryption_key: '{{ v_n8n.encryption_key }}'
+        n8n_db_password: '{{ v_n8n.db_password }}'
+      tags:
+        - applications
+        - n8n

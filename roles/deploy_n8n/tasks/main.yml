@@ -1,0 +1,11 @@
+---
+- name: Start 'n8n'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'n8n'
+    t_app_data_dirs:
+      - '{{ p_dirs.apps_data }}/n8n/data'
+      - '{{ p_dirs.apps_data }}/n8n/dot-n8n'
+      - '{{ p_dirs.apps_data }}/n8n/dot-cache'
+      - '{{ p_dirs.apps_data }}/n8n/db'
+      - '{{ p_dirs.apps_data }}/n8n/redis'

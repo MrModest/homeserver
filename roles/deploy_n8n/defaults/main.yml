@@ -1,0 +1,7 @@
+---
+n8n_app_version: '1.113.3'
+n8n_postgres_version: '16'
+n8n_redis_version: '6-alpine'
+
+n8n_encryption_key: placeholder
+n8n_db_password: placeholder
