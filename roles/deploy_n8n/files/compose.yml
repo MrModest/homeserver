@@ -16,6 +16,7 @@ x-shared: &shared
   volumes:
     - ${APP_DATA_PATH}/data:/home/node/.n8n
     - ${APP_DATA_PATH}/dot-n8n:/.n8n
+    - ${APP_DATA_PATH}/dot-npm:/.npm
     - ${APP_DATA_PATH}/dot-cache:/.cache
   depends_on:
     n8n-redis:

@@ -7,5 +7,6 @@
       - '{{ p_dirs.apps_data }}/n8n/data'
       - '{{ p_dirs.apps_data }}/n8n/dot-n8n'
       - '{{ p_dirs.apps_data }}/n8n/dot-cache'
+      - '{{ p_dirs.apps_data }}/n8n/dot-npm'
       - '{{ p_dirs.apps_data }}/n8n/db'
       - '{{ p_dirs.apps_data }}/n8n/redis'
