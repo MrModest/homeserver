@@ -42,7 +42,7 @@
       ansible.builtin.import_role:
         name: deploy_backrest
       vars:
-        bkrs_repo_password: '{{ v_backup_repo_password }}'
+        bkrs_repo_password: '{{ v_restic.repo_password }}'
         bkrs_rclone_config:
           mailru:
             backup_path: NoSync/Backups/HomeServer/backrest
@@ -77,7 +77,7 @@
       ansible.builtin.import_role:
         name: deploy_immich
       vars:
-        imch_db_password: '{{ v_db_passwords.immich }}'
+        imch_db_password: '{{ v_immich.db_password }}'
       tags:
         - applications
         - immich
@@ -93,9 +93,9 @@
       ansible.builtin.import_role:
         name: deploy_paperless
       vars:
-        ppls_secretkey: '{{ v_paperless_secretkey }}'
+        ppls_secretkey: '{{ v_paperless.secretkey }}'
         ppls_app_host: 'paperless.{{ g_duckdns_domain }}'
-        ppls_admin_password: '{{ v_paperless_admin_password }}'
+        ppls_admin_password: '{{ v_paperless.admin_password }}'
       tags:
         - applications
         - paperless
@@ -105,7 +105,7 @@
         name: deploy_grist
       vars:
         grst_app_host: 'grist.{{ g_duckdns_domain }}'
-        grst_minio_password: '{{ v_grist_minio_password }}'
+        grst_minio_password: '{{ v_grist.minio_password }}'
       tags:
         - applications
         - grist

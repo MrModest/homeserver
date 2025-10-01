@@ -72,7 +72,7 @@
     name: setup_proxy
   vars:
     prx_my_domain: '{{ g_domain }}'
-    prx_duckdns_api_token: '{{ v_duckdns_api_token }}'
+    prx_duckdns_api_token: '{{ v_duckdns.api_token }}'
     prx_duckdns_domain: '{{ g_duckdns_domain }}'
   tags:
     - reverse_proxy

@@ -43,6 +43,6 @@
       ansible.builtin.import_role:
         name: artis3n.tailscale
       vars:
-        tailscale_authkey: "{{ v_tailscale_api_token }}"
+        tailscale_authkey: "{{ v_tailscale.api_token }}"
       tags:
         - tailscale
