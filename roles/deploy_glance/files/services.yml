@@ -40,6 +40,9 @@
         - title: Stirling PDF
           icon: di:stirling-pdf
           url: https://stirling_pdf.mrmodest.duckdns.org/
+        - title: n8n
+          icon: di:n8n
+          url: https://n8n.mrmodest.duckdns.org
     - type: monitor
       title: ServArr
       sites:

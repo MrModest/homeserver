@@ -2,7 +2,8 @@ services:
 {% for service in services %}
   {{ service.name }}:
     image: {{item.image}}
-    container_name: {{ service.name }}
+    container_name: {{ service.name }}_server
+    hostname: {{ service.name }}_server
     user: {{ service.user }}
     restart: unless-stopped
 
