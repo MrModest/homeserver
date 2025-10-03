@@ -235,3 +235,15 @@
       tags:
         - applications
         - n8n
+
+    - name: Deploy 'ghostfolio'
+      ansible.builtin.import_role:
+        name: deploy_ghostfolio
+      vars:
+        gfl_redis_password: v_ghostfolio.redis_password
+        gfl_postgres_password: v_ghostfolio.postgres_password
+        gfl_access_token_salt: v_ghostfolio.access_token_salt
+        gfl_jwt_secret_key: v_ghostfolio.jwt_secret_key
+      tags:
+        - applications
+        - ghostfolio

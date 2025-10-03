@@ -1,0 +1,9 @@
+---
+gfl_app_version: '2.205.0'
+gfl_posgres_version: '15-alpine3.22'
+gfl_redis_version: '8.2.2-alpine3.22'
+
+gfl_redis_password: placeholder
+gfl_postgres_password: placeholder
+gfl_access_token_salt: placeholder
+gfl_jwt_secret_key: placeholder

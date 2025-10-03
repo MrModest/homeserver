@@ -1,0 +1,83 @@
+services:
+  ghostfolio:
+    image: docker.io/ghostfolio/ghostfolio:${APP_VERSION}
+    container_name: 'ghostfolio-server'
+    hostname: 'ghostfolio-server'
+    init: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@ghostfolio-postgres:5432/${POSTGRES_DB}?connect_timeout=300&sslmode=prefer
+    env_file:
+      - .env
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:3333/api/v1/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: docker.io/library/postgres:${DB_VERSION}
+    container_name: ghostfolio-postgres
+    hostname: ghostfolio-postgres
+    restart: unless-stopped
+    user: '${APP_USER}:${APP_GROUP}'
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_READ_SEARCH
+      - FOWNER
+      - SETGID
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+    env_file:
+      - .env
+    healthcheck:
+      test:
+        ['CMD-SHELL', 'pg_isready -d "$${POSTGRES_DB}" -U $${POSTGRES_USER}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ${APP_DATA_PATH}/db:/var/lib/postgresql/data
+
+  redis:
+    image: docker.io/library/redis:${REDIS_VERSION}
+    container_name: ghostfolio-redis
+    hostname: ghostfolio-redis
+    restart: unless-stopped
+    user: '${APP_USER}:${APP_GROUP}'
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    env_file:
+      - .env
+    volumes:
+      - ${APP_DATA_PATH}/redis:/data
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
+    healthcheck:
+      test:
+        ['CMD-SHELL', 'redis-cli --pass "$${REDIS_PASSWORD}" ping | grep PONG']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

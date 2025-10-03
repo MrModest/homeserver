@@ -1,0 +1,8 @@
+---
+- name: Start 'ghostfolio'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'ghostfolio'
+    t_app_data_dirs:
+      - '{{ p_dirs.apps_data }}/ghostfolio/db'
+      - '{{ p_dirs.apps_data }}/ghostfolio/redis'
