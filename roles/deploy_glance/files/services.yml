@@ -43,6 +43,9 @@
         - title: n8n
           icon: di:n8n
           url: https://n8n.mrmodest.duckdns.org
+        - title: Ghostfolio
+          icon: di:ghostfolio
+          url: https://ghostfolio.mrmodest.duckdns.org
     - type: monitor
       title: ServArr
       sites:
