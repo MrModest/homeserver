@@ -68,3 +68,27 @@
   become: true
   tags:
     - aliases
+
+- name: Setup tmux config
+  ansible.builtin.template:
+    src: tmux.conf.j2
+    dest: '/home/{{ p_ssh_user.user }}/.config/tmux/tmux.conf'
+    owner: '{{ p_ssh_user.user }}'
+    group: '{{ p_ssh_user.group }}'
+    mode: '{{ p_default_permissions.file }}'
+  become: true
+  tags:
+    - tmux
+
+- name: Clone a tmux plugin manager
+  ansible.builtin.git:
+    repo: 'https://github.com/tmux-plugins/tpm'
+    dest: '/home/{{ p_ssh_user.user }}/.config/tmux/plugins/tpm'
+    version: v3.1.0
+    clone: true
+    update: true
+    force: true
+  become: true
+  become_user: '{{ p_ssh_user.user }}'
+  tags:
+    - tmux

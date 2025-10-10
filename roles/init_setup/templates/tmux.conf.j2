@@ -1,0 +1,30 @@
+
+set -g mouse on # Enable mouse control (clickable windows, panes, resizable panes)
+
+set-option -g allow-rename off # don't rename windows automatically
+
+# Plugins
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+
+set -g @plugin 'hendrikmi/tmux-cpu-mem-monitor'
+
+# Style
+gray_light="#D8DEE9"
+gray_medium="#ABB2BF"
+gray_dark="#3B4252"
+green_soft="#A3BE8C"
+blue_muted="#81A1C1"
+cyan_soft="#88C0D0"
+
+set -g status-position top
+set -g status-left-length 100
+set -g status-style "fg=${gray_light},bg=default"
+set -g status-left "#[fg=${green_soft},bold] #S #[fg=${gray_light},nobold] | "
+set -g status-right " #{cpu}   #{mem} "
+set -g window-status-current-format "#[fg=${cyan_soft},bold] ● #[underscore]#I:#W"
+set -g window-status-format " #I:#W"
+set -g message-style "fg=${gray_light},bg=default"
+set -g mode-style "fg=${gray_dark},bg=${blue_muted}"
+
+run '/home/{{ p_ssh_user.user }}/.config/tmux/plugins/tpm/tpm'

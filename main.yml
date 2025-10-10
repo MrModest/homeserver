@@ -22,6 +22,7 @@
 
     p_apps_user: '{{ g_apps_user }}'
     p_smb_user: '{{ g_smb_user }}'
+    p_ssh_user: '{{ g_ssh_user }}'
 
     p_default_permissions:
       file: '0644'
