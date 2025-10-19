@@ -1,8 +1,8 @@
 ---
 grst_app_port: 8484
-grst_app_version: '1.1.18'
-grst_minio_version: 'RELEASE.2024-08-29T01-40-52Z'
-grst_minio_mc_version: 'RELEASE.2024-08-26T10-49-58Z'
-grst_redis_version: 'alpine3.20'
+grst_app_version: '1.7.4'
+grst_minio_version: 'RELEASE.2025-09-07T16-13-09Z'
+grst_minio_mc_version: 'RELEASE.2025-08-13T08-35-41Z'
+grst_redis_version: 'alpine3.22'
 grst_app_host: placeholder
 grst_minio_password: placeholder
