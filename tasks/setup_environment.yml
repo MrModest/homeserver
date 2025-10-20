@@ -67,6 +67,13 @@
   tags:
     - docker
 
+- name: Setup Docker socket proxy
+  ansible.builtin.import_role:
+    name: setup_socket_proxy
+  when: ansible_check_mode is false
+  tags:
+    - socket_proxy
+
 - name: Setup reverse proxy
   ansible.builtin.import_role:
     name: setup_proxy

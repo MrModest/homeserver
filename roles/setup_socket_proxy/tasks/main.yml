@@ -1,0 +1,14 @@
+---
+- name: Get Docker group ID
+  ansible.builtin.getent:
+    database: group
+    key: docker
+
+- name: Extract Docker GID
+  ansible.builtin.set_fact:
+    t_docker_gid: "{{ ansible_facts.getent_group.docker[1] }}"
+
+- name: Deploy socket-proxy
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'socket-proxy'

@@ -1,0 +1,38 @@
+services:
+  socket-proxy:
+    image: ghcr.io/wollomatic/socket-proxy:${SP_VERSION}
+    container_name: socket-proxy
+    user: '65534:${DOCKER_GID}'  # nobody user with docker group
+    restart: unless-stopped
+    mem_limit: 64M
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    command:
+      - '-loglevel=${SP_LOGLEVEL}'
+      - '-listenip=0.0.0.0'
+      - '-allowfrom=${SP_ALLOWFROM}'
+      - '-allowGET=${SP_ALLOW_GET}'
+      - '-allowHEAD=${SP_ALLOW_HEAD}'
+      - '-allowPOST=${SP_ALLOW_POST}'
+      - '-allowhealthcheck'
+      - '-watchdoginterval=${SP_WATCHDOG_INTERVAL}'
+      - '-stoponwatchdog'
+      - '-shutdowngracetime=5'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - socket-proxynet
+    healthcheck:
+      test: ["CMD", "./healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  socket-proxynet:
+    name: socket-proxynet
+    driver: bridge
+    internal: true

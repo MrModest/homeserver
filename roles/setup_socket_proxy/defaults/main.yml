@@ -1,0 +1,32 @@
+---
+# Docker Socket Proxy role defaults
+
+# Socket proxy version
+sp_version: '1.10.0'
+
+# Log level: DEBUG, INFO, WARN, ERROR
+sp_loglevel: 'info'
+
+# Comma-separated list of hostnames or IP networks allowed to connect
+# Examples: 'traefik,portainer' or '172.18.0.0/16' or 'portainer,dozzle,watchtower'
+# Default: only localhost (very restrictive for security)
+sp_allowfrom: '127.0.0.1/32'
+
+# Allowed GET requests (regex pattern)
+# Default allows: version, containers, networks, services, tasks, nodes, events
+# This is suitable for Traefik, Portainer, and most monitoring tools
+sp_allow_get: '/v1\..{1,2}/(version|containers/.*|networks/.*|services/.*|tasks/.*|nodes/.*|events.*)'
+
+# Allowed HEAD requests (regex pattern)
+# Default: allow all HEAD requests (generally safe)
+sp_allow_head: '.*'
+
+# Allowed POST requests (regex pattern)
+# Default: empty (no POST allowed by default for security)
+# If you need POST for container management (e.g., Portainer), use:
+# sp_allow_post: '/v1\..{1,2}/(containers/.*/start|containers/.*/stop|containers/.*/restart)'
+sp_allow_post: ''
+
+# Watchdog interval in seconds (check socket availability)
+# Default: 3600 (1 hour)
+sp_watchdog_interval: '3600'
