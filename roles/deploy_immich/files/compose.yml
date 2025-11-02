@@ -46,7 +46,7 @@ services:
       disable: false
 
   redis:
-    image: docker.io/valkey/valkey:${REDIS_VERSION}
+    image: docker.io/valkey/valkey:${VALKEY_VERSION}
     container_name: immich_redis
     user: ${APP_USER}:${APP_GROUP}
     restart: 'unless-stopped'
