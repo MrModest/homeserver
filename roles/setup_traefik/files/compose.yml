@@ -1,0 +1,36 @@
+services:
+  traefik:
+    image: traefik:${TRAEFIK_VERSION}
+    container_name: traefik
+    hostname: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "8080:8080"   # HTTP entrypoint (web)
+      - "8443:8443"   # HTTPS entrypoint (websecure)
+      - "8081:8081"   # Traefik dashboard & metrics
+    environment:
+      - TZ=${TZ}
+      - DUCKDNS_TOKEN=${DUCKDNS_TOKEN}
+    volumes:
+      - ${APP_DATA_PATH}/traefik:/etc/traefik:ro
+      - ${APP_DATA_PATH}/traefik/dynamic:/etc/traefik/dynamic:ro
+      - ${APP_DATA_PATH}/letsencrypt:/letsencrypt
+    networks:
+      - traefik-public
+      - socket-proxynet
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  traefik-public:
+    name: ${TRAEFIK_NETWORK}
+    driver: bridge
+  socket-proxynet:
+    external: true
+    name: socket-proxynet

@@ -1,0 +1,32 @@
+---
+# Traefik role defaults
+
+# Traefik version
+tfk_version: 'v3.2'
+
+# Log level: DEBUG, INFO, WARN, ERROR
+tfk_log_level: 'INFO'
+
+# Network name for Traefik
+tfk_network: 'traefik-public'
+
+# Domain configuration
+tfk_domain: 'mrmodest.duckdns.org'
+
+# ACME (Let's Encrypt) configuration
+tfk_acme_email: 'admin@example.com'
+tfk_acme_staging: false  # Set to true for testing to avoid rate limits
+tfk_cert_resolver: 'letsencrypt'
+
+# DuckDNS token (must be provided)
+# tfk_duckdns_token: ''
+
+# Enable HTTP to HTTPS redirect
+tfk_enable_https_redirect: true
+
+# Dashboard configuration
+tfk_dashboard_host: 'traefik.{{ tfk_domain }}'
+tfk_dashboard_auth_enabled: false
+# tfk_dashboard_user: 'admin'
+# Generate password hash with: echo $(htpasswd -nB admin) | sed -e s/\\$/\\$\\$/g
+# tfk_dashboard_password_hash: ''

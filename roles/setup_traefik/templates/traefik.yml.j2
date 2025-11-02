@@ -1,0 +1,74 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+log:
+  level: {{ tfk_log_level }}
+  format: json
+
+accessLog:
+  format: json
+
+api:
+  dashboard: true
+  insecure: false  # Dashboard accessible via /api/dashboard on internal entrypoint
+
+entryPoints:
+  web:
+    address: ":8080"
+    {% if tfk_enable_https_redirect %}
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+    {% endif %}
+
+  websecure:
+    address: ":8443"
+    http:
+      tls:
+        certResolver: {{ tfk_cert_resolver }}
+        domains:
+          - main: {{ tfk_domain }}
+            sans:
+              - "*.{{ tfk_domain }}"
+
+  traefik:
+    address: ":8081"
+
+ping:
+  entryPoint: traefik
+
+providers:
+  docker:
+    endpoint: "tcp://socket-proxy:2375"
+    exposedByDefault: false
+    network: {{ tfk_network }}
+    watch: true
+
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: {{ tfk_acme_email }}
+      storage: /letsencrypt/acme.json
+      {% if tfk_acme_staging %}
+      caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+      {% endif %}
+      dnsChallenge:
+        provider: duckdns
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+        delayBeforeCheck: 30
+
+metrics:
+  prometheus:
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    addServicesLabels: true
+    entryPoint: traefik

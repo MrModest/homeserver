@@ -1,0 +1,56 @@
+http:
+  middlewares:
+    # Security headers
+    security-headers:
+      headers:
+        frameDeny: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000
+        customFrameOptionsValue: "SAMEORIGIN"
+
+    # Rate limiting
+    rate-limit:
+      rateLimit:
+        average: 100
+        burst: 50
+        period: 1s
+
+    # Basic auth for dashboard (if enabled)
+    {% if tfk_dashboard_auth_enabled %}
+    dashboard-auth:
+      basicAuth:
+        users:
+          - "{{ tfk_dashboard_user }}:{{ tfk_dashboard_password_hash }}"
+    {% endif %}
+
+  routers:
+    # Traefik dashboard
+    dashboard:
+      rule: "Host(`{{ tfk_dashboard_host }}`)"
+      entryPoints:
+        - websecure
+      service: api@internal
+      {% if tfk_dashboard_auth_enabled %}
+      middlewares:
+        - dashboard-auth
+      {% endif %}
+      tls:
+        certResolver: {{ tfk_cert_resolver }}
+
+    # Ping/health endpoint
+    ping:
+      rule: "Host(`{{ tfk_dashboard_host }}`) && Path(`/ping`)"
+      entryPoints:
+        - traefik
+      service: ping@internal
+
+  # Example manual service configuration (if needed)
+  # services:
+  #   example-service:
+  #     loadBalancer:
+  #       servers:
+  #         - url: "http://192.168.178.34:8080"

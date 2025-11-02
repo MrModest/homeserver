@@ -1,0 +1,7 @@
+---
+- name: Restart Traefik
+  community.docker.docker_compose_v2:
+    project_src: '{{ p_dirs.compose_files }}/traefik'
+    state: restarted
+  become: true
+  when: ansible_check_mode is false

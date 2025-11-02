@@ -1,0 +1,53 @@
+---
+- name: Create Traefik network
+  community.docker.docker_network:
+    name: '{{ tfk_network }}'
+    driver: bridge
+
+- name: Upload Traefik static configuration
+  ansible.builtin.template:
+    src: traefik.yml.j2
+    dest: '{{ p_dirs.apps_data }}/traefik/traefik/traefik.yml'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.file }}'
+  become: true
+  notify: Restart Traefik
+
+- name: Upload Traefik dynamic configuration
+  ansible.builtin.template:
+    src: dynamic.yml.j2
+    dest: '{{ p_dirs.apps_data }}/traefik/traefik/dynamic/dynamic.yml'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.file }}'
+  become: true
+
+- name: Set correct permissions on letsencrypt directory
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/traefik/letsencrypt'
+    state: directory
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '0700'
+  become: true
+
+- name: Create acme.json file if it doesn't exist
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/traefik/letsencrypt/acme.json'
+    state: touch
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '0600'
+    modification_time: preserve
+    access_time: preserve
+  become: true
+
+- name: Deploy Traefik
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'traefik'
+    t_app_data_dirs:
+      - '{{ p_dirs.apps_data }}/traefik/traefik'
+      - '{{ p_dirs.apps_data }}/traefik/traefik/dynamic'
+      - '{{ p_dirs.apps_data }}/traefik/letsencrypt'

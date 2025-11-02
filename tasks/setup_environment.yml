@@ -74,6 +74,17 @@
   tags:
     - socket_proxy
 
+- name: Setup Traefik reverse proxy
+  ansible.builtin.import_role:
+    name: setup_traefik
+  when: ansible_check_mode is false
+  vars:
+    tfk_duckdns_token: '{{ v_duckdns.api_token }}'
+    tfk_domain: '{{ g_duckdns_domain }}'
+    tfk_acme_email: '{{ v_traefik.acme_email }}'
+  tags:
+    - traefik
+
 - name: Setup reverse proxy
   ansible.builtin.import_role:
     name: setup_proxy

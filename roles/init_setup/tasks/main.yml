@@ -23,6 +23,7 @@
       - ncdu # check free disk space
       - smartmontools # check disk health
       - intel-opencl-icd # Intel OpenCL runtime - for GPU acceleration in Jellyfin
+      - mc # Midnight Commander - console file manager
     state: present
   become: true
 
