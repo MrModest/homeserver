@@ -7,6 +7,12 @@ hrdr_hoarderbot_version: 0.1.0
 hrdr_nextauth_secret: placeholder
 hrdr_meili_master_key: placeholder
 
+hrdr_app_domain: placeholder
+hrdr_auth_provider: placeholder
+hrdr_auth_provider_domain: placeholder
+hrdr_auth_client_id: placeholder
+hrdr_auth_client_secret: placeholder
+
 hrdr_api_token: placeholder
 hrdr_bot_tg_token: placeholder
 hrdr_bot_tg_allowlist: placeholder

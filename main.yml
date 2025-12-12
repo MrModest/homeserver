@@ -118,6 +118,12 @@
         hrdr_nextauth_secret: '{{ v_hoarder.nextauth_secret }}'
         hrdr_meili_master_key: '{{ v_hoarder.meili_master_key }}'
 
+        hrdr_app_domain: 'hoarder.{{ g_duckdns_domain }}'
+        hrdr_auth_client_id: '{{ v_hoarder.auth_client_id }}'
+        hrdr_auth_client_secret: '{{ v_hoarder.auth_client_secret }}'
+        hrdr_auth_provider: 'authentik'
+        hrdr_auth_provider_domain: 'authentik.{{ p_base_domain }}'
+
         hrdr_api_token: '{{ v_hoarder.api_token }}'
         hrdr_bot_tg_token: '{{ v_hoarder.tg_bot_token }}'
         hrdr_bot_tg_allowlist: '{{ v_hoarder.tg_bot_allowlist }}'
