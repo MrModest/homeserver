@@ -254,3 +254,12 @@
       tags:
         - applications
         - ghostfolio
+
+    - name: Deploy 'mealie'
+      ansible.builtin.import_role:
+        name: deploy_mealie
+      vars:
+        mle_app_domain: 'mealie.{{ g_duckdns_domain }}'
+      tags:
+        - applications
+        - mealie

@@ -1,0 +1,26 @@
+services:
+  mealie:
+    image: ghcr.io/mealie-recipes/mealie:${APP_VERSION}
+    container_name: 'mealie'
+    hostname: 'mealie'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      TZ: ${TIMEZONE}
+      PUID: ${APP_USER}
+      PGID: ${APP_GROUP}
+      ALLOW_SIGNUP: "false"
+      BASE_URL: ${APP_DOMAIN}
+    env_file:
+      - .env
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
+    volumes:
+      - '${APP_DATA_PATH}/data:/app/data/'
+    restart: unless-stopped
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

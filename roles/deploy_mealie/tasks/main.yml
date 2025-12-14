@@ -1,0 +1,7 @@
+---
+- name: Start 'mealie'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'mealie'
+    t_app_data_dirs:
+      - '{{ p_dirs.apps_data }}/mealie/data'
