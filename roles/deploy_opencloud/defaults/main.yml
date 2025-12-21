@@ -1,6 +1,7 @@
 ---
-opcd_app_version: '3.4.0'
+opcd_app_version: '4.1.0'
 opcd_collabora_version: '25.04.2.1.1'
+opcd_radicale_version: '3.5.7'
 opcd_ext_versions:
   unzip: '1.0.2'
   jsonviewer: '1.0.0'

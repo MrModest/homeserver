@@ -47,6 +47,16 @@ services:
       - ${DATA_PATH}/data:/var/lib/opencloud
     restart: unless-stopped
 
+  radicale:
+    image: opencloudeu/radicale:${RADICALE_VERSION}
+    container_name: 'radicale'
+    hostname: 'radicale'
+    user: '${APP_USER}:${APP_GROUP}'
+    restart: unless-stopped
+    volumes:
+      - ${APP_DATA_PATH}/config/radicale:/etc/radicale
+      - ${DATA_PATH}/radicale-data:/var/lib/radicale
+
   collaboration: # wopiserver
     image: opencloudeu/opencloud-rolling:${APP_VERSION}
     container_name: 'collaboration'

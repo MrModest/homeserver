@@ -33,6 +33,24 @@
     mode: '{{ p_default_permissions.file }}'
   become: true
 
+- name: Copy proxy.yaml file for radicale
+  ansible.builtin.copy:
+    src: proxy.yaml
+    dest: '{{ p_dirs.apps_data }}/opencloud/config/proxy.yaml'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.file }}'
+  become: true
+
+- name: Copy radicale config file
+  ansible.builtin.copy:
+    src: radicale-config.ini
+    dest: '{{ p_dirs.apps_data }}/opencloud/config/radicale/config'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.file }}'
+  become: true
+
 - name: Start 'opencloud'
   ansible.builtin.import_tasks: tasks/compose_up.yml
   vars:
