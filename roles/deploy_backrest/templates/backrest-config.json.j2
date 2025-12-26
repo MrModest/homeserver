@@ -70,7 +70,56 @@
         "ioNice": "IO_DEFAULT",
         "cpuNice": "CPU_DEFAULT"
       }
-    }
+    },
+    {
+      "id": "photos__mailru-webdav",
+      "guid": "519c25547d3b0ac173f3db690361a0f01f440909e1c9fc5df96518ce32f0b7bc",
+      "uri": "rclone:mailru-webdav:NoSync/Backups/HomeServer/backrest/photos",
+      "prunePolicy": {
+        "maxUnusedPercent": 10,
+        "schedule": {
+          "clock": "CLOCK_LAST_RUN_TIME",
+          "cron": "0 0 1 * *"
+        }
+      },
+      "checkPolicy": {
+        "readDataSubsetPercent": 0,
+        "schedule": {
+          "clock": "CLOCK_LAST_RUN_TIME",
+          "cron": "0 0 1 * *"
+        }
+      },
+      "commandPrefix": {
+        "ioNice": "IO_DEFAULT",
+        "cpuNice": "CPU_DEFAULT"
+      },
+      "autoUnlock": false,
+      "hooks": []
+    },
+    {
+      "id": "photos__b2-via-s3",
+      "uri": "s3:s3.eu-central-003.backblazeb2.com/{{ bkrs_b2.bucket_name }}/photos",
+      "guid": "3407cc5768c53c7b33e09ed6e669d2f06cc9fe65f9680223648656f5909d0dd5",
+      "env": [
+        "AWS_ACCESS_KEY_ID={{ bkrs_b2.s3_access_key_id }}",
+        "AWS_SECRET_ACCESS_KEY={{ bkrs_b2.s3_secret_access_key }}"
+      ],
+      "prunePolicy": {
+        "schedule": {
+          "disabled": true,
+          "clock": "CLOCK_LAST_RUN_TIME"
+        },
+        "maxUnusedPercent": 10
+      },
+      "checkPolicy": {
+        "schedule": {
+          "disabled": true,
+          "clock": "CLOCK_LAST_RUN_TIME"
+        },
+        "readDataSubsetPercent": 0
+      },
+      "commandPrefix": {}
+    },
   ],
   "plans":  [
     {
@@ -182,6 +231,62 @@
           "weekly": 4,
           "daily": 0,
           "hourly": 0
+        }
+      },
+      "hooks": []
+    },
+    {
+      "id": "photos__mailru-webdav",
+      "repo": "photos__mailru-webdav",
+      "paths": [
+        "/hostfs{{ p_dirs.slow_data }}/apps-data/immich/data/library",
+        "/hostfs{{ p_dirs.slow_data }}/apps-data/immich/external"
+      ],
+      "excludes": [],
+      "iexcludes": [],
+      "schedule": {
+        "clock": "CLOCK_LOCAL",
+        "disabled": true
+      },
+      "backup_flags": [
+        "--compression max"
+      ],
+      "retention": {
+        "policyTimeBucketed": {
+          "yearly": 0,
+          "monthly": 12,
+          "weekly": 0,
+          "daily": 3,
+          "hourly": 0,
+          "keepLastN": 0
+        }
+      },
+      "hooks": []
+    },
+    {
+      "id": "photos__b2-via-s3",
+      "repo": "photos__b2-via-s3",
+      "paths": [
+        "/hostfs{{ p_dirs.slow_data }}/apps-data/immich/data/library",
+        "/hostfs{{ p_dirs.slow_data }}/apps-data/immich/external"
+      ],
+      "excludes": [],
+      "iexcludes": [],
+      "schedule": {
+        "clock": "CLOCK_LOCAL",
+        "disabled": true
+      },
+      "backup_flags": [
+        "--compression max"
+      ],
+      "retention": {
+        "policyTimeBucketed": {
+          "yearly": 0,
+          "monthly": 12,
+          "weekly": 0,
+          "daily": 3,
+          "hourly": 0,
+          "keepLastN": 0
         }
       },
       "hooks": []
