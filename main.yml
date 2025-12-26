@@ -52,6 +52,10 @@
             password_enc: '{{ v_rclone_config.mailru.password_enc }}'
           gdrive:
             token_json: '{{ v_rclone_config.gdrive.token_json }}'
+        bkrs_b2:
+          s3_access_key_id: '{{ v_restic.b2.s3_access_key_id }}'
+          s3_secret_access_key: '{{ v_restic.b2.s3_secret_access_key }}'
+          bucket_name: '{{ v_restic.b2.bucket_name }}'
       tags:
         - applications
         - backrest
