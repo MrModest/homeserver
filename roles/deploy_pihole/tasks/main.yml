@@ -71,9 +71,6 @@
     records:
       - address: '{{ item }}'
         enabled: true
-    not_null:
-      - address
-      - enabled
     ignore: true
     alter: true
   become: true
@@ -81,6 +78,49 @@
   loop: "{{ phl_blocklists }}"
   notify:
     - Update gravity lists
+
+- name: Add 'AdDisabled' group
+  ttafsir.sqlite_utils.insert:
+    db_path: /etc/pihole/gravity.db
+    table: group
+    records:
+      - name: 'AdDisabled'
+        enabled: true
+        description: 'Group with disabled ad blocking'
+    ignore: true
+    alter: true
+  become: true
+  become_user: '{{ p_user.user }}'
+
+- name: Add clients
+  ttafsir.sqlite_utils.insert:
+    db_path: /etc/pihole/gravity.db
+    table: client
+    records:
+      - ip: '{{ item.ip }}'
+        comment: '{{ item.name }}'
+    ignore: true
+    alter: true
+  become: true
+  become_user: '{{ p_user.user }}'
+  loop: "{{ phl_client_ips }}"
+
+- name: Add domains to domainlist
+  ttafsir.sqlite_utils.insert:
+    db_path: /etc/pihole/gravity.db
+    table: domainlist
+    records:
+      - domain: '{{ item.domain }}'
+        type: '{{ item.type }}'
+        comment: '{{ item.comment }}'
+        enabled: true
+    ignore: true
+    alter: true
+  become: true
+  become_user: '{{ p_user.user }}'
+  loop: "{{ phl_domainlist }}"
+  tags:
+    - debug1
 
 - name: Ensure Pi-hole services are running
   ansible.builtin.systemd:

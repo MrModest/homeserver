@@ -17,3 +17,41 @@ phl_blocklists:
   - https://phishing.army/download/phishing_army_blocklist.txt
   - https://v.firebog.net/hosts/AdguardDNS.txt
   - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling/hosts
+
+phl_client_ips:
+  - ip: 100.121.210.51
+    name: Mac13-ts
+  - ip: 100.105.58.24
+    name: HomeServer-ts
+  - ip: 100.83.204.62
+    name: Gateway-ts
+  - ip: 100.127.114.69
+    name: Pixel7-ts
+  - ip: 192.168.178.44
+    name: Pixel7
+  - ip: 192.168.178.21
+    name: Mac13
+  - ip: 192.168.178.1
+    name: FritzBox
+  - ip: 192.168.178.48
+    name: Gateway
+  - ip: 192.168.178.34
+    name: HomeServer
+  - ip: 192.168.178.23
+    name: Anastasiia13mini
+  - ip: 192.168.178.22
+    name: PirozhokPC
+  - ip: 192.168.178.30
+    name: Mac14DH
+  - ip: 192.168.178.28
+    name: ModestTV
+  - ip: 192.168.178.27
+    name: PirozhokHuawei
+
+phl_domainlist:
+  - domain: 's.youtube.com'
+    type: 0 # Exact allow
+    comment: YouTube History
+  - domain: '(\.|^)googleadservices\.com$'
+    type: 2 # Regex allow
+    comment: Google Ad
