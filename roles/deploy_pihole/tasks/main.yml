@@ -119,8 +119,6 @@
   become: true
   become_user: '{{ p_user.user }}'
   loop: "{{ phl_domainlist }}"
-  tags:
-    - debug1
 
 - name: Ensure Pi-hole services are running
   ansible.builtin.systemd:
