@@ -4,6 +4,10 @@
   vars_files:
     - vars/vault.yml
   vars:
+    p_user:
+      user: 'pihole'
+      group: 'pihole'
+
     p_timezone: '{{ g_timezone }}'
   tasks:
     - name: Set timezone
@@ -34,8 +38,7 @@
       become: true
       vars:
         phl__admin_password: "{{ v_pihole.web_password }}"
-        phl__local_ip4: "{{ g_ips.homelab }}"
-      when: false
+        phl__local_ip4: "{{ g_ips.dns }}"
       tags:
         - pihole
 

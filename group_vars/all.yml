@@ -6,8 +6,8 @@ g_timezone: Europe/Berlin
 
 g_ips:
   router: 192.168.178.1
-  homelab: 192.168.178.34
-  dns: 192.168.178.48
+  homelab: 192.168.178.34 # Dell Workstation
+  dns: 192.168.178.55 # Raspberry Pi 4B
 
 g_ssh_user:
   user: homessh
