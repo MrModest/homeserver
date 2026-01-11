@@ -39,13 +39,16 @@
           url: https://planka.mrmodest.duckdns.org
         - title: Stirling PDF
           icon: di:stirling-pdf
-          url: https://stirling_pdf.mrmodest.duckdns.org/
+          url: https://stirling_pdf.mrmodest.duckdns.org
         - title: n8n
           icon: di:n8n
           url: https://n8n.mrmodest.duckdns.org
         - title: Ghostfolio
           icon: di:ghostfolio
           url: https://ghostfolio.mrmodest.duckdns.org
+        - title: Mealie
+          icon: di:mealie
+          url: https://mealie.mrmodest.duckdns.org
     - type: monitor
       title: ServArr
       sites:
