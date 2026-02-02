@@ -1,0 +1,31 @@
+---
+_templates:
+  containers:
+    postgres:
+      image:
+        repository: docker.io/library/postgres
+        tag: '16-alpine3.23'
+      volumes:
+        postgres-data: /var/lib/postgresql/data
+      env_vars:
+        POSTGRES_DB: ${COMPOSE_PROJECT_NAME}
+        POSTGRES_USER: ${COMPOSE_PROJECT_NAME}
+        POSTGRES_PASSWORD: ${COMPOSE_PROJECT_NAME}
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+        start_period: 20s
+        interval: 30s
+        retries: 5
+        timeout: 5s
+    redis:
+      image:
+        repository: docker.io/library/redis
+        tag: '8.4.0-alpine3.22'
+      volumes:
+        redis-data: /data
+      healthcheck:
+        test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+        start_period: 20s
+        interval: 30s
+        retries: 5
+        timeout: 3s

@@ -1,0 +1,15 @@
+---
+- name: Hello World Playbook
+  hosts: localhost
+  gather_facts: true
+  vars_files:
+    - vars/commons.yml
+    - vars/stacks.yml
+  tasks:
+    - name: Register stacks
+      ansible.builtin.include_vars:
+        dir: vars/stacks
+        name: stacks
+    - name: Print hello world
+      ansible.builtin.debug:
+        var: 'stacks'

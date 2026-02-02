@@ -1,0 +1,18 @@
+---
+mealie:
+  containers:
+    main:
+      image:
+        repository: ghcr.io/mealie-recipes/mealie
+        tag: v3.7.0
+      env_vars:
+        DB_ENGINE: sqlite
+        ALLOW_SIGNUP: 'false'
+        BASE_URL: '${APP_DOMAIN}'
+      resource_limits:
+        memory: 1000M
+      volumes:
+        data: /app/data/
+      reverse_proxy:
+        port: 9000
+      sso: true

@@ -1,0 +1,75 @@
+---
+paperless:
+  containers:
+
+    main:
+      image:
+        repository: ghcr.io/paperless-ngx/paperless-ngx
+        tag: 3.6.0
+      user: '0' # root
+      depends_on:
+        - postgres
+        - redis
+        - gotenberg
+        - tika
+      env_vars:
+        PAPERLESS_REDIS: redis://${REDIS_HOST}:${REDIS_PORT}
+        PAPERLESS_DBHOST: ${POSTGRES_HOST}
+        PAPERLESS_TIKA_ENABLED: 1
+        PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless_gotenberg:3000
+        PAPERLESS_TIKA_ENDPOINT: http://paperless_tika:9998
+        PAPERLESS_EMPTY_TRASH_DIR: /usr/src/paperless/trash
+        PAPERLESS_FILENAME_FORMAT: '{% raw %}{{correspondent}}/{{created_year}}/[{{created}}] {{title}}{% endraw %}'
+        PAPERLESS_OCR_LANGUAGE: deu+eng+rus
+        PAPERLESS_OCR_LANGUAGES: rus
+        PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true, "continue_on_soft_render_error": true}'
+        PAPERLESS_SECRET_KEY: '{{ v.paperless.secret_key }}'
+        PAPERLESS_URL: ${APP_DOMAIN}
+        PAPERLESS_ADMIN_USER: admin
+        PAPERLESS_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD}
+        PAPERLESS_TIME_ZONE: '{{ g.timezone }}'
+        PAPERLESS_CONSUMER_RECURSIVE: true
+        PAPERLESS_FILENAME_DATE_ORDER: YMD
+        USERMAP_UID: '{{ g.machines.main.users.apps.user }}'
+        USERMAP_GID: '{{ g.machines.main.users.apps.group }}'
+      volumes:
+        - data:/usr/src/paperless/data # https://docs.paperless-ngx.com/configuration/#PAPERLESS_DATA_DIR
+
+        - host: media
+          container: /usr/src/paperless/media # https://docs.paperless-ngx.com/configuration/#PAPERLESS_MEDIA_ROOT
+          pool: slow
+        - host: trash
+          container: /usr/src/paperless/trash # https://docs.paperless-ngx.com/configuration/#PAPERLESS_EMPTY_TRASH_DIR
+          pool: slow
+        - host: export
+          container: /usr/src/paperless/export # https://docs.paperless-ngx.com/administration/#exporter
+          pool: slow
+
+        - host: '{{ g.machines.main.pools.slow.aliases.shared }}/paperless/consume'
+          container: /usr/src/paperless/consume # https://docs.paperless-ngx.com/configuration/#PAPERLESS_CONSUMPTION_DIR
+          type: absolute
+      reverse_proxy:
+        port: 8000
+      sso: true
+
+    postgres:
+      template: postgres
+
+    redis:
+      template: redis
+
+    gotenberg:
+      image:
+        repository: docker.io/gotenberg/gotenberg
+        tag: '8.7'
+      # The gotenberg chromium route is used to convert .eml files. We do not
+      # want to allow external content like tracking pixels or even javascript.
+      command:
+        - "gotenberg"
+        - "--chromium-disable-javascript=true"
+        - "--chromium-allow-list=file:///tmp/.*"
+
+    tika:
+      image:
+        repository: apache/tika
+        tag: '3.1.0.0'

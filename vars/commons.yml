@@ -1,0 +1,43 @@
+---
+g:
+  timezone: Europe/Berlin
+
+  domains:
+    local: home.lab
+    duckdns: mrmodest.duckdns.org
+    cloudflare: in-your.mom
+
+  machines:
+    main:
+      hostname: homeserver
+      ip: 192.168.178.34
+      users:
+        maintenance:
+          user: homessh
+          group: homessh
+        apps:
+          user: apps
+          group: apps
+        samba:
+          user: sambashare
+          group: sambashare
+      pools:
+        fast:
+          name: fast
+          mount_path: /mnt/pools/fast
+          aliases:
+            docker:
+              stacks: '/mnt/pools/fast/docker/stacks'
+              root: '/mnt/pools/fast/docker/data-root' # Default: /var/lib/docker
+              volumes: '/mnt/pools/fast/apps-data'
+        slow:
+          name: slow
+          mount_path: /mnt/pools/slow
+          aliases:
+            docker:
+              volumes: '/mnt/pools/slow/apps-data'
+            backups: '/mnt/pools/slow/backups'
+            shared: '/mnt/pools/slow/shared'
+    pi4b:
+      hostname: Pi4B
+      ip: 192.168.178.55
