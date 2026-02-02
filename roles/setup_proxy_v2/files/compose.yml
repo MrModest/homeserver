@@ -1,0 +1,26 @@
+services:
+  caddy:
+    build:
+      context: .
+      args:
+        - CADDY_VERSION=${CADDY_VERSION}
+    env_file:
+      - .env
+    container_name: caddy
+    hostname: caddy
+    user: ${APP_USER}:${APP_GROUP}
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+      - '443:443'
+      - '443:443/udp'
+    volumes:
+      - ${APP_DATA}/conf:/etc/caddy # for Caddyfile
+      - ${APP_DATA}/site:/srv
+      - ${APP_DATA}/data:/data
+      - ${APP_DATA}/config:/config
+
+networks:
+  default:
+    external: true
+    name: caddy_network

@@ -1,0 +1,36 @@
+{
+  trusted_proxies cloudflare {
+    interval 12h
+    timeout 15s
+  }
+}
+
+(acme_duckdns) {
+  tls {
+    dns duckdns {env.DUCKDNS_API_TOKEN}
+  }
+}
+
+(acme_cf) {
+  tls {
+    dns cloudflare {env.CF_API_TOKEN}
+    # resolvers 1.1.1.1 # In case of error 'expected 1 zone, got 0 for ...'
+  }
+}
+
+{% for app in prx2_apps %}
+# ----------- {{ app.slug }} -----------
+{{ app.slug }}.{{ prx2_local_domain }} {
+	reverse_proxy {{ app.hostname }}:{{ app.port }}
+}
+{{ app.slug }}.{{ prx2_duckdns_domain }} {
+  import acme_duckdns
+	reverse_proxy {{ app.hostname }}:{{ app.port }}
+}
+{{ app.slug }}.{{ prx2_cf_domain }} {
+  import acme_cf
+	reverse_proxy {{ app.hostname }}:{{ app.port }}
+}
+# -------------------------------------
+
+{% endfor %}

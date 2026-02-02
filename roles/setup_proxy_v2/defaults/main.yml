@@ -1,0 +1,15 @@
+---
+prx2_local_domain: placeholder
+
+prx2_duckdns_api_token: placeholder
+prx2_duckdns_domain: placeholder
+
+prx2_cf_api_key: placeholder
+prx2_cf_domain: placeholder
+
+prx2_apps:
+  - slug: placeholder
+    hostname: placeholder
+    port: placeholder
+
+prx2_caddy_version: 2.10.2
