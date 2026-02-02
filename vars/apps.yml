@@ -1,0 +1,8 @@
+---
+g_services:
+  - slug: aria-ng
+    hostname: ariang
+    port: 8080
+  - slug: authentik
+    hostname: authentik-server
+    port: 9000
