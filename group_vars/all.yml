@@ -22,26 +22,26 @@ g_apps_user:
 
 g_pools:
   fast:
-    name: fast-tank
+    name: fast
     mount_path: /mnt/pools/fast
     drives:
       - /dev/disk/by-id/ata-INTENSO_SSD_1642312002004838
       - /dev/disk/by-id/ata-INTENSO_SSD_1642410001006905
     mirror: true
     custom_dirs:
-      apps_data_ds: fast-tank/apps-data
+      apps_data_ds: fast/apps-data
       apps_data: '/mnt/pools/fast/apps-data'
       docker_root: '/mnt/pools/fast/docker/data-root' # Default: /var/lib/docker
       compose_files: '/mnt/pools/fast/docker/compose-files'
   slow:
-    name: 'slow-tank'
+    name: 'slow'
     mount_path: '/mnt/pools/slow'
     drives:
       - /dev/disk/by-id/ata-WDC_WD20EZAZ-00L9GB0_WD-WXC2A51F94ST
       - /dev/disk/by-id/ata-ST2000VM003-1ET164_W5238D50
     mirror: true
     custom_dirs:
-      apps_data_ds: slow-tank/apps-data
+      apps_data_ds: slow/apps-data
       apps_data: '/mnt/pools/slow/apps-data'
       shared: '/mnt/pools/slow/shared'
       backups_root: '/mnt/pools/slow/backups'

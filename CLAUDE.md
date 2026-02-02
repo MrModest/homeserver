@@ -62,11 +62,11 @@ Variables follow a strict naming convention:
 
 The server uses ZFS pools with specific purposes:
 
-- **`fast-tank`** (SSD mirror): High-performance pool for app data, Docker root, compose files
+- **`fast`** (SSD mirror): High-performance pool for app data, Docker root, compose files
   - Path: `/mnt/pools/fast`
   - Structure: `apps-data/[app]`, `docker/data-root`, `docker/compose-files`
 
-- **`slow-tank`** (HDD mirror): Large storage for media, backups, SMB shares
+- **`slow`** (HDD mirror): Large storage for media, backups, SMB shares
   - Path: `/mnt/pools/slow`
   - Structure: `apps-data/[app]`, `backups/`, `shared/`
 

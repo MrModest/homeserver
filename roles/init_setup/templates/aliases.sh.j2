@@ -146,12 +146,12 @@ function docker-overlay-ls() {
 }
 
 function zfs-docker-cleanup() {
-  local snapshots_count=$(zfs get mounted | grep "mounted   no" | grep "fast-tank/docker/data-root" | awk '{print $1}' | wc -l)
+  local snapshots_count=$(zfs get mounted | grep "mounted   no" | grep "fast/docker/data-root" | awk '{print $1}' | wc -l)
 
   echo "Docker lagacy snapshots before: $snapshots_count"
-  sudo zfs get mounted | grep "mounted   no" | grep "fast-tank/docker/data-root" | awk '{print $1}' | xargs -I {} sudo zfs destroy {} -R
+  sudo zfs get mounted | grep "mounted   no" | grep "fast/docker/data-root" | awk '{print $1}' | xargs -I {} sudo zfs destroy {} -R
 
-  snapshots_count=$(zfs get mounted | grep "mounted   no" | grep "fast-tank/docker/data-root" | awk '{print $1}' | wc -l)
+  snapshots_count=$(zfs get mounted | grep "mounted   no" | grep "fast/docker/data-root" | awk '{print $1}' | wc -l)
   echo "Docker lagacy snapshots after: $snapshots_count"
 }
 
