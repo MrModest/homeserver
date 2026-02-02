@@ -1,0 +1,10 @@
+{
+  "ansible.python.interpreterPath": "/opt/homebrew/bin/python3",
+  "files.associations": {
+    "compose.yml": "dockercompose",
+    "*.yml.j2": "ansible-jinja"
+  },
+  "python.analysis.extraPaths": [
+    "/opt/homebrew/Cellar/ansible/11.1.0_1/libexec/lib/python3.13/site-packages" // Where Ansible is installed
+  ]
+}
