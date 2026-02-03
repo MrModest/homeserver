@@ -35,6 +35,8 @@ phl_client_ips:
     name: FritzBox
   - ip: 192.168.178.48
     name: Gateway
+  - ip: 192.168.178.55
+    name: Pi4B
   - ip: 192.168.178.34
     name: HomeServer
   - ip: 192.168.178.23

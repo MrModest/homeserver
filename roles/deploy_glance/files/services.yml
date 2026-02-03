@@ -80,7 +80,7 @@
         - title: Pi-Hole
           icon: di:pi-hole
           url: https://pihole.home.lab/admin
-          check-url: http://192.168.178.48:80
+          check-url: http://192.168.178.55:80
           alt-status-codes:
             - 403
           allow-insecure: true

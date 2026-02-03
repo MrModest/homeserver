@@ -137,7 +137,7 @@ All containers use json-file logging driver for Loki integration.
 From `group_vars/all.yml`:
 - Router: 192.168.178.1
 - Home server: 192.168.178.34
-- DNS (Pi-hole): 192.168.178.48
+- DNS (Pi-hole): 192.168.178.55
 - Remote access: Tailscale VPN (no public exposure)
 
 ### Permissions Convention
