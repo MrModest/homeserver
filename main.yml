@@ -267,3 +267,12 @@
       tags:
         - applications
         - mealie
+
+    - name: Deploy 'changedetection'
+      ansible.builtin.import_role:
+        name: deploy_changedetection
+      vars:
+        chng_domain: 'changedetection.{{ g_duckdns_domain }}'
+      tags:
+        - applications
+        - changedetection

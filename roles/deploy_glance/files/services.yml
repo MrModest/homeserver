@@ -49,6 +49,9 @@
         - title: Mealie
           icon: di:mealie
           url: https://mealie.mrmodest.duckdns.org
+        - title: ChangeDetection
+          icon: di:changedetection
+          url: https://changedetection.mrmodest.duckdns.org
     - type: monitor
       title: ServArr
       sites:
