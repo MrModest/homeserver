@@ -91,7 +91,7 @@ function d-db-dump() {
   docker exec -t $container_name pg_dumpall -c -U postgres | gzip > "$dump_path"\
    && echo "Database dump saved to $dump_path"\
    && echo "Removing dump from $yesterday"\
-   && sudo rm -I "$dump_path_yesterday"
+   && sudo rm -fI "$dump_path_yesterday"
 
   chown -R {{ p_apps_user.user }}:{{ p_apps_user.group }} $dumps_root/$app_name
 }
