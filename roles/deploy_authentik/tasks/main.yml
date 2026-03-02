@@ -4,7 +4,7 @@
   vars:
     t_app_name: 'authentik'
     t_app_data_dirs:
-      - '{{ p_dirs.apps_data }}/authentik/media'
+      - '{{ p_dirs.apps_data }}/authentik/data'
       - '{{ p_dirs.apps_data }}/authentik/custom-templates'
       - '{{ p_dirs.apps_data }}/authentik/certs'
       - '{{ p_dirs.apps_data }}/authentik/db'
