@@ -1,6 +1,6 @@
 services:
   hp_dockerproxy:
-    image: ghcr.io/tecnativa/docker-socket-proxy:0.2
+    image: ghcr.io/tecnativa/docker-socket-proxy:v0.4.2
     container_name: hp_dockerproxy
     environment:
       - CONTAINERS=1 # Allow access to viewing containers
