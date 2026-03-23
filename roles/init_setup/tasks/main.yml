@@ -92,3 +92,17 @@
   become_user: '{{ p_ssh_user.user }}'
   tags:
     - tmux
+
+- name: Add xterm support for 'kitty' and 'ghostty' terminal emulators
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: '/usr/share/terminfo/x/{{ item }}'
+    mode: '0644'
+    owner: root
+    group: root
+  become: true
+  loop:
+    - xterm-kitty
+    - xterm-ghostty
+  tags:
+    - terminal
