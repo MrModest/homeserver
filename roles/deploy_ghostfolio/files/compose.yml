@@ -10,7 +10,7 @@ services:
       - no-new-privileges:true
     user: '${APP_USER}:${APP_GROUP}'
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@ghostfolio-postgres:5432/${POSTGRES_DB}?connect_timeout=300&sslmode=prefer
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@ghostfolio-postgres:5432/${POSTGRES_DB}?connect_timeout=300
     env_file:
       - .env
     restart: unless-stopped

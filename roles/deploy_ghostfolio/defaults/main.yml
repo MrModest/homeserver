@@ -1,5 +1,5 @@
 ---
-gfl_app_version: '2.205.0'
+gfl_app_version: '2.251.0'
 gfl_posgres_version: '15-alpine3.22'
 gfl_redis_version: '8.2.2-alpine3.22'
 
