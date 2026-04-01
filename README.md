@@ -100,49 +100,46 @@
     - [x] Google Drive
     - [ ] Yandex.Disk
     - [ ] Mega
-    - [ ] Backblaze B2 (?)
+    - [x] Backblaze B2
   - [x] Configure DB dumps
   - [ ] Configure auto snapshoting
   - [ ] Configure backuping from snapshots
   - [ ] Create off-site backup
 - [x] Configure remote access without public exposure (Tailscale)
-- [ ] Configure SSO
-  - [ ] Deploy [authentik](https://docs.goauthentik.io/docs/install-config/configuration/)
-  - [ ] Configure [OAuth2](https://docs.goauthentik.io/docs/add-secure-apps/providers/oauth2/create-oauth2-provider)
+- [x] Configure SSO
+  - [x] Deploy [authentik](https://docs.goauthentik.io/docs/install-config/configuration/)
+  - [x] Configure [OAuth2](https://docs.goauthentik.io/docs/add-secure-apps/providers/oauth2/create-oauth2-provider)
     - [ ] [twik](https://docs.goauthentik.io/docs/install-config/reverse-proxy) for reverse-proxy support
   - [ ] Configure [LDAP](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap/)
-  - [ ] Configure SSO for Immich as a first app ([doc](https://docs.goauthentik.io/integrations/services/immich/))
+  - [x] Configure SSO for Immich as a first app ([doc](https://docs.goauthentik.io/integrations/services/immich/))
 - [x] Configure local DNS
   - [x] Setup [PiHole](https://github.com/pi-hole/docker-pi-hole/?tab=readme-ov-file#quick-start)
 
 ### Docker Applications
 - [x] [Immich](https://github.com/immich-app/immich)
-  - [ ] Migrate albums information from Google Photos
 - [ ] ~~[Dockge](https://github.com/louislam/dockge)~~
 - [x] [Paperless](https://github.com/paperless-ngx/paperless-ngx)
-- [ ] [Nextcloud](https://github.com/nextcloud/all-in-one)
-  - or OwnCloud Infinite Scale
-  - or OpenCloud
-- [x] [homepage](https://github.com/gethomepage/homepage)
+- [x] [OpenCloud](https://github.com/opencloud-eu/opencloud)
+- [x] [glance](https://github.com/glanceapp/glance)
 - [x] [Portainer](https://docs.portainer.io/v/2.20/start/install-ce/server/docker/linux)
-- [x] [Hoarder](https://github.com/hoarder-app/hoarder)
+- [x] [Karakeep](https://github.com/karakeep-app/karakeep)
 - [X] [Wallos](https://github.com/ellite/Wallos)
-- [ ] [Cronicle](https://github.com/jhuckaby/Cronicle)
+- [x] [Cronicle](https://github.com/jhuckaby/Cronicle)
   - [ ] Move to docker container
-- [ ] [AriaNg](https://hub.docker.com/r/hurlenko/aria2-ariang)
+- [x] [AriaNg](https://hub.docker.com/r/hurlenko/aria2-ariang)
 - [ ] [metube](https://github.com/alexta69/metube)
 - [x] [Stirling-PDF](https://github.com/Stirling-Tools/Stirling-PDF/tree/main)
-- [ ] [Jellyfin](https://jellyfin.org/docs/general/installation/container)
+- [x] [Jellyfin](https://jellyfin.org/docs/general/installation/container)
 - [x] [Grist](https://github.com/gristlabs/grist-core)
 - [x] [SilverBullet](https://github.com/silverbulletmd/silverbullet)
 - [x] [Planka](https://github.com/plankanban/planka)
-- [ ] [n8n](https://docs.n8n.io/hosting/installation/docker/)
+- [x] [n8n](https://docs.n8n.io/hosting/installation/docker/)
 - [ ] [NoteCalc](https://github.com/bbodi/notecalc3)
 - [ ] [Open Speed Test](https://hub.docker.com/r/openspeedtest/latest)
 - [ ] [pgAdmin](https://hub.docker.com/r/dpage/pgadmin4/)
-- [ ] [changedetection.io](https://github.com/dgtlmoon/changedetection.io)
+- [x] [changedetection.io](https://github.com/dgtlmoon/changedetection.io)
 - [ ] Syncthings
-  - [ ] Configure sync Paperless folders to NextCloud
+  - [ ] Configure sync Paperless folders to OpenCloud
 
 ### "Bare metal" Applications
   - [ ] ~~[Cockpit](https://cockpit-project.org/)~~
