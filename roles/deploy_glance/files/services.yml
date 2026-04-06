@@ -52,6 +52,9 @@
         - title: ChangeDetection
           icon: di:changedetection
           url: https://changedetection.mrmodest.duckdns.org
+        - title: Home Assistant
+          icon: di:home-assistant
+          url: https://ha.mrmodest.duckdns.org
     - type: monitor
       title: ServArr
       sites:
