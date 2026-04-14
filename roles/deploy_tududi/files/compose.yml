@@ -1,0 +1,20 @@
+services:
+  tududi:
+    image: chrisvel/tududi:${APP_VERSION}
+    container_name: tududi
+    hostname: tududi
+    environment:
+      TZ: ${TIMEZONE}
+      PUID: ${APP_USER}
+      PGID: ${APP_GROUP}
+    env_file:
+      - .env
+    volumes:
+      - '${APP_DATA_PATH}/db:/app/backend/db'
+      - '${APP_DATA_PATH}/uploads:/app/backend/uploads'
+    restart: unless-stopped
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork

@@ -1,0 +1,8 @@
+---
+tdu_app_version: '1.0.0'
+
+tdu_user_email: placeholder
+tdu_user_password: placeholder
+tdu_session_secret: placeholder
+
+tdu_domain: placeholder

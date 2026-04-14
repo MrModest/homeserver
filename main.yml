@@ -276,3 +276,15 @@
       tags:
         - applications
         - changedetection
+
+    - name: Deploy 'tududi'
+      ansible.builtin.import_role:
+        name: deploy_tududi
+      vars:
+        tdu_user_email: '{{ v_tududi.user_email }}'
+        tdu_user_password: '{{ v_tududi.user_password }}'
+        tdu_session_secret: '{{ v_tududi.session_secret }}'
+        tdu_domain: 'tududi.{{ g_duckdns_domain }}'
+      tags:
+        - applications
+        - tududi
