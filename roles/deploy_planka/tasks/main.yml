@@ -5,7 +5,7 @@
     t_app_name: 'planka'
     t_app_data_dirs:
       - '{{ p_dirs.apps_data }}/planka/db'
-      - '{{ p_dirs.apps_data }}/planka/user-avatars'
-      - '{{ p_dirs.apps_data }}/planka/bg-images'
-      - '{{ p_dirs.apps_data }}/planka/attachments'
-      - '{{ p_dirs.apps_data }}/planka/logs'
+      - '{{ p_dirs.apps_data }}/planka/data'
+      - '{{ p_dirs.apps_data }}/planka/data/protected'
+      - '{{ p_dirs.apps_data }}/planka/data/private'
+      - '{{ p_dirs.apps_data }}/planka/data/logs'

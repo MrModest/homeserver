@@ -5,7 +5,6 @@ services:
     hostname: 'planka'
     user: '${APP_USER}:${APP_GROUP}'
     environment:
-      TZ: ${TIMEZONE}
       DEFAULT_LANGUAGE: en-US
       BASE_URL: ${BASE_URL}
       DATABASE_URL: postgresql://postgres@planka-db/planka
@@ -13,11 +12,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ${APP_DATA_PATH}/favicons:/app/public/favicons
-      - ${APP_DATA_PATH}/user-avatars:/app/public/user-avatars
-      - ${APP_DATA_PATH}/logs:/app/logs
-      - ${APP_DATA_PATH}/bg-images:/app/public/background-images
-      - ${APP_DATA_PATH}/attachments:/app/private/attachments
+      - ${APP_DATA_PATH}/data:/app/data
+      - ${APP_DATA_PATH}/data/logs:/app/logs
     restart: unless-stopped
     depends_on:
       planka-db:
