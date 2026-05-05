@@ -8,3 +8,4 @@ opcd_ext_versions:
   drawio: '2.0.0'
 opcd_collabora_admin_user: placeholder
 opcd_collabora_admin_password: placeholder
+opcd_oidc_client_id: opencloud

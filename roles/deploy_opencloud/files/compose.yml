@@ -17,6 +17,8 @@ services:
     # it will fail on subsequent runs, because the config file already exists
     # therefore we ignore the error and then start the opencloud server
     command: ['-c', 'opencloud init || true; opencloud server']
+    env_file:
+      - .env
     environment:
       FRONTEND_ARCHIVER_MAX_SIZE: "10000000000" # 10 GB - Max size of folders to be downloaded as zip archive
       # enable services that are not started automatically
