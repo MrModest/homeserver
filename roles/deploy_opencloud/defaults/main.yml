@@ -1,10 +1,10 @@
 ---
-opcd_app_version: '4.1.0'
-opcd_collabora_version: '25.04.2.1.1'
+opcd_app_version: '6.1.0'
+opcd_collabora_version: '25.04.9.4.1'
 opcd_radicale_version: '3.5.7'
 opcd_ext_versions:
-  unzip: '1.0.2'
-  jsonviewer: '1.0.0'
-  drawio: '1.0.0'
-opcd_collabora_admin_user: 'admin'
-opcd_collabora_admin_password: 'admin'
+  unzip: '2.0.0'
+  jsonviewer: '2.0.0'
+  drawio: '2.0.0'
+opcd_collabora_admin_user: placeholder
+opcd_collabora_admin_password: placeholder

@@ -90,7 +90,7 @@ services:
     hostname: 'collabora'
     #user: '${APP_USER}:${APP_GROUP}' - hardcoded in the image
     environment:
-      aliasgroup1: ${WOPISERVER_HOST}:443
+      aliasgroup1: ${WOPISERVER_HOST}
       DONT_GEN_SSL_CERT: 'YES'
       extra_params: |
         --o:ssl.enable=false \
@@ -123,7 +123,7 @@ services:
       - ${APP_DATA_PATH}/apps:/apps
     entrypoint:
       - /bin/sh
-    command: ['-c', 'cp -R /usr/share/nginx/html/unzip/ /apps']
+    command: ['-c', 'cp -R /web/apps/unzip /apps']
 
   ext-jsonviewer-init:
     image: opencloudeu/web-extensions:json-viewer-${EXT_JSONVIEWER_VERSION}
@@ -134,7 +134,7 @@ services:
       - ${APP_DATA_PATH}/apps:/apps
     entrypoint:
       - /bin/sh
-    command: ['-c', 'cp -R /usr/share/nginx/html/json-viewer/ /apps']
+    command: ['-c', 'cp -R /web/apps/json-viewer /apps']
 
   ext-drawio-init:
     image: opencloudeu/web-extensions:draw-io-${EXT_DRAWIO_VERSION}
@@ -145,7 +145,7 @@ services:
       - ${APP_DATA_PATH}/apps:/apps
     entrypoint:
       - /bin/sh
-    command: ['-c', 'cp -R /usr/share/nginx/html/draw-io/ /apps']
+    command: ['-c', 'cp -R /web/apps/draw-io /apps']
 
 networks:
   default:
