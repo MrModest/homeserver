@@ -2,7 +2,7 @@
 prx2_duckdns_api_token: placeholder
 prx2_duckdns_domain: placeholder
 
-prx2_cf_api_key: placeholder
+prx2_cf_api_token: placeholder
 prx2_cf_domain: placeholder
 
 prx2_apps:

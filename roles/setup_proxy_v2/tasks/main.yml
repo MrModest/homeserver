@@ -10,7 +10,7 @@
 
 - name: Create a docker network
   community.docker.docker_network:
-    name: caddy_network
+    name: nginxnetwork
 
 - name: Create a directory for Caddyfile
   ansible.builtin.file:

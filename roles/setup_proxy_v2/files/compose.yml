@@ -11,9 +11,9 @@ services:
     user: ${APP_USER}:${APP_GROUP}
     restart: unless-stopped
     ports:
-      - '8080:80'
-      - '443:443'
-      - '443:443/udp'
+      - '80:8080'
+      - '443:8081'
+      - '443:8081/udp'
     volumes:
       - ${APP_DATA}/conf:/etc/caddy # for Caddyfile
       - ${APP_DATA}/site:/srv
@@ -23,4 +23,4 @@ services:
 networks:
   default:
     external: true
-    name: caddy_network
+    name: nginxnetwork
