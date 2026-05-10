@@ -1,8 +1,120 @@
 ---
 g_services:
-  - slug: aria-ng
-    hostname: ariang
+  - slug: immich
+    hostname: immich_server
+    port: 2283
+  - slug: grafana
+    hostname: grafana
+    port: 3000
+  - slug: prometheus
+    hostname: prometheus
+    port: 9090
+  - slug: loki
+    hostname: loki
+    port: 3100
+  - slug: cadvisor
+    hostname: cadvisor
     port: 8080
+  - slug: portainer
+    hostname: portainer
+    port: 9000
+  - slug: homepage
+    hostname: homepage
+    port: 3000
+  - slug: backrest
+    hostname: backrest
+    port: 9898
+  - slug: paperless
+    hostname: paperless_app
+    port: 8000
+  - slug: grist
+    hostname: grist_app
+    port: 8484
+  - slug: pgadmin
+    hostname: pgadmin
+    port: 80
+  - slug: pihole
+    hostname: 192.168.178.55
+    port: 80
+  - slug: hoarder
+    hostname: hoarder_app
+    port: 3000
+  - slug: forgejo
+    hostname: forgejo
+    port: 3000
+  - slug: readeck
+    hostname: readeck
+    port: 8000
+  - slug: cronicle
+    hostname: 192.168.178.34
+    port: 3012
+  - slug: wallos
+    hostname: wallos
+    port: 80
+  - slug: silverbullet
+    hostname: silverbullet
+    port: 3000
+  - slug: glance
+    hostname: glance
+    port: 8080
+  - slug: stirling_pdf
+    hostname: stirling_pdf
+    port: 8080
+  - slug: planka
+    hostname: planka
+    port: 1337
+  - slug: opencloud
+    hostname: opencloud
+    port: 9200
+  - slug: wopiserver
+    hostname: collaboration
+    port: 9300
+  - slug: collabora
+    hostname: collabora
+    port: 9980
+  - slug: plan-the-trip
+    hostname: plan-the-trip
+    port: 3000
   - slug: authentik
     hostname: authentik-server
     port: 9000
+  - slug: jellyfin
+    hostname: jellyfin
+    port: 8096
+  - slug: rdt-client
+    hostname: rdtclient
+    port: 6500
+  - slug: aria-ng
+    hostname: ariang
+    port: 8080
+  - slug: prowlarr
+    hostname: prowlarr
+    port: 9696
+  - slug: sonarr
+    hostname: sonarr
+    port: 8989
+  - slug: koillection
+    hostname: koillection
+    port: 80
+  - slug: n8n
+    hostname: n8n-server
+    port: 5678
+  - slug: ghostfolio
+    hostname: ghostfolio
+    port: 3333
+  - slug: mealie
+    hostname: mealie
+    port: 9000
+  - slug: changedetection
+    hostname: changedetection
+    port: 5000
+  - slug: pve
+    hostname: 192.168.178.10
+    port: 8006
+    scheme: https
+  - slug: ha
+    hostname: 192.168.178.60
+    port: 8123
+  - slug: tududi
+    hostname: tududi
+    port: 3002

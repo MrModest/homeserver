@@ -76,10 +76,13 @@
 
 - name: Setup reverse proxy
   ansible.builtin.import_role:
-    name: setup_proxy
+    name: setup_proxy_v2
   vars:
-    prx_duckdns_api_token: '{{ v_duckdns.api_token }}'
-    prx_duckdns_domain: '{{ g_duckdns_domain }}'
+    prx2_duckdns_api_token: '{{ v_duckdns.api_token }}'
+    prx2_duckdns_domain: '{{ g_duckdns_domain }}'
+    prx2_cf_api_token: '{{ v_cloudflare.api_token }}'
+    prx2_cf_domain: '{{ g_cloudflare_domain }}'
+    prx2_apps: '{{ g_services }}'
   tags:
     - reverse_proxy
 

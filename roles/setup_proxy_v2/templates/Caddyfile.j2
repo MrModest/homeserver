@@ -18,7 +18,15 @@
 {% for app in prx2_apps %}
   @{{ app.slug }} host {{ app.slug }}.{{ prx2_duckdns_domain }}
   handle @{{ app.slug }} {
+{% if app.scheme is defined and app.scheme == 'https' %}
+    reverse_proxy https://{{ app.hostname }}:{{ app.port }} {
+      transport http {
+        tls_insecure_skip_verify
+      }
+    }
+{% else %}
     reverse_proxy {{ app.hostname }}:{{ app.port }}
+{% endif %}
   }
 
 {% endfor %}
@@ -36,7 +44,15 @@
 {% for app in prx2_apps %}
   @{{ app.slug }}_cf host {{ app.slug }}.{{ prx2_cf_domain }}
   handle @{{ app.slug }}_cf {
+{% if app.scheme is defined and app.scheme == 'https' %}
+    reverse_proxy https://{{ app.hostname }}:{{ app.port }} {
+      transport http {
+        tls_insecure_skip_verify
+      }
+    }
+{% else %}
     reverse_proxy {{ app.hostname }}:{{ app.port }}
+{% endif %}
   }
 
 {% endfor %}
