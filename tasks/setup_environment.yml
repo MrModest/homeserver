@@ -78,7 +78,6 @@
   ansible.builtin.import_role:
     name: setup_proxy
   vars:
-    prx2_local_domain: '{{ g_local_domain }}'
     prx_duckdns_api_token: '{{ v_duckdns.api_token }}'
     prx_duckdns_domain: '{{ g_duckdns_domain }}'
   tags:

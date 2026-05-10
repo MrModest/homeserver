@@ -12,6 +12,7 @@ phl__domains:
   - home.lab
   - mrmodest.duckdns.org
   - in-your.mom
+  - modestlab.dev
 phl_blocklists:
   - https://easylist.to/easylist/easyprivacy.txt
   - https://phishing.army/download/phishing_army_blocklist.txt
