@@ -78,7 +78,7 @@
       sites:
         - title: Nginx
           icon: di:nginx-proxy-manager
-          url: https://npm.home.lab
+          url: https://npm.mrmodest.duckdns.org
           allow-insecure: true
         - title: Portainer
           icon: di:portainer
@@ -88,7 +88,7 @@
           url: https://grafana.mrmodest.duckdns.org
         - title: Pi-Hole
           icon: di:pi-hole
-          url: https://pihole.home.lab/admin
+          url: https://pihole.mrmodest.duckdns.org/admin/login
           check-url: http://192.168.178.55:80
           alt-status-codes:
             - 403
@@ -98,7 +98,7 @@
           url: https://backrest.mrmodest.duckdns.org
         - title: Cronicle
           icon: di:cronicle
-          url: http://cronicle.home.lab
+          url: https://cronicle.mrmodest.duckdns.org/
         - title: Authentik
           icon: di:authentik
           url: https://authentik.mrmodest.duckdns.org

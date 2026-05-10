@@ -9,7 +9,6 @@ phl__dns_upstream:
 phl__timezone: UTC
 phl__local_ip4: placeholder
 phl__domains:
-  - home.lab
   - mrmodest.duckdns.org
   - in-your.mom
   - modestlab.dev
