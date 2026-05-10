@@ -3,6 +3,8 @@ g_services:
   - slug: immich
     hostname: immich_server
     port: 2283
+    timeout: 0     # no timeout — needed for large photo/video uploads
+    flush: true    # disable buffering — needed for large video uploads
   - slug: grafana
     hostname: grafana
     port: 3000
@@ -81,6 +83,7 @@ g_services:
   - slug: jellyfin
     hostname: jellyfin
     port: 8096
+    flush: true    # disable buffering — reduces proxy resource usage during streaming
   - slug: rdt-client
     hostname: rdtclient
     port: 6500

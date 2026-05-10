@@ -18,15 +18,22 @@
 {% for app in prx2_apps %}
   @{{ app.slug }} host {{ app.slug }}.{{ prx2_duckdns_domain }}
   handle @{{ app.slug }} {
-{% if app.scheme is defined and app.scheme == 'https' %}
-    reverse_proxy https://{{ app.hostname }}:{{ app.port }} {
-      transport http {
-        tls_insecure_skip_verify
-      }
-    }
-{% else %}
-    reverse_proxy {{ app.hostname }}:{{ app.port }}
+    reverse_proxy {% if app.scheme is defined and app.scheme == 'https' %}https://{% endif %}{{ app.hostname }}:{{ app.port }} {
+{% if app.flush is defined and app.flush %}
+      flush_interval -1
 {% endif %}
+{% if (app.scheme is defined and app.scheme == 'https') or app.timeout is defined %}
+      transport http {
+{% if app.scheme is defined and app.scheme == 'https' %}
+        tls_insecure_skip_verify
+{% endif %}
+{% if app.timeout is defined %}
+        dial_timeout           {{ app.timeout }}
+        response_header_timeout {{ app.timeout }}
+{% endif %}
+      }
+{% endif %}
+    }
   }
 
 {% endfor %}
@@ -44,15 +51,22 @@
 {% for app in prx2_apps %}
   @{{ app.slug }}_cf host {{ app.slug }}.{{ prx2_cf_domain }}
   handle @{{ app.slug }}_cf {
-{% if app.scheme is defined and app.scheme == 'https' %}
-    reverse_proxy https://{{ app.hostname }}:{{ app.port }} {
-      transport http {
-        tls_insecure_skip_verify
-      }
-    }
-{% else %}
-    reverse_proxy {{ app.hostname }}:{{ app.port }}
+    reverse_proxy {% if app.scheme is defined and app.scheme == 'https' %}https://{% endif %}{{ app.hostname }}:{{ app.port }} {
+{% if app.flush is defined and app.flush %}
+      flush_interval -1
 {% endif %}
+{% if (app.scheme is defined and app.scheme == 'https') or app.timeout is defined %}
+      transport http {
+{% if app.scheme is defined and app.scheme == 'https' %}
+        tls_insecure_skip_verify
+{% endif %}
+{% if app.timeout is defined %}
+        dial_timeout           {{ app.timeout }}
+        response_header_timeout {{ app.timeout }}
+{% endif %}
+      }
+{% endif %}
+    }
   }
 
 {% endfor %}
