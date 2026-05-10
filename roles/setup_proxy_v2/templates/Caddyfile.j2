@@ -1,6 +1,12 @@
 {
   http_port 8080
   https_port 8081
+  servers {
+    trusted_proxies cloudflare {
+      interval 12h
+      timeout 15s
+    }
+  }
 }
 
 *.{{ prx2_duckdns_domain }}, {{ prx2_duckdns_domain }} {
@@ -12,6 +18,24 @@
 {% for app in prx2_apps %}
   @{{ app.slug }} host {{ app.slug }}.{{ prx2_duckdns_domain }}
   handle @{{ app.slug }} {
+    reverse_proxy {{ app.hostname }}:{{ app.port }}
+  }
+
+{% endfor %}
+  handle {
+    respond 404
+  }
+}
+
+*.{{ prx2_cf_domain }}, {{ prx2_cf_domain }} {
+  tls {
+    dns cloudflare {env.CF_API_TOKEN}
+    resolvers 1.1.1.1
+  }
+
+{% for app in prx2_apps %}
+  @{{ app.slug }}_cf host {{ app.slug }}.{{ prx2_cf_domain }}
+  handle @{{ app.slug }}_cf {
     reverse_proxy {{ app.hostname }}:{{ app.port }}
   }
 
