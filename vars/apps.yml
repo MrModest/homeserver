@@ -111,6 +111,9 @@ g_services:
   - slug: changedetection
     hostname: changedetection
     port: 5000
+  - slug: tududi
+    hostname: tududi
+    port: 3002
   - slug: pve
     hostname: 192.168.178.10
     port: 8006
@@ -118,6 +121,7 @@ g_services:
   - slug: ha
     hostname: 192.168.178.60
     port: 8123
-  - slug: tududi
-    hostname: tududi
-    port: 3002
+  - slug: gymlogger
+    hostname: 192.168.178.74
+    port: 8080
+    scheme: https
