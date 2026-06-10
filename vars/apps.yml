@@ -121,7 +121,9 @@ g_services:
   - slug: ha
     hostname: 192.168.178.60
     port: 8123
+  - slug: zimaos
+    hostname: 192.168.178.74
+    port: 80
   - slug: gymlogger
     hostname: 192.168.178.74
     port: 8080
-    scheme: https
