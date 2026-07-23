@@ -29,6 +29,16 @@ pattern for multi-container single-purpose stacks (`deploy_paperless`,
   `files/memories/USER.md` — copied verbatim from
   `hermes-notes/data/hermes/` (the narrowed single-purpose config/persona/
   memory, already committed and stable there).
+- `files/no-bundled-skills` — copied verbatim from the Mac's
+  `data/hermes/.no-bundled-skills` (it's not empty — a short human-readable
+  note about the opt-out), placed as `.no-bundled-skills` in the data dir.
+- `files/skills/note-taking/DESCRIPTION.md` and
+  `files/skills/note-taking/obsidian/SKILL.md` — copied verbatim from the
+  Mac (146B + 2.9K, confirmed via inspection — no manifest/hub metadata
+  needed for the skill to load, that's only for update-checking
+  bookkeeping). Placed at `hermes/skills/note-taking/` pre-boot, alongside
+  the marker, so the one skill Hermes actually uses is present from first
+  boot — see revised Out of scope below.
 - `templates/.env.j2` — secrets templated in from vault vars; static
   (non-secret) values templated from role defaults.
 
@@ -41,7 +51,9 @@ pattern for multi-container single-purpose stacks (`deploy_paperless`,
     SOUL.md
     memories/MEMORY.md
     memories/USER.md
-    .no-bundled-skills          # empty marker file, written before first boot
+    .no-bundled-skills          # opt-out marker, written before first boot
+    skills/note-taking/DESCRIPTION.md
+    skills/note-taking/obsidian/SKILL.md
   hatchdoor/
     knowledge-vault/            # git clone of MrModest/knowledge-vault, 65532:65532
     cache/                      # empty, regenerates at runtime, 65532:65532
@@ -51,14 +63,15 @@ pattern for multi-container single-purpose stacks (`deploy_paperless`,
 
 1. Create ZFS dataset `fast/apps-data/hermes_notes` (state: present).
 2. Create `hermes/` dir (apps-owned). Copy `config.yaml`, `SOUL.md`,
-   `memories/*.md` into it. Write an empty `.no-bundled-skills` marker file
-   into it.
+   `memories/*.md`, the `.no-bundled-skills` marker, and the
+   `skills/note-taking/` files into it.
    - Per Kamil's call: the marker alone, present before the container's
      first startup, is sufficient to stop the bundled-skills sync from
      seeding the default 72 skills. No `hermes skills opt-out` command
-     needed. (Re-adding the one wanted skill, `note-taking/obsidian`, is a
-     manual follow-up post-deploy — not automated by this role; see Out of
-     scope.)
+     needed. Since the marker fully skips syncing (not just re-seeding
+     deleted folders), the one skill Hermes actually uses has to be placed
+     on disk ourselves rather than left for the sync to seed — done here,
+     so there's no manual post-deploy step for this.
 3. `git clone` `https://{{ hnts_github_username }}:{{ hnts_github_pat }}@github.com/MrModest/knowledge-vault.git`
    into `hatchdoor/knowledge-vault/` (`no_log: true` on this task — the URL
    contains the PAT). Create `hatchdoor/cache/` empty.
@@ -179,11 +192,6 @@ shared task file for one role.
 - **OpenAI Codex OAuth login.** Interactive browser flow — has to be run
   by hand on the new host after first boot (`docker exec -it hermes hermes
   auth` or equivalent). Expected to invalidate the Mac's active session.
-- **Re-adding the `note-taking/obsidian` skill.** With the bundled-skills
-  marker in place from first boot, zero skills sync down, including the
-  one Hermes actually uses. Re-adding it (however that's done — manual
-  copy, or a `hermes skills` subcommand) is a manual post-deploy step, not
-  part of this playbook.
 - **End-to-end verification.** Send a real Telegram note, confirm it lands
   in `97_Notes/` with correct frontmatter, confirm the push shows up on
   `github.com/MrModest/knowledge-vault`. Manual, same as the Mac session.
