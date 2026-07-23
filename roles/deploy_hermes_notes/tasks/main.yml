@@ -6,6 +6,11 @@
   become: true
 
 - name: Create Hermes data directory
+  # hermes has no `user:` in compose.yml, so it runs as root in-container
+  # (same as the Mac original) and ignores host ownership on this bind
+  # mount either way. Using p_apps_user anyway to match compose_up.yml's
+  # own convention of always creating app dirs apps-owned, root-running
+  # containers included (e.g. deploy_paperless's webserver).
   ansible.builtin.file:
     path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/{{ item }}'
     state: directory
