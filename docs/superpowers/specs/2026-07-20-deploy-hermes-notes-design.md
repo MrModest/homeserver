@@ -25,10 +25,9 @@ pattern for multi-container single-purpose stacks (`deploy_paperless`,
 
 - `files/compose.yml` — the two services (see Networking below for the one
   change vs. the Mac version).
-- `files/config.yaml`, `files/SOUL.md`, `files/memories/MEMORY.md`,
-  `files/memories/USER.md` — copied verbatim from
-  `hermes-notes/data/hermes/` (the narrowed single-purpose config/persona/
-  memory, already committed and stable there).
+- `files/config.yaml`, `files/SOUL.md` — copied verbatim from
+  `hermes-notes/data/hermes/` (the narrowed single-purpose config/persona,
+  already committed and stable there).
 - `files/no-bundled-skills` — copied verbatim from the Mac's
   `data/hermes/.no-bundled-skills` (it's not empty — a short human-readable
   note about the opt-out), placed as `.no-bundled-skills` in the data dir.
@@ -42,6 +41,16 @@ pattern for multi-container single-purpose stacks (`deploy_paperless`,
 - `templates/.env.j2` — secrets templated in from vault vars; static
   (non-secret) values templated from role defaults.
 
+**Deliberately not vendored:** `memories/MEMORY.md` and `memories/USER.md`
+(Hermes' curated long-term memory). This repo is public — those files hold
+Kamil's personal preferences and are the wrong thing to commit here. They'd
+also go stale immediately: the agent updates them on the live bind mount at
+runtime, but nothing syncs that back into this ansible repo, so a vendored
+copy would only ever reflect the moment it was copied. Memory starts empty
+on the new host and rebuilds from real usage — the existing generic restic
+backup already covers all of `apps-data` (including this bind mount) going
+forward, so nothing is at risk of being unrecoverable.
+
 ### Directory layout on the host
 
 ```
@@ -49,8 +58,6 @@ pattern for multi-container single-purpose stacks (`deploy_paperless`,
   hermes/                       # bind-mounted to hermes:/opt/data, apps-owned
     config.yaml
     SOUL.md
-    memories/MEMORY.md
-    memories/USER.md
     .no-bundled-skills          # opt-out marker, written before first boot
     skills/note-taking/DESCRIPTION.md
     skills/note-taking/obsidian/SKILL.md
@@ -62,9 +69,8 @@ pattern for multi-container single-purpose stacks (`deploy_paperless`,
 ### Task order (must not be reordered)
 
 1. Create ZFS dataset `fast/apps-data/hermes_notes` (state: present).
-2. Create `hermes/` dir (apps-owned). Copy `config.yaml`, `SOUL.md`,
-   `memories/*.md`, the `.no-bundled-skills` marker, and the
-   `skills/note-taking/` files into it.
+2. Create `hermes/` dir (apps-owned). Copy `config.yaml`, `SOUL.md`, the
+   `.no-bundled-skills` marker, and the `skills/note-taking/` files into it.
    - Per Kamil's call: the marker alone, present before the container's
      first startup, is sufficient to stop the bundled-skills sync from
      seeding the default 72 skills. No `hermes skills opt-out` command
@@ -72,9 +78,10 @@ pattern for multi-container single-purpose stacks (`deploy_paperless`,
      deleted folders), the one skill Hermes actually uses has to be placed
      on disk ourselves rather than left for the sync to seed — done here,
      so there's no manual post-deploy step for this.
-3. `git clone` `https://{{ hnts_github_username }}:{{ hnts_github_pat }}@github.com/MrModest/knowledge-vault.git`
-   into `hatchdoor/knowledge-vault/` (`no_log: true` on this task — the URL
-   contains the PAT). Create `hatchdoor/cache/` empty.
+3. `git clone` `hnts_knowledge_vault_repo` (credentials inserted into the
+   URL at task-run time via `regex_replace`) into `hatchdoor/knowledge-vault/`
+   (`no_log: true` on this task — the constructed URL contains the PAT).
+   Create `hatchdoor/cache/` empty.
 4. `chown -R 65532:65532` both `hatchdoor/` subdirectories (distroless
    nonroot UID, confirmed via `docker inspect` in the prior session).
 5. Import the shared `tasks/compose_up.yml` with `t_app_name: hermes_notes`
@@ -147,13 +154,13 @@ New `v_hermes_notes` block in `vars/vault.yml` (edited via
 - `telegram_allowed_users`
 - `hatchdoor_web_bearer_token`
 - `hatchdoor_mcp_bearer_token`
+- `github_username` — not secret by itself, but kept alongside the PAT
+  since `main.yml` derives `hnts_knowledge_vault_repo` from it.
 - `github_pat` — the fine-grained PAT scoped to `knowledge-vault` only,
   reused for both the Ansible git clone (step 3 above) and Hatchdoor's own
   git-sync push (`HATCHDOOR_GIT_HTTPS_TOKEN` in `.env`).
 
-Non-secret static values — `hnts_github_username: MrModest` (used in the
-git clone URL in step 3 above and in `.env`'s
-`HATCHDOOR_GIT_HTTPS_USERNAME`), git remote/branch, debounce seconds,
+Other non-secret static values — git remote/branch, debounce seconds,
 author name/email, `HATCHDOOR_MCP_ENABLED`, etc. — live as ordinary role
 defaults in `roles/deploy_hermes_notes/defaults/main.yml`, not in vault.
 They match the values already in the Mac's `.env` and aren't sensitive.
@@ -171,6 +178,8 @@ New role import in the applications section:
         hnts_telegram_allowed_users: '{{ v_hermes_notes.telegram_allowed_users }}'
         hnts_hatchdoor_web_bearer_token: '{{ v_hermes_notes.hatchdoor_web_bearer_token }}'
         hnts_hatchdoor_mcp_bearer_token: '{{ v_hermes_notes.hatchdoor_mcp_bearer_token }}'
+        hnts_knowledge_vault_repo: 'https://github.com/{{ v_hermes_notes.github_username }}/knowledge-vault.git'
+        hnts_github_username: '{{ v_hermes_notes.github_username }}'
         hnts_github_pat: '{{ v_hermes_notes.github_pat }}'
       tags:
         - applications

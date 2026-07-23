@@ -1,0 +1,40 @@
+services:
+  hermes:
+    image: nousresearch/hermes-agent:${HERMES_VERSION}
+    container_name: hermes
+    command: gateway run
+    env_file: .env
+    volumes:
+      - ${APP_DATA_PATH}/hermes:/opt/data
+    depends_on:
+      hatchdoor:
+        condition: service_healthy
+    networks:
+      - notes-net
+    restart: unless-stopped
+
+  hatchdoor:
+    image: battermanz/hatchdoor:${HATCHDOOR_VERSION}
+    container_name: hatchdoor
+    hostname: hatchdoor
+    env_file: .env
+    volumes:
+      - ${APP_DATA_PATH}/hatchdoor/knowledge-vault:/data/vault
+      - ${APP_DATA_PATH}/hatchdoor/cache:/data/cache
+    # No published host port — reached over notes-net by hermes at
+    # http://hatchdoor:42824/mcp, and over nginxnetwork by Caddy.
+    networks:
+      - notes-net
+      - nginxnetwork
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/app/hatchdoor", "--healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+networks:
+  notes-net:
+  nginxnetwork:
+    external: true
