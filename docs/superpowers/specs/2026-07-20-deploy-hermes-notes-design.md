@@ -61,7 +61,8 @@ forward, so nothing is at risk of being unrecoverable.
     .no-bundled-skills          # opt-out marker, written before first boot
     skills/note-taking/DESCRIPTION.md
     skills/note-taking/obsidian/SKILL.md
-    attachments-inbox/           # shared with hatchdoor, mode 1777 (see below)
+    cache/images/                # hermes's own Telegram image cache, mode 0755
+                                  # (doubles as hatchdoor's attachment staging dir)
   hatchdoor/
     knowledge-vault/            # git clone of MrModest/knowledge-vault, 65532:65532
     cache/                      # empty, regenerates at runtime, 65532:65532
@@ -79,16 +80,28 @@ path. Neither the Mac `.env` nor the first cut of this role wired this up
 (Hermes' own `MEMORY.md` already flagged the gap before the migration, so
 this looks pre-existing, not something the homelab move broke).
 
-Fix: `hermes/attachments-inbox/` is a plain subdirectory of hermes' own
-data dir (no extra volume needed for hermes — it's already inside its
-`/opt/data` mount), bind-mounted a second time into hatchdoor's container
-at `/data/attachments-inbox`, with `HATCHDOOR_MCP_ATTACHMENT_STAGING_PATH`
-set to that same container path. Since it's written by hermes (UID 10000)
-and read by hatchdoor (UID 65532) — two different baked-in image users
-with no shared group — the directory is `1777` (world-writable + sticky,
-same pattern as `/tmp`) rather than fighting UID coordination for what's
-just a transient staging scratch dir bounded by
-`HATCHDOOR_MCP_MAX_ATTACHMENT_BYTES`.
+First fix attempt created a brand-new empty `attachments-inbox/` dir — wrong,
+because `toolsets_disabled` in `config.yaml` disables `file`/`terminal`
+entirely, so hermes has no way to *copy* a downloaded image into a separate
+staging folder. Correct fix (confirmed against the Mac's real, working
+compose file): point Hatchdoor's staging mount directly at
+`hermes/cache/images/` — the directory hermes already writes Telegram images
+into as a side effect of normal message handling, needing no copy step.
+That directory is a plain subdirectory of hermes' own `/opt/data` mount (no
+extra volume needed on hermes' side), bind-mounted a second time into
+hatchdoor's container at `/data/attachments-inbox`, with
+`HATCHDOOR_MCP_ATTACHMENT_STAGING_PATH` set to that same container path.
+
+On the Mac this needs no special permissions handling — Docker Desktop's
+bind-mount enforcement is by host user, not container UID, so cross-UID
+read between hermes (UID 10000) and hatchdoor (UID 65532) just works there
+regardless of mode bits. On the real Linux homelab host it doesn't happen
+automatically: the directory needs its own explicit `0755` (not the shared
+`p_default_permissions.directory` of `0754`, which has no execute bit for
+"other" and would block hatchdoor from traversing it at all) so hatchdoor
+can read files hermes writes there. hermes' own stage2-hook chowns (not
+chmods) this back to UID 10000 on every boot, so the mode set here is what
+actually persists.
 
 ### Task order (must not be reordered)
 

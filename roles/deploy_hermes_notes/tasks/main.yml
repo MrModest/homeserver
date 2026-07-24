@@ -25,15 +25,22 @@
     - ''
     - skills/note-taking/obsidian
 
-- name: Create shared attachments-inbox staging directory
-  # Written by hermes (UID 10000) and read by hatchdoor (UID 65532) — two
-  # different baked-in image users with no shared group. World-writable +
-  # sticky (like /tmp) sidesteps UID coordination for what's just a
-  # transient staging scratch dir, bounded by HATCHDOOR_MCP_MAX_ATTACHMENT_BYTES.
+- name: Create Hermes' image cache directory (doubles as Hatchdoor's attachment staging dir)
+  # hermes has no file/terminal toolset, so it can't copy a downloaded
+  # Telegram image into a separate staging folder — Hatchdoor's compose.yml
+  # mounts this same host path directly instead (see compose.yml comment).
+  # hermes (UID 10000) writes here; hatchdoor (UID 65532, no shared group)
+  # only needs to read. compose_up.yml's default directory mode (0754) has
+  # no execute bit for "other", which would block hatchdoor from traversing
+  # it, so this needs its own more permissive 0755 rather than the shared
+  # default. hermes' own stage2-hook chowns (not chmods) this back to UID
+  # 10000 on every boot, so the mode set here is what persists either way.
   ansible.builtin.file:
-    path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/attachments-inbox'
+    path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/cache/images'
     state: directory
-    mode: '1777'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '0755'
   become: true
 
 - name: Copy Hermes config/persona files
