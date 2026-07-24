@@ -1,0 +1,74 @@
+---
+- name: Create ZFS dataset for 'hermes_notes'
+  community.general.zfs:
+    name: '{{ p_dirs.apps_data_ds }}/hermes_notes'
+    state: present
+  become: true
+
+- name: Create Hermes data directory
+  # The hermes image's own s6-overlay stage2-hook (cont-init.d/01-hermes-setup)
+  # runs as root before any service starts and re-chowns /opt/data to UID
+  # 10000 (the baked-in `hermes` user, or $HERMES_UID if overridden) on every
+  # boot — confirmed in NousResearch/hermes-agent's Dockerfile. So whatever
+  # ownership we set here on the host gets overwritten at container start
+  # regardless; using p_apps_user is just to match compose_up.yml's own
+  # convention of creating app dirs apps-owned across every role.
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/{{ item }}'
+    state: directory
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.directory }}'
+    recurse: true
+  become: true
+  loop:
+    - ''
+    - skills/note-taking/obsidian
+
+- name: Copy Hermes config/persona files
+  ansible.builtin.copy:
+    src: '{{ item.src }}'
+    dest: '{{ p_dirs.apps_data }}/hermes_notes/hermes/{{ item.dest }}'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.file }}'
+  become: true
+  loop:
+    - {src: config.yaml, dest: config.yaml}
+    - {src: SOUL.md, dest: SOUL.md}
+    - {src: no-bundled-skills, dest: .no-bundled-skills}
+    - {src: skills/note-taking/DESCRIPTION.md, dest: skills/note-taking/DESCRIPTION.md}
+    - {src: skills/note-taking/obsidian/SKILL.md, dest: skills/note-taking/obsidian/SKILL.md}
+
+- name: Clone 'knowledge-vault' repo for Hatchdoor
+  ansible.builtin.git:
+    repo: "{{ hnts_knowledge_vault_repo | regex_replace('^https://', 'https://' ~ hnts_github_username ~ ':' ~ hnts_github_pat ~ '@') }}"
+    dest: '{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/knowledge-vault'
+    version: '{{ hnts_hatchdoor_git_branch }}'
+  become: true
+  no_log: true
+
+- name: Create Hatchdoor cache directory
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/cache'
+    state: directory
+    mode: '{{ p_default_permissions.directory }}'
+  become: true
+
+- name: Set Hatchdoor data directories ownership to the distroless nonroot UID/GID
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/{{ item }}'
+    state: directory
+    owner: '{{ hnts_hatchdoor_uid }}'
+    group: '{{ hnts_hatchdoor_gid }}'
+    recurse: true
+  become: true
+  loop:
+    - knowledge-vault
+    - cache
+
+- name: Start 'hermes-notes'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'hermes_notes'
+    t_app_data_dirs: []

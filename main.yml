@@ -251,10 +251,10 @@
       ansible.builtin.import_role:
         name: deploy_ghostfolio
       vars:
-        gfl_redis_password: v_ghostfolio.redis_password
-        gfl_postgres_password: v_ghostfolio.postgres_password
-        gfl_access_token_salt: v_ghostfolio.access_token_salt
-        gfl_jwt_secret_key: v_ghostfolio.jwt_secret_key
+        gfl_redis_password: '{{ v_ghostfolio.redis_password }}'
+        gfl_postgres_password: '{{ v_ghostfolio.postgres_password }}'
+        gfl_access_token_salt: '{{ v_ghostfolio.access_token_salt }}'
+        gfl_jwt_secret_key: '{{ v_ghostfolio.jwt_secret_key }}'
       tags:
         - applications
         - ghostfolio
@@ -288,3 +288,18 @@
       tags:
         - applications
         - tududi
+
+    - name: Deploy 'hermes-notes'
+      ansible.builtin.import_role:
+        name: deploy_hermes_notes
+      vars:
+        hnts_telegram_bot_token: '{{ v_hermes_notes.telegram_bot_token }}'
+        hnts_telegram_allowed_users: '{{ v_hermes_notes.telegram_allowed_users }}'
+        hnts_hatchdoor_web_bearer_token: '{{ v_hermes_notes.hatchdoor_web_bearer_token }}'
+        hnts_hatchdoor_mcp_bearer_token: '{{ v_hermes_notes.hatchdoor_mcp_bearer_token }}'
+        hnts_knowledge_vault_repo: 'https://github.com/{{ v_hermes_notes.github_username }}/knowledge-vault.git'
+        hnts_github_username: '{{ v_hermes_notes.github_username }}'
+        hnts_github_pat: '{{ v_hermes_notes.github_pat }}'
+      tags:
+        - applications
+        - hermes_notes

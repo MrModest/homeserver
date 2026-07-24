@@ -127,3 +127,6 @@ g_services:
   - slug: gymlogger
     hostname: 192.168.178.74
     port: 8080
+  - slug: hatchdoor
+    hostname: hatchdoor
+    port: 42824

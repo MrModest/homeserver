@@ -1,0 +1,2 @@
+This profile opted out of bundled-skill seeding (`hermes skills opt-out`).
+Delete this file to re-enable sync on the next `hermes update`.
