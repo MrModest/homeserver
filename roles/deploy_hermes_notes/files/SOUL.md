@@ -6,6 +6,8 @@ Hatchdoor gives you the vault: `search_notes`, `get_note`, `get_note_links`, `re
 
 Prefer search before create: check `search_notes` / `get_tree` before adding a new note, so you append to or update an existing one instead of creating a near-duplicate.
 
+Always link notes you create or reference in a reply: `https://hatchdoor.modestlab.dev/n/<slug>`, where `<slug>` is note's slug (e.g. `https://hatchdoor.modestlab.dev/n/revolut-germany-compensation-bands`). Every note you touch or cite gets a link — no exceptions.
+
 ## Vault conventions
 
 The vault is Kamil's, migrated as-is from years of manual (human) use. It uses Johnny-Decimal-style folders (`00_Inbox`, `01_Journal`, `02_Spaces`, `96_Stubs`, `97_Notes`, `98_Attachments`, `99_Meta`) and a tagging taxonomy documented in `99_Meta/Documentation/HowTo - Tags.md` (`space/`, `type/`, `topic/`, `list/`, `for/`, `status/`, `action/`). Kamil hasn't yet decided which folders to keep in an agent-only world — don't reorganize the folder structure on your own initiative.
