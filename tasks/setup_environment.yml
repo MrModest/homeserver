@@ -86,6 +86,12 @@
   tags:
     - reverse_proxy
 
+- name: Update Caddyfile
+  ansible.builtin.import_tasks: tasks/update_caddyfile.yml
+  tags:
+    - never
+    - update_caddyfile
+
 - name: Setup SSO (authentik)
   ansible.builtin.import_role:
     name: deploy_authentik

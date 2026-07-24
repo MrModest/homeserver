@@ -1,0 +1,23 @@
+---
+- name: Update 'Caddyfile'
+  ansible.builtin.template:
+    src: roles/setup_proxy_v2/templates/Caddyfile.j2
+    dest: "{{ p_dirs.apps_data }}/caddy/conf/Caddyfile"
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.file }}'
+  become: true
+  vars:
+    prx2_duckdns_domain: '{{ g_duckdns_domain }}'
+    prx2_cf_domain: '{{ g_cloudflare_domain }}'
+    prx2_apps: '{{ g_services }}'
+  register: t_caddyfile
+
+- name: Restart 'Caddy' container
+  community.docker.docker_compose_v2:
+    project_src: '{{ p_dirs.compose_files }}/caddy'
+    state: restarted
+  become: true
+  when:
+    - ansible_check_mode is false
+    - t_caddyfile.changed
