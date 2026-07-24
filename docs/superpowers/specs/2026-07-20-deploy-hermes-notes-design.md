@@ -61,10 +61,34 @@ forward, so nothing is at risk of being unrecoverable.
     .no-bundled-skills          # opt-out marker, written before first boot
     skills/note-taking/DESCRIPTION.md
     skills/note-taking/obsidian/SKILL.md
+    attachments-inbox/           # shared with hatchdoor, mode 1777 (see below)
   hatchdoor/
     knowledge-vault/            # git clone of MrModest/knowledge-vault, 65532:65532
     cache/                      # empty, regenerates at runtime, 65532:65532
 ```
+
+### Attachment import (added post-deploy, real bug found live)
+
+Sending an image in Telegram failed with "vault attachment import is not
+configured." Root cause (confirmed via Hatchdoor's own README/`.env.example`
+and DeepWiki): Hatchdoor's `import_attachment` MCP tool needs
+`HATCHDOOR_MCP_ATTACHMENT_STAGING_PATH` set to a container-side path, and
+that path has to be a directory hermes can also write to — hermes stages
+the downloaded Telegram image there, Hatchdoor picks it up from the same
+path. Neither the Mac `.env` nor the first cut of this role wired this up
+(Hermes' own `MEMORY.md` already flagged the gap before the migration, so
+this looks pre-existing, not something the homelab move broke).
+
+Fix: `hermes/attachments-inbox/` is a plain subdirectory of hermes' own
+data dir (no extra volume needed for hermes — it's already inside its
+`/opt/data` mount), bind-mounted a second time into hatchdoor's container
+at `/data/attachments-inbox`, with `HATCHDOOR_MCP_ATTACHMENT_STAGING_PATH`
+set to that same container path. Since it's written by hermes (UID 10000)
+and read by hatchdoor (UID 65532) — two different baked-in image users
+with no shared group — the directory is `1777` (world-writable + sticky,
+same pattern as `/tmp`) rather than fighting UID coordination for what's
+just a transient staging scratch dir bounded by
+`HATCHDOOR_MCP_MAX_ATTACHMENT_BYTES`.
 
 ### Task order (must not be reordered)
 

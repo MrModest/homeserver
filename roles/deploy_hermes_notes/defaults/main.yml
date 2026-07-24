@@ -9,6 +9,7 @@ hnts_hatchdoor_web_bearer_token: placeholder
 hnts_hatchdoor_mcp_bearer_token: placeholder
 hnts_hatchdoor_mcp_enabled: true
 hnts_hatchdoor_mcp_write_enabled: true
+hnts_hatchdoor_attachment_staging_path: /data/attachments-inbox
 
 hnts_hatchdoor_git_sync_enabled: true
 hnts_hatchdoor_git_remote: origin

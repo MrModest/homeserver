@@ -21,6 +21,10 @@ services:
     volumes:
       - ${APP_DATA_PATH}/hatchdoor/knowledge-vault:/data/vault
       - ${APP_DATA_PATH}/hatchdoor/cache:/data/cache
+      # Shared with hermes' own /opt/data/attachments-inbox (same host path,
+      # different mountpoint) so hermes can stage a downloaded Telegram image
+      # here and Hatchdoor's import_attachment MCP tool can pick it up.
+      - ${APP_DATA_PATH}/hermes/attachments-inbox:/data/attachments-inbox
     # No published host port — reached over notes-net by hermes at
     # http://hatchdoor:42824/mcp, and over nginxnetwork by Caddy.
     networks:

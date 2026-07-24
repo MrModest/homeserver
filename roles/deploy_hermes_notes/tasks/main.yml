@@ -25,6 +25,17 @@
     - ''
     - skills/note-taking/obsidian
 
+- name: Create shared attachments-inbox staging directory
+  # Written by hermes (UID 10000) and read by hatchdoor (UID 65532) — two
+  # different baked-in image users with no shared group. World-writable +
+  # sticky (like /tmp) sidesteps UID coordination for what's just a
+  # transient staging scratch dir, bounded by HATCHDOOR_MCP_MAX_ATTACHMENT_BYTES.
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/attachments-inbox'
+    state: directory
+    mode: '1777'
+  become: true
+
 - name: Copy Hermes config/persona files
   ansible.builtin.copy:
     src: '{{ item.src }}'
