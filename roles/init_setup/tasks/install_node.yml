@@ -1,16 +1,16 @@
 ---
-- name: Install the gpg key for nodejs LTS
-  ansible.builtin.apt_key:
-    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+- name: Install the nodejs LTS repo
+  ansible.builtin.deb822_repository:
+    name: nodesource
+    types: deb
+    uris: "https://deb.nodesource.com/node_{{ t_node_version }}.x"
+    suites: "{{ ansible_distribution_release }}"
+    components: main
+    signed_by: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
     state: present
-
-- name: Install the nodejs LTS repos
-  ansible.builtin.apt_repository:
-    repo: "deb https://deb.nodesource.com/node_{{ t_node_version }}.x {{ ansible_distribution_release }} main"
-    state: present
-    update_cache: yes
 
 - name: Install the nodejs
   ansible.builtin.apt:
     name: nodejs
     state: present
+    update_cache: true
