@@ -2,6 +2,14 @@
 hnts_hermes_version: v2026.7.7.2
 hnts_hatchdoor_version: v2.3.0
 
+# The baked-in `hermes` user inside the hermes image. Confirmed a container
+# restart does NOT retroactively chown pre-existing bind-mounted content to
+# this UID/GID — that only happens (if at all) on a data volume's very first
+# boot — so Ansible must own hermes' own files as this UID/GID directly
+# rather than relying on the container to fix it up afterward.
+hnts_hermes_uid: 10000
+hnts_hermes_gid: 10000
+
 hnts_telegram_bot_token: placeholder
 hnts_telegram_allowed_users: placeholder
 

@@ -5,41 +5,59 @@
     state: present
   become: true
 
-- name: Create Hermes data directory
-  # The hermes image's own s6-overlay stage2-hook (cont-init.d/01-hermes-setup)
-  # runs as root before any service starts and re-chowns /opt/data to UID
-  # 10000 (the baked-in `hermes` user, or $HERMES_UID if overridden) on every
-  # boot — confirmed in NousResearch/hermes-agent's Dockerfile. So whatever
-  # ownership we set here on the host gets overwritten at container start
-  # regardless; using p_apps_user is just to match compose_up.yml's own
-  # convention of creating app dirs apps-owned across every role.
-  ansible.builtin.file:
+- name: Check if Hermes data directories exist
+  # Guards the next task so it only chowns/chmods brand-new directories —
+  # matching tasks/compose_up.yml's own `when: not dir.stat.exists` convention.
+  # Without this guard, recurse: true would sweep the entire live hermes/
+  # tree (item: '') on every run: the hermes container keeps most of it at
+  # 700/600 owned by UID 10000 (auth.json, state.db, memories/*.md,
+  # sessions.json, logs/), and re-chowning it to apps + p_default_permissions
+  # every playbook run would both loosen those secrets to group/world-
+  # readable and fight the container's own boot-time chown back to UID 10000.
+  ansible.builtin.stat:
     path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/{{ item }}'
-    state: directory
-    owner: '{{ p_apps_user.user }}'
-    group: '{{ p_apps_user.group }}'
-    mode: '{{ p_default_permissions.directory }}'
-    recurse: true
   become: true
   loop:
     - ''
     - skills/note-taking/obsidian
+    - skills/caveman/caveman
+  register: t_hermes_dirs_stat
+
+- name: Create Hermes data directory (if it does not exist)
+  # Owned directly by the hermes runtime UID/GID (10000), not p_apps_user —
+  # a container restart was confirmed NOT to retroactively chown pre-existing
+  # bind-mounted directories to UID 10000 (only note-taking/, seeded on the
+  # volume's very first boot, ended up hermes-owned; a later-added directory
+  # stayed apps-owned and was invisible to the hermes process, which always
+  # runs as UID 10000 and has no shared group with apps — no execute bit on
+  # "other" meant it couldn't even traverse into the directory).
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/{{ dir.item }}'
+    state: directory
+    owner: '{{ hnts_hermes_uid }}'
+    group: '{{ hnts_hermes_gid }}'
+    mode: '{{ p_default_permissions.directory }}'
+    recurse: true
+  become: true
+  when: not dir.stat.exists
+  loop: '{{ t_hermes_dirs_stat.results }}'
+  loop_control:
+    loop_var: dir
 
 - name: Create Hermes' image cache directory (doubles as Hatchdoor's attachment staging dir)
   # hermes has no file/terminal toolset, so it can't copy a downloaded
   # Telegram image into a separate staging folder — Hatchdoor's compose.yml
   # mounts this same host path directly instead (see compose.yml comment).
-  # hermes (UID 10000) writes here; hatchdoor (UID 65532, no shared group)
-  # only needs to read. compose_up.yml's default directory mode (0754) has
-  # no execute bit for "other", which would block hatchdoor from traversing
-  # it, so this needs its own more permissive 0755 rather than the shared
-  # default. hermes' own stage2-hook chowns (not chmods) this back to UID
-  # 10000 on every boot, so the mode set here is what persists either way.
+  # Owned by hnts_hermes_uid/gid (10000) since hermes writes here directly;
+  # hatchdoor (UID 65532, no shared group) only needs to read, so this needs
+  # its own more permissive 0755 rather than compose_up.yml's shared 0754
+  # default — 0754 has no execute bit for "other", which would block
+  # hatchdoor from traversing it.
   ansible.builtin.file:
     path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/cache/images'
     state: directory
-    owner: '{{ p_apps_user.user }}'
-    group: '{{ p_apps_user.group }}'
+    owner: '{{ hnts_hermes_uid }}'
+    group: '{{ hnts_hermes_gid }}'
     mode: '0755'
   become: true
 
@@ -47,8 +65,8 @@
   ansible.builtin.copy:
     src: '{{ item.src }}'
     dest: '{{ p_dirs.apps_data }}/hermes_notes/hermes/{{ item.dest }}'
-    owner: '{{ p_apps_user.user }}'
-    group: '{{ p_apps_user.group }}'
+    owner: '{{ hnts_hermes_uid }}'
+    group: '{{ hnts_hermes_gid }}'
     mode: '{{ p_default_permissions.file }}'
   become: true
   loop:
@@ -57,6 +75,22 @@
     - {src: no-bundled-skills, dest: .no-bundled-skills}
     - {src: skills/note-taking/DESCRIPTION.md, dest: skills/note-taking/DESCRIPTION.md}
     - {src: skills/note-taking/obsidian/SKILL.md, dest: skills/note-taking/obsidian/SKILL.md}
+    - {src: skills/caveman/DESCRIPTION.md, dest: skills/caveman/DESCRIPTION.md}
+    - {src: skills/caveman/caveman/SKILL.md, dest: skills/caveman/caveman/SKILL.md}
+
+- name: Allow root to operate on Hatchdoor's knowledge-vault repo despite UID mismatch
+  # The repo ends up owned by hnts_hatchdoor_uid (see the ownership task
+  # below), but this git task runs as root via become. Git refuses to
+  # operate on a repo it doesn't own (CVE-2022-24765 "dubious ownership"
+  # mitigation) unless the path is allow-listed — without this, the clone
+  # succeeds on a fresh deploy (root creates + owns it) but every run after
+  # fails permanently once the ownership task hands it to UID 65532.
+  community.general.git_config:
+    name: safe.directory
+    scope: global
+    value: '{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/knowledge-vault'
+    add_mode: add
+  become: true
 
 - name: Clone 'knowledge-vault' repo for Hatchdoor
   ansible.builtin.git:
