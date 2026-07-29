@@ -28,7 +28,7 @@
       file: '0644'
       directory: '0754'
 
-    p_base_domain: '{{ g_duckdns_domain }}'
+    p_base_domain: '{{ g_cloudflare_domain }}'
   tasks:
     - name: Show all facts first
       ansible.builtin.debug:
@@ -73,7 +73,7 @@
       ansible.builtin.import_role:
         name: deploy_portainer
       vars:
-        prt_app_host: 'portainer.{{ g_duckdns_domain }}'
+        prt_app_host: 'portainer.{{ p_base_domain }}'
       tags:
         - applications
         - portainer
@@ -99,7 +99,7 @@
         name: deploy_paperless
       vars:
         ppls_secretkey: '{{ v_paperless.secret_key }}'
-        ppls_app_host: 'paperless.{{ g_duckdns_domain }}'
+        ppls_app_host: 'paperless.{{ p_base_domain }}'
         ppls_admin_password: '{{ v_paperless.admin_password }}'
       tags:
         - applications
@@ -109,7 +109,7 @@
       ansible.builtin.import_role:
         name: deploy_grist
       vars:
-        grst_app_host: 'grist.{{ g_duckdns_domain }}'
+        grst_app_host: 'grist.{{ p_base_domain }}'
         grst_minio_password: '{{ v_grist.minio_password }}'
       tags:
         - applications
@@ -122,7 +122,7 @@
         hrdr_nextauth_secret: '{{ v_hoarder.nextauth_secret }}'
         hrdr_meili_master_key: '{{ v_hoarder.meili_master_key }}'
 
-        hrdr_app_domain: 'hoarder.{{ g_duckdns_domain }}'
+        hrdr_app_domain: 'hoarder.{{ p_base_domain }}'
         hrdr_auth_client_id: '{{ v_hoarder.auth_client_id }}'
         hrdr_auth_client_secret: '{{ v_hoarder.auth_client_secret }}'
         hrdr_auth_provider: 'authentik'
@@ -150,7 +150,7 @@
       ansible.builtin.import_role:
         name: deploy_forgejo
       vars:
-        frgj_app_host: 'forgejo.{{ g_duckdns_domain }}'
+        frgj_app_host: 'forgejo.{{ p_base_domain }}'
       tags:
         - applications
         - forgejo
@@ -196,11 +196,11 @@
       ansible.builtin.import_role:
         name: deploy_planka
       vars:
-        pnk_app_host: 'planka.{{ g_duckdns_domain }}'
+        pnk_app_host: 'planka.{{ p_base_domain }}'
         pnk_oidc:
           client_id: '{{ v_planka.oidc_client_id }}'
           client_secret: '{{ v_planka.oidc_client_secret }}'
-          issuer: 'authentik.{{ g_duckdns_domain }}'
+          issuer: 'authentik.{{ p_base_domain }}'
       tags:
         - applications
         - planka
@@ -219,7 +219,7 @@
       ansible.builtin.import_role:
         name: deploy_jellyfin
       vars:
-        jlfn_app_host: 'jellyfin.{{ g_duckdns_domain }}'
+        jlfn_app_host: 'jellyfin.{{ p_base_domain }}'
       tags:
         - applications
         - jellyfin
@@ -232,7 +232,7 @@
         koil_jwt_passphrase: '{{ v_koillection.jwt_passphrase }}'
         koil_db_password: '{{ v_koillection.db_password }}'
 
-        koil_app_host: 'koillection.{{ g_duckdns_domain }}'
+        koil_app_host: 'koillection.{{ p_base_domain }}'
       tags:
         - applications
         - koillection
@@ -263,7 +263,7 @@
       ansible.builtin.import_role:
         name: deploy_mealie
       vars:
-        mle_app_domain: 'mealie.{{ g_duckdns_domain }}'
+        mle_app_domain: 'mealie.{{ p_base_domain }}'
       tags:
         - applications
         - mealie
@@ -272,7 +272,7 @@
       ansible.builtin.import_role:
         name: deploy_changedetection
       vars:
-        chng_domain: 'changedetection.{{ g_duckdns_domain }}'
+        chng_domain: 'changedetection.{{ p_base_domain }}'
       tags:
         - applications
         - changedetection
@@ -284,7 +284,7 @@
         tdu_user_email: '{{ v_tududi.user_email }}'
         tdu_user_password: '{{ v_tududi.user_password }}'
         tdu_session_secret: '{{ v_tududi.session_secret }}'
-        tdu_domain: 'tududi.{{ g_duckdns_domain }}'
+        tdu_domain: 'tududi.{{ p_base_domain }}'
       tags:
         - applications
         - tududi
