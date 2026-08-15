@@ -38,14 +38,24 @@
   tags:
     - eza
 
-- name: Install 'docker ps' alternative
-  ansible.builtin.get_url:
-    url: https://github.com/Mikescher/better-docker-ps/releases/download/v1.12/dops_linux-amd64-static
-    dest: /usr/local/bin/dops
-    mode: '0555'
-  become: true
+- name: Install 'dops' # 'docker ps' alternative
+  ansible.builtin.import_tasks: tasks/install_binary.yml
+  vars:
+    t_bin_name: 'dops'
+    t_bin_version: '{{ isu_dops_version }}'
+    t_bin_url: 'https://github.com/Mikescher/better-docker-ps/releases/download/v{{ isu_dops_version }}/dops_linux-amd64-static'
   tags:
     - dops
+
+- name: Install 'hl' # JSON logs viewer
+  ansible.builtin.import_tasks: tasks/install_binary.yml
+  vars:
+    t_bin_name: 'hl'
+    t_bin_version: '{{ isu_hl_version }}'
+    t_bin_url: 'https://github.com/pamburus/hl/releases/download/v{{ isu_hl_version }}/hl-linux-x86_64-musl.tar.gz'
+    t_bin_archive_member: 'hl'
+  tags:
+    - hl
 
 - name: Setup aliases
   ansible.builtin.template:

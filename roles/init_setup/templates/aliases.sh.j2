@@ -18,6 +18,12 @@ function eapp() { # sudoedit: edit as yourself, write back as '{{ p_apps_user.us
   sudo -u {{ p_apps_user.user }} -e "$@"
 }
 
+function suid() { # run as a bare UID, e.g. 'suid 10000 ls -la'
+  local uid=$1
+  shift
+  sudo -u "#$uid" "$@"
+}
+
 alias cp-progress='rsync -a --info=progress2'
 
 alias bat='batcat --wrap=never'
@@ -25,14 +31,7 @@ alias sbat='sudo batcat --wrap=never'
 
 alias zfs-list='zfs list | grep -v "legacy"'
 
-function lzd() {
-  if command -v lazydocker > /dev/null; then
-    lazydocker "$@"
-  else
-    /home/{{ p_ssh_user.user }}/.local/bin/lazydocker "$@"
-  fi
-}
-
+alias lzd='lazydocker'
 alias docker-start='sudo systemctl start docker'
 alias docker-stop='sudo systemctl stop docker'
 alias docker-restart='sudo systemctl restart docker'
@@ -46,10 +45,20 @@ alias dcd='docker compose down'
 alias d-ps='dops --color true --sort Status --format "table {{.Names}}\\t{{.State}}\\t{{.Status}}\\t{{.IP}}\\t{{.ExposedPorts}}\\t{{.CreatedAt}}"'
 alias d-ps-l='dops --color true --sort Status --format "table {{.Names}}\\t{{.State}}\\t{{.Status}}\\t{{.IP}}\\t{{.ExposedPorts}}\\t{{.CreatedAt}}\\t{{.Mounts}}" | bat'
 {% endraw %}
-alias d-logs-f='docker logs -f'
+function d-logs() { # '2>&1' because containers write most logs to stderr
+  if command -v hl > /dev/null; then
+    docker logs "$@" 2>&1 | hl
+  else
+    docker logs "$@" 2>&1 | batcat --wrap=never
+  fi
+}
 
-function d-logs() {
-  docker logs $1 | bat
+function d-logs-f() {
+  if command -v hl > /dev/null; then
+    docker logs -f "$@" 2>&1 | hl --paging=never
+  else
+    docker logs -f "$@" 2>&1
+  fi
 }
 
 function d-sh() {
@@ -139,6 +148,23 @@ if [ -n "$BASH_VERSION" ]; then
   }
 
   complete -F _complete_command_wrapper -o default sapp
+
+  function _complete_paths_as_root() { # list via 'sudo', so dirs without o+x still complete
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local dir=''
+
+    case "$cur" in
+      */*) dir="${cur%/*}/" ;;
+    esac
+
+    COMPREPLY=($(compgen -P "$dir" -W "$(sudo ls -1Ap "${dir:-.}" 2> /dev/null)" -- "${cur##*/}"))
+
+{% raw %}    if [ "${#COMPREPLY[@]}" -eq 1 ] && [[ "${COMPREPLY[0]}" == */ ]]; then{% endraw %}
+      compopt -o nospace
+    fi
+  }
+
+  complete -F _complete_paths_as_root sll stree sbat
 fi
 
 function d-db-dump() {

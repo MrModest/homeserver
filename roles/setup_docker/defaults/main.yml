@@ -9,4 +9,4 @@ dcr_arch_mapping:  # Map ansible architecture {{ ansible_architecture }} names t
   x86_64: amd64
   aarch64: arm64
 
-dcr_lazydocker_version: 0.24.1
+dcr_lazydocker_version: 0.25.2

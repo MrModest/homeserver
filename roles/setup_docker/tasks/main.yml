@@ -101,9 +101,11 @@
     - containerd.service
 
 - name: Install 'lazydocker' utility
-  ansible.builtin.import_role:
-    name: darkwizard242.lazydocker
+  ansible.builtin.import_tasks: tasks/install_binary.yml
   vars:
-    lazydocker_version: '{{ dcr_lazydocker_version }}'
+    t_bin_name: 'lazydocker'
+    t_bin_version: '{{ dcr_lazydocker_version }}'
+    t_bin_url: 'https://github.com/jesseduffield/lazydocker/releases/download/v{{ dcr_lazydocker_version }}/lazydocker_{{ dcr_lazydocker_version }}_Linux_x86_64.tar.gz'
+    t_bin_archive_member: 'lazydocker'
   tags:
     - lazydocker

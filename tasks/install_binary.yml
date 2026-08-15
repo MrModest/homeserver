@@ -1,0 +1,47 @@
+---
+# Installs a pinned third-party binary into /usr/local/bin as root:root.
+#
+# Required vars:
+#   t_bin_name    - name of the resulting binary, also used for the version check
+#   t_bin_version - pinned version, matched against '<binary> --version' output
+#   t_bin_url     - download URL of the release asset
+# Optional vars:
+#   t_bin_archive_member - file to extract, when the asset is an archive
+#                          (omit it when the asset is the bare binary)
+
+- name: Check the installed version of {{ t_bin_name }}
+  ansible.builtin.command: '{{ t_bin_name }} --version'
+  register: t_bin_installed
+  changed_when: false
+  failed_when: false
+
+- name: Extract the release archive of {{ t_bin_name }}
+  ansible.builtin.unarchive:
+    src: '{{ t_bin_url }}'
+    dest: /usr/local/bin
+    remote_src: true
+    include:
+      - '{{ t_bin_archive_member }}'
+  when:
+    - t_bin_archive_member is defined
+    - t_bin_version not in (t_bin_installed.stdout | default(''))
+  become: true
+
+- name: Download the release binary of {{ t_bin_name }}
+  ansible.builtin.get_url:
+    url: '{{ t_bin_url }}'
+    dest: '/usr/local/bin/{{ t_bin_name }}'
+    force: true
+    mode: '0555'
+  when:
+    - t_bin_archive_member is not defined
+    - t_bin_version not in (t_bin_installed.stdout | default(''))
+  become: true
+
+- name: Set permissions for {{ t_bin_name }}
+  ansible.builtin.file:
+    path: '/usr/local/bin/{{ t_bin_name }}'
+    owner: root
+    group: root
+    mode: '0555'
+  become: true
