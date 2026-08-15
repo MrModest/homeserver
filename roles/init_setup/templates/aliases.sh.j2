@@ -73,6 +73,32 @@ function cd-compose() {
   cd {{ p_dirs.compose_files }}/$1
 }
 
+if [ -n "$BASH_VERSION" ]; then
+  function _complete_subdirs_of() {
+    local base="$1"
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local dir
+
+    COMPREPLY=()
+    while IFS= read -r dir; do
+      COMPREPLY+=("${dir#$base/}/")
+    done < <(compgen -d -- "$base/$cur")
+
+    compopt -o nospace
+  }
+
+  function _complete_cd_apps() {
+    _complete_subdirs_of '{{ p_dirs.apps_data }}'
+  }
+
+  function _complete_cd_compose() {
+    _complete_subdirs_of '{{ p_dirs.compose_files }}'
+  }
+
+  complete -F _complete_cd_apps cd-apps
+  complete -F _complete_cd_compose cd-compose
+fi
+
 function d-db-dump() {
   local dumps_root='{{ p_dirs.backups_root }}/db_dumps'
 
