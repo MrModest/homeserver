@@ -115,5 +115,8 @@
 - name: Create and start services
   community.docker.docker_compose_v2:
     project_src: '{{ p_dirs.compose_files }}/{{ t_app_name }}'
+    # Apps that build a service from a local context set this to 'always', so
+    # edits to the build context actually reach the running container.
+    build: '{{ t_compose_build | default("policy") }}'
   become: true
   when: ansible_check_mode is false

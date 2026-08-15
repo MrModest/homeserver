@@ -27,6 +27,11 @@ mcp_servers:
     tools:
       resources: false
       prompts: false
+  file_relay:
+    url: http://file-relay:8000/mcp
+    tools:
+      resources: false
+      prompts: false
 toolsets_disabled:
   - web
   - terminal
@@ -36,6 +41,7 @@ toolsets_disabled:
 platform_toolsets:
   telegram:
     - hatchdoor
+    - file_relay
     - memory
 plugins:
   enabled: []

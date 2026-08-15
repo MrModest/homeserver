@@ -9,6 +9,26 @@ services:
     depends_on:
       hatchdoor:
         condition: service_healthy
+      file-relay:
+        condition: service_started
+    networks:
+      - notes-net
+    restart: unless-stopped
+
+  # Lets hermes attach files without any file/web/terminal toolset: the agent
+  # names a file in hermes' own cache dir, the relay POSTs the bytes to
+  # Hatchdoor. Generic on purpose — endpoint, field names, size cap and allowed
+  # extensions are all env-driven, so it is not image- or Hatchdoor-specific.
+  file-relay:
+    build: ./file-relay
+    container_name: hermes-file-relay
+    hostname: file-relay
+    env_file: .env
+    # Reads what hermes writes, so it runs as hermes' UID rather than relying
+    # on mode bits (hermes chowns this tree back to 10000 on every boot).
+    user: '${HERMES_UID}:${HERMES_GID}'
+    volumes:
+      - ${APP_DATA_PATH}/hermes/cache:/files:ro
     networks:
       - notes-net
     restart: unless-stopped
@@ -21,11 +41,11 @@ services:
     volumes:
       - ${APP_DATA_PATH}/hatchdoor/knowledge-vault:/data/vault
       - ${APP_DATA_PATH}/hatchdoor/cache:/data/cache
-      # MCP attachment staging = hermes's own Telegram image cache dir.
-      # hermes has no file/terminal toolset (see config.yaml), so it can never
-      # copy a file into a separate staging folder — pointing staging directly
-      # at the cache dir it already writes to needs no copy step at all.
-      - ${APP_DATA_PATH}/hermes/cache/images:/data/attachments-inbox
+      # Persists the downloaded embedding model + the EmbeddingGemma terms
+      # acceptance receipt across restarts and image upgrades. Required since
+      # v2.4.0 — public images ship no model, so without this mount every
+      # container recreate re-downloads it and re-asks for terms acceptance.
+      - ${APP_DATA_PATH}/hatchdoor/models:/models
     # No published host port — reached over notes-net by hermes at
     # http://hatchdoor:42824/mcp, and over nginxnetwork by Caddy.
     networks:

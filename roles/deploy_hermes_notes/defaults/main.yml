@@ -1,6 +1,6 @@
 ---
 hnts_hermes_version: v2026.7.7.2
-hnts_hatchdoor_version: v2.3.0
+hnts_hatchdoor_version: 2.4.0
 
 # The baked-in `hermes` user inside the hermes image. Confirmed a container
 # restart does NOT retroactively chown pre-existing bind-mounted content to
@@ -17,7 +17,19 @@ hnts_hatchdoor_web_bearer_token: placeholder
 hnts_hatchdoor_mcp_bearer_token: placeholder
 hnts_hatchdoor_mcp_enabled: true
 hnts_hatchdoor_mcp_write_enabled: true
-hnts_hatchdoor_attachment_staging_path: /data/attachments-inbox
+# Every attachment size cap is pinned to 20 MiB — the same `20 * 1024 * 1024`
+# hermes uses for inbound Telegram documents, which is itself the Telegram Bot
+# API's getFile ceiling. Anything larger never reaches the agent at all, so a
+# higher cap here could not be exercised. It also stays under GitHub's 25 MiB
+# file limit, which matters because the vault is git-synced to GitHub.
+hnts_attachment_max_bytes: 20971520
+# Decoded-size cap for base64 uploads over MCP (upstream default is 5 MiB).
+hnts_hatchdoor_mcp_max_base64_bytes: '{{ hnts_attachment_max_bytes }}'
+# Cap for multipart uploads (web UI + file-relay); upstream default is 10 MiB.
+hnts_hatchdoor_max_attachment_bytes: '{{ hnts_attachment_max_bytes }}'
+
+hnts_relay_upload_url: http://hatchdoor:42824/api/attachment
+hnts_relay_target_dir: 98_Attachments
 
 hnts_hatchdoor_git_sync_enabled: true
 hnts_hatchdoor_git_remote: origin

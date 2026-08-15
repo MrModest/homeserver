@@ -44,21 +44,19 @@
   loop_control:
     loop_var: dir
 
-- name: Create Hermes' image cache directory (doubles as Hatchdoor's attachment staging dir)
-  # hermes has no file/terminal toolset, so it can't copy a downloaded
-  # Telegram image into a separate staging folder — Hatchdoor's compose.yml
-  # mounts this same host path directly instead (see compose.yml comment).
-  # Owned by hnts_hermes_uid/gid (10000) since hermes writes here directly;
-  # hatchdoor (UID 65532, no shared group) only needs to read, so this needs
-  # its own more permissive 0755 rather than compose_up.yml's shared 0754
-  # default — 0754 has no execute bit for "other", which would block
-  # hatchdoor from traversing it.
+- name: Create Hermes' cache directory (file-relay's read-only source)
+  # Must exist and be hermes-owned before compose runs: Docker creates a
+  # missing bind-mount source as a root-owned directory, which hermes (UID
+  # 10000) could not then write its downloaded Telegram files into. No
+  # `recurse` — the contents are hermes' own and are left alone. No `mode`
+  # either: hermes keeps this at 0755 and the relay runs as the owning UID
+  # anyway, so forcing p_default_permissions.directory (0754) here would just
+  # fight the container every run for no benefit.
   ansible.builtin.file:
-    path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/cache/images'
+    path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/cache'
     state: directory
     owner: '{{ hnts_hermes_uid }}'
     group: '{{ hnts_hermes_gid }}'
-    mode: '0755'
   become: true
 
 - name: Copy Hermes config/persona files
@@ -100,12 +98,19 @@
   become: true
   no_log: true
 
-- name: Create Hatchdoor cache directory
+- name: Create Hatchdoor cache and models directories
+  # models/ holds the embedding model Hatchdoor downloads on first start plus
+  # the EmbeddingGemma terms-acceptance receipt (v2.4.0+).
   ansible.builtin.file:
-    path: '{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/cache'
+    path: '{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/{{ item }}'
     state: directory
+    owner: '{{ hnts_hatchdoor_uid }}'
+    group: '{{ hnts_hatchdoor_gid }}'
     mode: '{{ p_default_permissions.directory }}'
   become: true
+  loop:
+    - cache
+    - models
 
 - name: Set Hatchdoor data directories ownership to the distroless nonroot UID/GID
   ansible.builtin.file:
@@ -118,9 +123,35 @@
   loop:
     - knowledge-vault
     - cache
+    - models
+
+- name: Create compose subdirectory for the file-relay build context
+  # compose_up.yml creates this same directory, but the build context has to be
+  # in place before it runs `docker compose up --build`.
+  ansible.builtin.file:
+    path: '{{ p_dirs.compose_files }}/hermes_notes/file-relay'
+    state: directory
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.directory }}'
+  become: true
+
+- name: Copy the file-relay build context
+  ansible.builtin.copy:
+    src: 'file-relay/{{ item }}'
+    dest: '{{ p_dirs.compose_files }}/hermes_notes/file-relay/{{ item }}'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.file }}'
+  become: true
+  loop:
+    - Dockerfile
+    - server.py
 
 - name: Start 'hermes-notes'
   ansible.builtin.import_tasks: tasks/compose_up.yml
   vars:
     t_app_name: 'hermes_notes'
     t_app_data_dirs: []
+    # file-relay is built from ./file-relay, so rebuild when its source changes.
+    t_compose_build: always
