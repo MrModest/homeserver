@@ -4,6 +4,8 @@ alias tree='eza --tree -lahg --time-style=long-iso'
 alias stree='sudo eza --tree -lahg --time-style=long-iso'
 alias ncdu-root='ncdu / --exclude /mnt --exclude /proc'
 
+alias where='type -a' # like zsh's 'where': aliases and functions too, not just $PATH
+
 function ch-owner() {
   sudo chown $1:$1 -R .
 }
