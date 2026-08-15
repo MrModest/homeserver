@@ -12,6 +12,12 @@ function ch-mod() {
   sudo chmod $1 -R .
 }
 
+alias sapp='sudo -u {{ p_apps_user.user }}'
+
+function eapp() { # sudoedit: edit as yourself, write back as '{{ p_apps_user.user }}'
+  sudo -u {{ p_apps_user.user }} -e "$@"
+}
+
 alias cp-progress='rsync -a --info=progress2'
 
 alias bat='batcat --wrap=never'
@@ -123,6 +129,16 @@ if [ -n "$BASH_VERSION" ]; then
 
   complete -F _complete_d_db_dump d-db-dump
   complete -W 'list start stop' docker-compose-all
+
+  function _complete_command_wrapper() { # '_command' come from bash-completion, loaded after this file
+    if declare -F _command > /dev/null; then
+      _command
+    else
+      COMPREPLY=($(compgen -c -- "${COMP_WORDS[COMP_CWORD]}"))
+    fi
+  }
+
+  complete -F _complete_command_wrapper -o default sapp
 fi
 
 function d-db-dump() {
