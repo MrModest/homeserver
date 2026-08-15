@@ -2,8 +2,6 @@ alias ll='eza -lahg --time-style=long-iso'
 alias sll='sudo eza -lahg --time-style=long-iso'
 alias tree='eza --tree -lahg --time-style=long-iso'
 alias stree='sudo eza --tree -lahg --time-style=long-iso'
-alias tree-l='eza --tree --long -lahg --time-style=long-iso'
-alias stree-l='sudo eza --tree --long -lahg --time-style=long-iso'
 alias ncdu-root='ncdu / --exclude /mnt --exclude /proc'
 
 function ch-owner() {
@@ -14,14 +12,21 @@ function ch-mod() {
   sudo chmod $1 -R .
 }
 
-alias cp='rsync -a --info=progress2'
+alias cp-progress='rsync -a --info=progress2'
 
 alias bat='batcat --wrap=never'
 alias sbat='sudo batcat --wrap=never'
 
 alias zfs-list='zfs list | grep -v "legacy"'
 
-alias lzd="~/.local/bin/lazydocker"
+function lzd() {
+  if command -v lazydocker > /dev/null; then
+    lazydocker "$@"
+  else
+    /home/{{ p_ssh_user.user }}/.local/bin/lazydocker "$@"
+  fi
+}
+
 alias docker-start='sudo systemctl start docker'
 alias docker-stop='sudo systemctl stop docker'
 alias docker-restart='sudo systemctl restart docker'
@@ -61,10 +66,6 @@ function d-envs() {
   docker exec $1 env
 }
 
-function d-set-env() {
-  docker exec -i $1 /bin/bash -c "export $2 $3"
-}
-
 function cd-apps() {
   cd {{ p_dirs.apps_data }}/$1
 }
@@ -97,6 +98,31 @@ if [ -n "$BASH_VERSION" ]; then
 
   complete -F _complete_cd_apps cd-apps
   complete -F _complete_cd_compose cd-compose
+
+  function _complete_running_containers() {
+    local names=$(docker ps --format {% raw %}'{{.Names}}'{% endraw %} 2> /dev/null)
+    COMPREPLY=($(compgen -W "$names" -- "${COMP_WORDS[COMP_CWORD]}"))
+  }
+
+  function _complete_all_containers() {
+    local names=$(docker ps -a --format {% raw %}'{{.Names}}'{% endraw %} 2> /dev/null)
+    COMPREPLY=($(compgen -W "$names" -- "${COMP_WORDS[COMP_CWORD]}"))
+  }
+
+  complete -F _complete_running_containers d-sh d-root-sh d-bash d-root-bash d-envs
+  complete -F _complete_all_containers d-logs d-logs-f d-container-restart
+
+  function _complete_d_db_dump() {
+    if [ "$COMP_CWORD" -eq 1 ]; then
+      local apps=$(cd '{{ p_dirs.compose_files }}' 2> /dev/null && compgen -d)
+      COMPREPLY=($(compgen -W "$apps" -- "${COMP_WORDS[COMP_CWORD]}"))
+    else
+      _complete_running_containers
+    fi
+  }
+
+  complete -F _complete_d_db_dump d-db-dump
+  complete -W 'list start stop' docker-compose-all
 fi
 
 function d-db-dump() {
@@ -107,23 +133,22 @@ function d-db-dump() {
   local timestamp=$(date +%Y-%m-%d_%H-%M-%S)
   local yesterday=$(date --date="yesterday" -u +"%Y-%m-%d")
   local dump_path="$dumps_root/$app_name/dump-$container_name-$timestamp.sql.gz"
-  local dump_path_yesterday="$dumps_root/$app_name/dump-$container_name-${yesterday}_*"
 
-  mkdir -p $dumps_root/$app_name
-  chown -R {{ p_apps_user.user }}:{{ p_apps_user.group }} $dumps_root/$app_name
+  sudo mkdir -p $dumps_root/$app_name
+  sudo chown -R {{ p_apps_user.user }}:{{ p_apps_user.group }} $dumps_root/$app_name
 
   echo "Running 'pg_dumpall -c -U postgres' for $2 of $1 at $timestamp"
 
   docker exec -t $container_name pg_dumpall -c -U postgres | gzip > "$dump_path"\
    && echo "Database dump saved to $dump_path"\
-   && echo "Removing dump from $yesterday"\
-   && sudo rm -fI "$dump_path_yesterday"
+   && echo "Removing dumps from $yesterday"\
+   && sudo find "$dumps_root/$app_name" -maxdepth 1 -name "dump-$container_name-${yesterday}_*" -print -delete
 
-  chown -R {{ p_apps_user.user }}:{{ p_apps_user.group }} $dumps_root/$app_name
+  sudo chown -R {{ p_apps_user.user }}:{{ p_apps_user.group }} $dumps_root/$app_name
 }
 
 function docker-compose-all() {
-  local compose_files_path="/mnt/pools/fast/docker/compose-files/*/compose.yml"
+  local compose_files_path="{{ p_dirs.compose_files }}/*/compose.yml"
   local sed_regexp=".*compose-files\/\(.*\)\/compose.yml"
 
   local app_list=$(find $compose_files_path | sed "s/$sed_regexp/- \1/")
@@ -172,12 +197,12 @@ function docker-overlay-ls() {
 }
 
 function zfs-docker-cleanup() {
-  local snapshots_count=$(zfs get mounted | grep "mounted   no" | grep "fast/docker/data-root" | awk '{print $1}' | wc -l)
+  local snapshots_count=$(sudo zfs get mounted | grep "mounted   no" | grep "fast/docker/data-root" | awk '{print $1}' | wc -l)
 
   echo "Docker lagacy snapshots before: $snapshots_count"
   sudo zfs get mounted | grep "mounted   no" | grep "fast/docker/data-root" | awk '{print $1}' | xargs -I {} sudo zfs destroy {} -R
 
-  snapshots_count=$(zfs get mounted | grep "mounted   no" | grep "fast/docker/data-root" | awk '{print $1}' | wc -l)
+  snapshots_count=$(sudo zfs get mounted | grep "mounted   no" | grep "fast/docker/data-root" | awk '{print $1}' | wc -l)
   echo "Docker lagacy snapshots after: $snapshots_count"
 }
 
