@@ -1,8 +1,8 @@
 ---
-hrdr_app_version: 0.27.1
-hrdr_chrome_version: 123
-hrdr_meilisearch_version: v1.11.1
-hrdr_hoarderbot_version: 0.1.0
+hrdr_app_version: 0.33.2
+hrdr_chrome_version: 151.0.7922.47-r1
+hrdr_meilisearch_version: v1.41.0
+hrdr_hoarderbot_version: 0.6.0
 
 hrdr_nextauth_secret: placeholder
 hrdr_meili_master_key: placeholder
