@@ -57,6 +57,28 @@
   tags:
     - hl
 
+- name: Create 'hl' config directory
+  ansible.builtin.file:
+    path: /etc/hl
+    state: directory
+    owner: root
+    group: root
+    mode: '0755' # not the default '0754': every user needs '+x' to read the config inside
+  become: true
+  tags:
+    - hl
+
+- name: Setup 'hl' config # picked up automatically from the system-wide location
+  ansible.builtin.template:
+    src: hl-config.yaml.j2
+    dest: /etc/hl/config.yaml
+    owner: root
+    group: root
+    mode: '{{ p_default_permissions.file }}'
+  become: true
+  tags:
+    - hl
+
 - name: Setup aliases
   ansible.builtin.template:
     src: aliases.sh.j2

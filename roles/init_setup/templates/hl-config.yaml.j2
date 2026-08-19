@@ -1,0 +1,9 @@
+# System-wide 'hl' config, see https://github.com/pamburus/hl#configuration-files
+# Only the listed parameters override the built-in defaults.
+time-zone: '{{ p_timezone }}' # 'hl' defaults to UTC
+
+fields:
+  predefined:
+    message:
+      # Defaults plus 'event', used by authentik (structlog)
+      names: ['msg', 'message', 'MESSAGE', 'Message', 'event']

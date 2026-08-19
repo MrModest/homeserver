@@ -57,7 +57,7 @@ function d-logs() { # '2>&1' because containers write most logs to stderr
 
 function d-logs-f() {
   if command -v hl > /dev/null; then
-    docker logs -f "$@" 2>&1 | hl --paging=never
+    docker logs -f "$@" 2>&1 | hl -F # '-F' is follow mode: no pager, entries sorted chronologically
   else
     docker logs -f "$@" 2>&1
   fi
