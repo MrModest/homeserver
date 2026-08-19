@@ -68,7 +68,7 @@
                   icon: di:github-light
             - links:
                 - title: Homepage
-                  url: https://homepage.mrmodest.duckdns.org
+                  url: https://homepage.modestlab.dev
                   description: Old dashboard
                   icon: di:homepage.png
 

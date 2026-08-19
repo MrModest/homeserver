@@ -5,100 +5,100 @@
       sites:
         - title: Immich
           icon: di:immich
-          url: https://immich.mrmodest.duckdns.org
+          url: https://immich.modestlab.dev
         - title: Jellyfin
           icon: di:jellyfin
-          url: https://jellyfin.mrmodest.duckdns.org
+          url: https://jellyfin.modestlab.dev
         - title: Paperless
           icon: di:paperless-ngx
-          url: https://paperless.mrmodest.duckdns.org
+          url: https://paperless.modestlab.dev
         - title: Grist
           icon: di:grist
           check-url: http://grist_app:8484/status
-          url: https://grist.mrmodest.duckdns.org
+          url: https://grist.modestlab.dev
         - title: Forgejo
           icon: di:forgejo
-          url: https://forgejo.mrmodest.duckdns.org
+          url: https://forgejo.modestlab.dev
         - title: Hoarder
           icon: di:hoarder-light
-          url: https://hoarder.mrmodest.duckdns.org
+          url: https://hoarder.modestlab.dev
         - title: Readeck
           icon: di:readeck
-          url: https://readeck.mrmodest.duckdns.org
+          url: https://readeck.modestlab.dev
         - title: Wallos
           icon: di:wallos.png
-          url: https://wallos.mrmodest.duckdns.org
+          url: https://wallos.modestlab.dev
         - title: SilverBullet
           icon: di:silverbullet.png
-          url: https://silverbullet.mrmodest.duckdns.org
+          url: https://silverbullet.modestlab.dev
         - title: OpenCloud
           icon: di:open-cloud-dark
-          url: https://opencloud.mrmodest.duckdns.org
+          url: https://opencloud.modestlab.dev
         - title: Planka
           icon: di:planka
-          url: https://planka.mrmodest.duckdns.org
+          url: https://planka.modestlab.dev
         - title: Stirling PDF
           icon: di:stirling-pdf
-          url: https://stirling_pdf.mrmodest.duckdns.org
+          url: https://stirling_pdf.modestlab.dev
         - title: n8n
           icon: di:n8n
-          url: https://n8n.mrmodest.duckdns.org
+          url: https://n8n.modestlab.dev
         - title: Ghostfolio
           icon: di:ghostfolio
-          url: https://ghostfolio.mrmodest.duckdns.org
+          url: https://ghostfolio.modestlab.dev
         - title: Mealie
           icon: di:mealie
-          url: https://mealie.mrmodest.duckdns.org
+          url: https://mealie.modestlab.dev
         - title: ChangeDetection
           icon: di:changedetection
-          url: https://changedetection.mrmodest.duckdns.org
+          url: https://changedetection.modestlab.dev
         - title: Home Assistant
           icon: di:home-assistant
-          url: https://ha.mrmodest.duckdns.org
+          url: https://ha.modestlab.dev
         - title: Tududi
           icon: di:tududi.png
-          url: https://tududi.mrmodest.duckdns.org
+          url: https://tududi.modestlab.dev
     - type: monitor
       title: ServArr
       sites:
         - title: RDT Client
           icon: di:real-debrid
-          url: https://rdt-client.mrmodest.duckdns.org
+          url: https://rdt-client.modestlab.dev
         - title: Aria2 NG
           icon: di:ariang.png
-          url: https://aria-ng.mrmodest.duckdns.org
+          url: https://aria-ng.modestlab.dev
         - title: Sonarr
           icon: di:sonarr
-          url: https://sonarr.mrmodest.duckdns.org
+          url: https://sonarr.modestlab.dev
         - title: Prowlarr
           icon: di:prowlarr
-          url: https://prowlarr.mrmodest.duckdns.org
+          url: https://prowlarr.modestlab.dev
     - type: monitor
       title: Maintenance
       sites:
         - title: Nginx
           icon: di:nginx-proxy-manager
-          url: https://npm.mrmodest.duckdns.org
+          url: https://npm.modestlab.dev
           allow-insecure: true
         - title: Portainer
           icon: di:portainer
-          url: https://portainer.mrmodest.duckdns.org
+          url: https://portainer.modestlab.dev
         - title: Grafana
           icon: di:grafana
-          url: https://grafana.mrmodest.duckdns.org
+          url: https://grafana.modestlab.dev
         - title: Pi-Hole
           icon: di:pi-hole
-          url: https://pihole.mrmodest.duckdns.org/admin/login
+          url: https://pihole.modestlab.dev/admin/login
           check-url: http://192.168.178.55:80
           alt-status-codes:
             - 403
           allow-insecure: true
         - title: Backrest
           icon: di:backrest-light
-          url: https://backrest.mrmodest.duckdns.org
+          url: https://backrest.modestlab.dev
         - title: Cronicle
           icon: di:cronicle
-          url: https://cronicle.mrmodest.duckdns.org/
+          url: https://cronicle.modestlab.dev/
         - title: Authentik
           icon: di:authentik
-          url: https://authentik.mrmodest.duckdns.org
+          url: https://authentik.modestlab.dev
