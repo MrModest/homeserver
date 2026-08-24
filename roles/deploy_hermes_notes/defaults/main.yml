@@ -42,6 +42,10 @@ hnts_hatchdoor_max_attachment_bytes: '{{ hnts_attachment_max_bytes }}'
 # competes with the Codex one.
 hnts_hermes_codex_base_url: placeholder
 
+# Firecrawl Cloud key for web_search / web_extract. Read from the process
+# environment; config.yaml selects the backend and enables the plugin.
+hnts_firecrawl_api_key: placeholder
+
 hnts_relay_upload_url: http://hatchdoor:42824/api/attachment
 hnts_relay_target_dir: 98_Attachments
 

@@ -33,7 +33,6 @@ mcp_servers:
       resources: false
       prompts: false
 toolsets_disabled:
-  - web
   - terminal
   - file
   - browser
@@ -43,5 +42,15 @@ platform_toolsets:
     - hatchdoor
     - file_relay
     - memory
+    - web
+# Web search and extraction are plugin-provided. An empty list enables nothing,
+# so web_search/web_extract have no backend and the `web` toolset above resolves
+# to unusable tools.
 plugins:
-  enabled: []
+  enabled:
+    - web-firecrawl
+web:
+  # Selects Firecrawl for both web_search and web_extract. Required even with a
+  # key present: without an explicit selection the keyless cloud path is never
+  # taken, and FIRECRAWL_API_KEY alone does not pick the backend.
+  backend: firecrawl
