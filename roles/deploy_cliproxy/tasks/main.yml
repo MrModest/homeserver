@@ -27,6 +27,18 @@
     mode: '0600'
   become: true
 
+# Docker binds a single-file mount to the file's inode. Ansible writes templates
+# by renaming a temp file into place, which leaves the running container on the
+# old inode -- so a changed config reaches disk but never the process. Feeding
+# the checksum into the service definition makes compose recreate the container,
+# which re-resolves the mount.
+- name: Read the rendered config's checksum
+  ansible.builtin.stat:
+    path: '{{ p_dirs.apps_data }}/cliproxy/cli-proxy-api/config.yaml'
+    checksum_algorithm: sha256
+  register: t_cliproxy_config
+  become: true
+
 - name: Start 'cliproxy'
   ansible.builtin.import_tasks: tasks/compose_up.yml
   vars:

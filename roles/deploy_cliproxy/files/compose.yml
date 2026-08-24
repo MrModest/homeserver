@@ -13,6 +13,9 @@ services:
     container_name: 'cli-proxy-api'
     hostname: 'cli-proxy-api'
     user: '${APP_USER}:${APP_GROUP}'
+    labels:
+      # Recreates the container when config.yaml changes; see the role's tasks.
+      org.homeserver.config-checksum: '${CLI_PROXY_CONFIG_CHECKSUM}'
     environment:
       # Download target for the management panel asset. The default sits inside
       # the image, where a non-root user cannot create it.
