@@ -70,19 +70,27 @@ with zero credentials and simply serves an empty model list. Accounts are
 additive: CLIProxyAPI serves whatever the logged-in accounts expose, across
 providers, and load-balances across accounts of the same provider.
 
-### From the CPAMP panel (most providers)
+### From the CPAMP panel
 
-`https://cpamp.<domain>/management.html` drives CLIProxyAPI's OAuth login
-endpoints and stores the result in `auths/`. Since the panel is served over
-HTTPS through Caddy, the callback returns through it — nothing to publish, no
-tunnel. This is the easiest route for Gemini, Claude, Antigravity, xAI and Kimi.
+`https://cpamp.<domain>/management.html` → OAuth Login lists an entry per
+provider (Codex, Claude, Antigravity, Kimi, xAI, iFlow, plus anything a plugin
+adds). Click one, authorise in the provider's page, and the panel polls until
+the credential is saved into `auths/`.
+
+The provider redirects to `http://localhost:...`, which reaches nothing when the
+proxy runs on the server. CPAMP handles that with its **remote browser
+callback**: copy the *entire* URL out of the browser's address bar — the dead
+one it just landed on — and paste it into the panel's callback URL field. Paste
+it whole; extracting `code` or `state` by hand breaks state matching.
+
+Treat that URL as a secret while you are moving it around: it carries the
+authorisation code.
 
 ### Codex, from the container
 
-OpenAI's OAuth client for Codex has one registered redirect URI,
-`http://localhost:1455/auth/callback`, and it cannot be changed — both
-`/codex-auth-url` and `/codex-auth-url?is_webui=true` return it. Use the
-device-code flow, which sidesteps callbacks entirely:
+The panel handles Codex too, through the same paste-back. To skip the copy-paste
+entirely, the CLI has a device-code flow — no callback and no dead redirect, at
+the cost of needing shell access to the container:
 
 ```bash
 cd /mnt/pools/fast/docker/compose-files/cliproxy
@@ -116,6 +124,11 @@ curl -X POST -F 'file=@codex.json' \
 ```
 
 Useful for moving an account between machines.
+
+A successful login is not proof of a working account: send one cheap request
+afterwards and confirm it lands in CPAMP's Monitoring view. Provider routing,
+model rules and quota state can each still block a credential that authorised
+cleanly.
 
 However they arrive, credentials live in `auths/`, which is bind-mounted, so they
 survive restarts and image upgrades. They are runtime state, not configuration:
