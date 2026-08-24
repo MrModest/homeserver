@@ -170,11 +170,15 @@ v_cliproxy:
     codex-cli: 'codex-...'
 ```
 
-Point clients at the protocol the upstream actually speaks. In Hermes, choose
-the `openai-codex` provider rather than `openai-api`, even when authenticating
-with one of these keys instead of OAuth — both read `OPENAI_API_KEY` and
-`OPENAI_BASE_URL`, but `openai-api` returns the proxy's model list verbatim and
-misses the Codex catalog.
+Point clients at the protocol the upstream actually speaks. In Hermes that means
+the `openai-codex` provider, whose base URL comes from `HERMES_CODEX_BASE_URL`
+and defaults to `https://chatgpt.com/backend-api/codex` — leave it unset and a
+key from here is sent to ChatGPT itself, which answers 401. Set it to
+`https://<cliproxy host>/v1`; Hermes appends `/responses`.
+
+Do not set `OPENAI_API_KEY` for Hermes. That variable belongs to its separate
+`openai-api` provider, and its presence alone registers a second credential that
+competes with the Codex one.
 
 A key is also the revocation unit: dropping an entry and re-running cuts off that
 tool alone. Split by trust boundary rather than by tool name where they differ —
