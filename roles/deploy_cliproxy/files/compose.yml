@@ -31,13 +31,10 @@ services:
       # `static/` beside the config file, i.e. inside the image, which a
       # non-root user cannot create.
       MANAGEMENT_STATIC_PATH: '/CLIProxyAPI/static'
-    # No published ports. Nothing here is reachable from outside the Docker
-    # networks — Caddy fronts :8317 over nginxnetwork. The OAuth callback
-    # listener (:1455, only alive while a login is in flight) binds 0.0.0.0
-    # *inside* the container, so the host reaches it on the container's own
-    # bridge address; see README for the tunnel. Publishing it would put a
-    # permanent 0.0.0.0 binding on the host for a listener that is almost
-    # never running.
+    # No published ports, and none needed: accounts are added with
+    # `-codex-device-login`, which prints a code to enter on another device and
+    # polls for approval. Only the older `-codex-login` flow wants a callback
+    # on localhost:1455.
     volumes:
       - '${APP_DATA_PATH}/cli-proxy-api/config.yaml:/CLIProxyAPI/config.yaml'
       # Management panel asset, re-downloaded when missing. Cache, not state.

@@ -40,8 +40,6 @@ domains in `vars/apps.yml`.
 | `cpa_manager_admin_key` | placeholder | Logs into the CPAMP panel |
 | `cpa_open_webui_secret_key` | placeholder | Signs Open WebUI's JWTs |
 | `cpa_open_webui_enable_signup` | `true` | Leave open until the admin account exists, then set to `false` |
-| `cpa_codex_auth_src` | `''` | Optional: path (on the Ansible control machine) to a Codex credential JSON, seeded into `auths/` on first deploy |
-| `cpa_codex_auth_name` | `codex.json` | Filename for the seeded credential |
 
 The four secrets come from `v_cliproxy.*` in `vars/vault.yml`:
 
@@ -66,30 +64,37 @@ ansible-playbook main.yml --tags cliproxy
 Nothing works until an account is logged in — the proxy starts fine with zero
 credentials and simply serves an empty model list.
 
-OpenAI's OAuth client for Codex (`app_EMoamEEZ73f0CkXaXp7hrann`) has exactly one
-registered redirect URI, `http://localhost:1455/auth/callback`, and it cannot be
-changed. The management panel's `?is_webui=true` flow does not help here: it
-returns the same `redirect_uri`. So the browser that completes the login must be
-able to reach *something* on its own `localhost:1455`. Two ways to arrange that
-without publishing a port on the server.
-
-### A. Seed a credential from elsewhere (unattended)
-
-Log in on a machine where the browser and the callback listener are the same
-host — your laptop, using the Codex CLI or a throwaway local CLIProxyAPI — then
-move the resulting credential JSON to the server. No interactive step on the
-server at all.
-
-Either drop it straight into the bind mount, where CLIProxyAPI's directory
-watcher picks it up within seconds, no restart needed:
+Use the device-code flow. It needs no callback, no published port and no file
+copying: the container asks OpenAI for a code, you enter that code in a browser
+on any machine, and the container polls until you approve.
 
 ```bash
-scp codex.json homessh@192.168.178.34:/tmp/
-sudo install -o apps -g apps -m 0600 /tmp/codex.json \
-  /mnt/pools/fast/apps-data/cliproxy/cli-proxy-api/auths/
+cd /mnt/pools/fast/docker/compose-files/cliproxy
+docker compose exec cli-proxy-api /CLIProxyAPI/CLIProxyAPI -codex-device-login
 ```
 
-…or upload it through the Management API, which registers it immediately:
+It prints:
+
+```
+Starting Codex device authentication...
+Codex device URL: https://auth.openai.com/codex/device
+Codex device code: XXXX-XXXXX
+```
+
+Open that URL, enter the code, approve. The command returns once authorised and
+writes the credential into `auths/`, which is bind-mounted, so it survives
+restarts and image upgrades. Repeat to add more accounts — CLIProxyAPI
+load-balances across them.
+
+`-claude-login`, `-antigravity-login`, `-xai-login` and `-kimi-login` exist for
+the other providers, as does the older `-codex-login`. Prefer the device flow:
+`-codex-login` completes over a callback to `localhost:1455`, which on a headless
+server means either publishing a port or tunnelling to the container. There is
+also `-oauth-callback-port` to move that port if you ever need it.
+
+Credentials can also be added without the CLI at all: CLIProxyAPI watches
+`auth-dir`, so a JSON file copied into `auths/` is registered within seconds, and
+the Management API accepts one directly:
 
 ```bash
 curl -X POST -F 'file=@codex.json' \
@@ -97,52 +102,10 @@ curl -X POST -F 'file=@codex.json' \
   https://cliproxy.<domain>/v0/management/auth-files
 ```
 
-…or let this role place it, by pointing it at the file on the machine you run
-Ansible from:
-
-```bash
-ansible-playbook main.yml --tags cliproxy -e cpa_codex_auth_src=~/.codex/auth.json
-```
-
-The task writes it with `force: false`, and the file is deliberately referenced
-by path rather than stored in the vault. CLIProxyAPI refreshes the OAuth token
-every 15 minutes and rewrites the file, so a vaulted copy would be stale almost
-immediately — and if the provider rotates refresh tokens, invalid rather than
-merely old. Treat the credential as runtime state, not configuration: it lives
-in `auths/`, and the thing that protects it is your backup of that dataset, not
-`vault.yml`. To re-seed, delete the file on the server first.
-
-### B. Log in interactively, still with no published port
-
-The callback listener binds `0.0.0.0:1455` *inside the container* and only
-exists while a login is in flight. The host can reach it directly on the
-container's bridge address, so tunnel to that rather than to a published port:
-
-```bash
-# On your laptop — leave running for the whole login
-CPA_IP=$(ssh homessh@192.168.178.34 \
-  "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' cli-proxy-api | awk '{print \$1}'")
-ssh -L 1455:$CPA_IP:1455 homessh@192.168.178.34
-```
-
-Then, in that SSH session:
-
-```bash
-cd /mnt/pools/fast/docker/compose-files/cliproxy
-docker compose exec cli-proxy-api /CLIProxyAPI/CLIProxyAPI -no-browser --codex-login
-```
-
-Open the printed URL in your laptop's browser and finish the ChatGPT login; the
-redirect to `localhost:1455` follows the tunnel into the container. The
-container's bridge IP changes when the container is recreated, hence looking it
-up each time.
-
-Either way the credential lands in `auths/`, which is bind-mounted, so it
-survives restarts and image upgrades. Add more accounts the same way and
-CLIProxyAPI load-balances across them.
-
-Other providers use their own callback ports (Gemini 8085, AI Studio 54545,
-Antigravity 51121, Claude 11451) and would need the same treatment.
+Useful for moving an account between machines. Note the credential is runtime
+state, not configuration: CLIProxyAPI refreshes the OAuth token every 15 minutes
+and rewrites the file, so what protects it is your backup of the `auths/`
+dataset, not the vault.
 
 ## Verify
 
@@ -197,9 +160,11 @@ healthy but no account is logged in yet.
   `apps-data/cliproxy/` are root-owned and the non-root containers will fail on
   them. `chown -R apps:apps` that tree once; `compose_up.yml` only creates
   directories that do not already exist, so it will not fix ownership for you.
-- **No container publishes a host port.** Everything is reached through Caddy
-  over `nginxnetwork`, including the Management API. Keep it that way — the
-  management key is the only thing guarding config and credential access.
+- **No container publishes a host port**, and none needs to: the device-code
+  login makes the OAuth callback listener irrelevant. Everything is reached
+  through Caddy over `nginxnetwork`, including the Management API. Keep it that
+  way — the management key is the only thing guarding config and credential
+  access.
 - **Back up `cpa-manager-plus/data.key` together with `usage.sqlite`.** The key
   decrypts the CPA management key stored in the database; without it the panel's
   saved connection cannot be recovered.
