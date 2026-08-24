@@ -6,9 +6,10 @@ Turns a ChatGPT/Codex subscription into a local OpenAI-compatible API, with a
 management panel and a chat UI on top. Three containers in one compose stack:
 
 - **[CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI)** (`cli-proxy-api`)
-  logs into ChatGPT with OAuth and re-exposes the subscription as
-  OpenAI-, Gemini- and Claude-compatible HTTP endpoints on `:8317`. No OpenAI
-  API key is involved; requests are billed against the subscription's quota.
+  logs into ChatGPT (and optionally Gemini, Claude, xAI, Kimi) with OAuth and
+  re-exposes those subscriptions as OpenAI-, Gemini- and Claude-compatible HTTP
+  endpoints on `:8317`. No provider API key is involved; requests are billed
+  against each subscription's quota.
 - **[CPA-Manager-Plus](https://github.com/seakee/CPA-Manager-Plus)** (`cpa-manager-plus`)
   on `:18317` — usage statistics, cost estimates, per-request monitoring and
   account/quota health. It reads CLIProxyAPI's Management API and usage queue;
@@ -62,14 +63,26 @@ Generate them with `openssl rand -hex 32` (any opaque string works).
 ansible-playbook main.yml --tags cliproxy
 ```
 
-## Log in to the ChatGPT account (one-time)
+## Add provider accounts
 
-Nothing works until an account is logged in — the proxy starts fine with zero
-credentials and simply serves an empty model list.
+Nothing works until at least one account is logged in — the proxy starts fine
+with zero credentials and simply serves an empty model list. Accounts are
+additive: CLIProxyAPI serves whatever the logged-in accounts expose, across
+providers, and load-balances across accounts of the same provider.
 
-Use the device-code flow. It needs no callback, no published port and no file
-copying: the container asks OpenAI for a code, you enter that code in a browser
-on any machine, and the container polls until you approve.
+### From the CPAMP panel (most providers)
+
+`https://cpamp.<domain>/management.html` drives CLIProxyAPI's OAuth login
+endpoints and stores the result in `auths/`. Since the panel is served over
+HTTPS through Caddy, the callback returns through it — nothing to publish, no
+tunnel. This is the easiest route for Gemini, Claude, Antigravity, xAI and Kimi.
+
+### Codex, from the container
+
+OpenAI's OAuth client for Codex has one registered redirect URI,
+`http://localhost:1455/auth/callback`, and it cannot be changed — both
+`/codex-auth-url` and `/codex-auth-url?is_webui=true` return it. Use the
+device-code flow, which sidesteps callbacks entirely:
 
 ```bash
 cd /mnt/pools/fast/docker/compose-files/cliproxy
@@ -84,20 +97,17 @@ Codex device URL: https://auth.openai.com/codex/device
 Codex device code: XXXX-XXXXX
 ```
 
-Open that URL, enter the code, approve. The command returns once authorised and
-writes the credential into `auths/`, which is bind-mounted, so it survives
-restarts and image upgrades. Repeat to add more accounts — CLIProxyAPI
-load-balances across them.
+Open that URL on any machine, enter the code, approve. The command returns once
+authorised.
 
-`-claude-login`, `-antigravity-login`, `-xai-login` and `-kimi-login` exist for
-the other providers, as does the older `-codex-login`. Prefer the device flow:
-`-codex-login` completes over a callback to `localhost:1455`, which on a headless
-server means either publishing a port or tunnelling to the container. There is
-also `-oauth-callback-port` to move that port if you ever need it.
+`-claude-login`, `-antigravity-login`, `-xai-login` and `-kimi-login` are the CLI
+equivalents for the other providers, and `-oauth-callback-port` moves the
+callback port for the flows that use one.
 
-Credentials can also be added without the CLI at all: CLIProxyAPI watches
-`auth-dir`, so a JSON file copied into `auths/` is registered within seconds, and
-the Management API accepts one directly:
+### By moving a credential file
+
+CLIProxyAPI watches `auth-dir`, so a JSON file copied into `auths/` is registered
+within seconds, and the Management API accepts one directly:
 
 ```bash
 curl -X POST -F 'file=@codex.json' \
@@ -105,10 +115,17 @@ curl -X POST -F 'file=@codex.json' \
   https://cliproxy.<domain>/v0/management/auth-files
 ```
 
-Useful for moving an account between machines. Note the credential is runtime
-state, not configuration: CLIProxyAPI refreshes the OAuth token every 15 minutes
-and rewrites the file, so what protects it is your backup of the `auths/`
-dataset, not the vault.
+Useful for moving an account between machines.
+
+However they arrive, credentials live in `auths/`, which is bind-mounted, so they
+survive restarts and image upgrades. They are runtime state, not configuration:
+CLIProxyAPI refreshes the OAuth tokens every 15 minutes and rewrites the files,
+so what protects them is your backup of that dataset, not the vault.
+
+Adding a second provider widens what every client sees — `/v1/models` returns the
+union, and Open WebUI's model picker fills up accordingly. The client API keys
+are not scoped per provider; anything holding a key can reach any logged-in
+account.
 
 ## Verify
 
@@ -155,11 +172,12 @@ run restores the set defined here.
   and re-run.
 - **CPAMP**: `https://cpamp.<domain>/management.html`, log in with
   `cpa_manager_admin_key`. The CPA connection is supplied through the
-  environment, so there is no setup wizard to walk.
+  environment, so there is no setup wizard to walk. Also where you add provider
+  accounts and read per-key usage.
 - **CLIProxyAPI's own panel**: `https://cliproxy.<domain>/management.html`, log
   in with `cpa_management_key`.
-- **Coding CLIs**: point them at `https://cliproxy.<domain>/v1` with
-  `cpa_api_key` as the API key.
+- **Coding CLIs**: point them at `https://cliproxy.<domain>/v1` with that
+  tool's entry from `cpa_api_keys` as the API key.
 
 ## Notes
 
