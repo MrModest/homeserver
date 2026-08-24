@@ -9,8 +9,13 @@ cpa_open_webui_host: placeholder
 
 # CLIProxyAPI Management API key. CPAMP authenticates with it.
 cpa_management_key: placeholder
-# Client key for the proxy's API. Open WebUI and any coding CLI send it.
-cpa_api_key: placeholder
+# Client keys for the proxy's API, keyed by the tool that uses them. CPAMP
+# attributes usage to the key a request arrived with, so one key per tool keeps
+# them separable in its reports.
+cpa_api_keys:
+  open-webui: placeholder
+# Which entry above Open WebUI authenticates with.
+cpa_open_webui_api_key_name: 'open-webui'
 # Logs into the CPAMP panel.
 cpa_manager_admin_key: placeholder
 # Signs Open WebUI's JWTs and encrypts its secrets at rest.

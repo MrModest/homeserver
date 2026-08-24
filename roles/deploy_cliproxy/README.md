@@ -36,7 +36,8 @@ domains in `vars/apps.yml`.
 | `cpa_open_webui_version` | `v0.11.0` | Open WebUI image tag |
 | `cpa_open_webui_host` | placeholder | Public hostname, used for `WEBUI_URL` |
 | `cpa_management_key` | placeholder | CLIProxyAPI Management API key; CPAMP authenticates with it |
-| `cpa_api_key` | placeholder | Client key for the proxy's API — Open WebUI and any CLI send this |
+| `cpa_api_keys` | `{open-webui: placeholder}` | Client keys for the proxy's API, keyed by tool |
+| `cpa_open_webui_api_key_name` | `open-webui` | Which entry Open WebUI authenticates with |
 | `cpa_manager_admin_key` | placeholder | Logs into the CPAMP panel |
 | `cpa_open_webui_secret_key` | placeholder | Signs Open WebUI's JWTs |
 | `cpa_open_webui_enable_signup` | `true` | Leave open until the admin account exists, then set to `false` |
@@ -46,7 +47,9 @@ The four secrets come from `v_cliproxy.*` in `vars/vault.yml`:
 ```yaml
 v_cliproxy:
   management_key: '...'
-  api_key: '...'
+  api_keys:
+    open-webui: 'owui-...'
+    codex-cli: 'codex-...'
   manager_admin_key: '...'
   open_webui_secret_key: '...'
 ```
@@ -121,6 +124,29 @@ curl -s -H "Authorization: Bearer $CPA_MANAGER_ADMIN_KEY" \
 
 An empty `{"data":[],"object":"list"}` from `/v1/models` means the proxy is
 healthy but no account is logged in yet.
+
+## One key per tool
+
+`api-keys` is a list, and CPAMP attributes every request to the key it arrived
+with, so issuing a separate key per tool makes its usage, cost and failure
+breakdowns separable. Add an entry per tool to `v_cliproxy.api_keys` and re-run:
+
+```yaml
+v_cliproxy:
+  api_keys:
+    open-webui: 'owui-...'
+    codex-cli: 'codex-...'
+    claude-code: 'cc-...'
+```
+
+Each renders into `config.yaml` with its name as a trailing comment, so the file
+stays readable. Give the keys recognisable prefixes: CPAMP identifies a key by
+its value, so `codex-<random>` is far easier to pick out of a dashboard than a
+bare hex string.
+
+Keys can also be changed at runtime through `PUT`/`PATCH /v0/management/api-keys`
+or the panel, but `config.yaml` is templated from this role, so the next playbook
+run restores the set defined here.
 
 ## Using it
 

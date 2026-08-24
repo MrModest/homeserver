@@ -13,9 +13,11 @@ remote-management:
 
 auth-dir: '/CLIProxyAPI/auths'
 
-# Keys accepted from API clients, Open WebUI included.
+# Keys accepted from API clients. CPAMP reports usage per key.
 api-keys:
-  - '{{ cpa_api_key }}'
+{% for name, key in cpa_api_keys | dictsort %}
+  - '{{ key }}' # {{ name }}
+{% endfor %}
 
 # Feeds CPAMP's request monitoring.
 usage-statistics-enabled: true
