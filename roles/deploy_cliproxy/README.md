@@ -210,8 +210,14 @@ run restores the set defined here.
   so Open WebUI never receives the CPA management key. Compose still reads
   `.env` for the `${...}` values.
 - **Open WebUI runs with `ENABLE_PERSISTENT_CONFIG=False`**, so this role stays
-  the source of truth for its settings. The trade-off: settings changed in its
-  admin UI look like they save but are discarded on restart. Change them here.
+  the source of truth for its settings. Without it, Open WebUI reads the
+  environment once on first boot, writes it to its database and ignores the
+  environment from then on — meaning a changed key in the vault would never take
+  effect. The trade-off: settings changed in its admin UI look like they save
+  but are discarded on restart. This bites most often on the OpenAI connection:
+  its base URL and API key come from `cpa_api_keys[cpa_open_webui_api_key_name]`
+  via `.env`, so change the key in `v_cliproxy.api_keys` and re-run the role,
+  not in the admin UI.
 - **CLIProxyAPI's management panel can rewrite `config.yaml`** at runtime. That
   file is templated from this role, so any such change is reverted on the next
   playbook run.
@@ -219,7 +225,7 @@ run restores the set defined here.
   lives under its own directory, which is what lets it run as a non-root user;
   the upstream default, `~/.cli-proxy-api`, resolves to root's home.
 - **`config.yaml` is mode `0600`** where the repo uses `0644`: it holds both the
-  management key and the client API key.
+  management key and every client API key.
 - **No container publishes a host port**, and none needs to — the device-code
   login makes the OAuth callback listener irrelevant. Everything is reached
   through Caddy over `nginxnetwork`, including the Management API. Keep it that
