@@ -209,15 +209,22 @@ run restores the set defined here.
 - **Secrets reach each service through `environment`, not a shared `env_file`**,
   so Open WebUI never receives the CPA management key. Compose still reads
   `.env` for the `${...}` values.
-- **Open WebUI runs with `ENABLE_PERSISTENT_CONFIG=False`**, so this role stays
-  the source of truth for its settings. Without it, Open WebUI reads the
-  environment once on first boot, writes it to its database and ignores the
-  environment from then on — meaning a changed key in the vault would never take
-  effect. The trade-off: settings changed in its admin UI look like they save
-  but are discarded on restart. This bites most often on the OpenAI connection:
-  its base URL and API key come from `cpa_api_keys[cpa_open_webui_api_key_name]`
-  via `.env`, so change the key in `v_cliproxy.api_keys` and re-run the role,
-  not in the admin UI.
+- **Open WebUI's database owns its settings, not this role.** `.env` seeds the
+  OpenAI connection on first boot; from then on the admin UI is authoritative
+  and the environment is ignored for it. `ENABLE_PERSISTENT_CONFIG` governs all
+  ~394 config keys at once — RAG, web search, audio, image generation, UI
+  defaults — with no per-key opt-out, so turning it off to keep the four
+  `openai.*` keys under Ansible would discard every other admin-UI change on
+  restart. Leave it on.
+
+  The consequence for key rotation: a new value in `v_cliproxy.api_keys` reaches
+  CLIProxyAPI but not a running Open WebUI. Rotate in this order, so the UI is
+  never pointing at a key the proxy has already dropped:
+
+  1. Add the new key alongside the old one in `v_cliproxy.api_keys`, re-run.
+  2. Paste the new key into Open WebUI: Admin → Settings → Connections.
+  3. Confirm a chat still answers.
+  4. Remove the old key from `v_cliproxy.api_keys`, re-run.
 - **CLIProxyAPI's management panel can rewrite `config.yaml`** at runtime. That
   file is templated from this role, so any such change is reverted on the next
   playbook run.
