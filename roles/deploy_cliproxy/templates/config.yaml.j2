@@ -1,0 +1,27 @@
+# Managed by Ansible (roles/deploy_cliproxy). The management panel can rewrite
+# this file at runtime; the next playbook run overwrites it again.
+
+# Empty binds every interface inside the container.
+host: ''
+port: 8317
+
+remote-management:
+  # CPAMP calls the Management API from its own container, which is not
+  # localhost as far as CPA is concerned. secret-key is required either way.
+  allow-remote: true
+  secret-key: '{{ cpa_management_key }}'
+
+auth-dir: '/CLIProxyAPI/auths'
+
+# Keys accepted from API clients. CPAMP reports usage per key.
+api-keys:
+{% for name, key in cpa_api_keys | dictsort %}
+  - '{{ key }}' # {{ name }}
+{% endfor %}
+
+# Feeds CPAMP's request monitoring.
+usage-statistics-enabled: true
+
+debug: false
+# Logs stay on stdout for the json-file driver to hand to Promtail.
+logging-to-file: false

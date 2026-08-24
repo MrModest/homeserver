@@ -303,3 +303,16 @@
       tags:
         - applications
         - hermes_notes
+
+    - name: Deploy 'cliproxy'
+      ansible.builtin.import_role:
+        name: deploy_cliproxy
+      vars:
+        cpa_open_webui_host: 'chat.{{ p_base_domain }}'
+        cpa_management_key: '{{ v_cliproxy.management_key }}'
+        cpa_api_keys: '{{ v_cliproxy.api_keys }}'
+        cpa_manager_admin_key: '{{ v_cliproxy.manager_admin_key }}'
+        cpa_open_webui_secret_key: '{{ v_cliproxy.open_webui_secret_key }}'
+      tags:
+        - applications
+        - cliproxy

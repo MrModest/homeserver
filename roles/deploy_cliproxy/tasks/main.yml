@@ -1,0 +1,39 @@
+---
+# The dataset and the config directory have to exist before the config file is
+# written, and the config file before compose runs: Docker creates a missing
+# bind-mount source as an empty root-owned directory.
+- name: Create ZFS dataset for 'cliproxy'
+  community.general.zfs:
+    name: '{{ p_dirs.apps_data_ds }}/cliproxy'
+    state: present
+  become: true
+
+- name: Create the CLIProxyAPI config directory
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/cliproxy/cli-proxy-api'
+    state: directory
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.directory }}'
+  become: true
+
+- name: Upload the CLIProxyAPI config
+  # Holds the management key and the client API key, hence 0600.
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: '{{ p_dirs.apps_data }}/cliproxy/cli-proxy-api/config.yaml'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '0600'
+  become: true
+
+- name: Start 'cliproxy'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'cliproxy'
+    t_app_data_dirs:
+      - '{{ p_dirs.apps_data }}/cliproxy/cli-proxy-api/auths'
+      - '{{ p_dirs.apps_data }}/cliproxy/cli-proxy-api/plugins'
+      - '{{ p_dirs.apps_data }}/cliproxy/cli-proxy-api/static'
+      - '{{ p_dirs.apps_data }}/cliproxy/cpa-manager-plus'
+      - '{{ p_dirs.apps_data }}/cliproxy/open-webui'
