@@ -300,6 +300,7 @@
         hnts_knowledge_vault_repo: 'https://github.com/{{ v_hermes_notes.github_username }}/knowledge-vault.git'
         hnts_github_username: '{{ v_hermes_notes.github_username }}'
         hnts_github_pat: '{{ v_hermes_notes.github_pat }}'
+        hnts_hermes_codex_base_url: 'https://cliproxy.{{ p_base_domain }}/v1'
       tags:
         - applications
         - hermes_notes
