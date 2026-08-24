@@ -173,13 +173,21 @@ healthy but no account is logged in yet.
   playbook run.
 - **`auth-dir` is set to `/CLIProxyAPI/auths`**, not the default
   `~/.cli-proxy-api`. Upstream's examples mount the credentials into root's
-  home; there is no requirement to, and keeping all three mounts under the
-  app's own directory is a precondition for ever running it as non-root.
+  home; there is no requirement to, and keeping every mount under the app's own
+  directory is what lets the container run as a non-root user.
 - **`config.yaml` is mode `0600`**, not the repo-wide `0644`: it holds both the
   management key and the client API key.
-- **None of the three containers set `user:`**. All three images run as root and
-  manage their own data directories, so the repo's usual
-  `user: '${APP_USER}:${APP_GROUP}'` is deliberately omitted.
+- **All three containers run as the `apps` user**, even though all three images
+  default to root. Two environment variables make that possible and must not be
+  dropped: `MANAGEMENT_STATIC_PATH` (cli-proxy-api), without which the
+  management panel asset cannot be written and `/management.html` returns 404;
+  and `STATIC_DIR` (open-webui), without which it cannot seed its branding
+  assets and logs a permission error per file on every start. `cpa-manager-plus`
+  needs nothing beyond a writable `/data`.
+- **If you ever deployed this stack as root**, files already written into
+  `apps-data/cliproxy/` are root-owned and the non-root containers will fail on
+  them. `chown -R apps:apps` that tree once; `compose_up.yml` only creates
+  directories that do not already exist, so it will not fix ownership for you.
 - **No container publishes a host port.** Everything is reached through Caddy
   over `nginxnetwork`, including the Management API. Keep it that way — the
   management key is the only thing guarding config and credential access.

@@ -64,5 +64,6 @@
     t_app_data_dirs:
       - '{{ p_dirs.apps_data }}/cliproxy/cli-proxy-api/auths'
       - '{{ p_dirs.apps_data }}/cliproxy/cli-proxy-api/plugins'
+      - '{{ p_dirs.apps_data }}/cliproxy/cli-proxy-api/static'
       - '{{ p_dirs.apps_data }}/cliproxy/cpa-manager-plus'
       - '{{ p_dirs.apps_data }}/cliproxy/open-webui'

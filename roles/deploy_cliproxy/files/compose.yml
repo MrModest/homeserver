@@ -6,10 +6,16 @@
 #                │        ^
 #   cpa-manager-plus :18317 (reads CPA's Management API + usage queue)
 #
-# None of these three images run as a non-root user — cli-proxy-api and
+# All three images default to running as root (cli-proxy-api and
 # cpa-manager-plus declare no USER, open-webui defaults its UID/GID build args
-# to 0 — and each expects to own the paths it writes to, so the repo's usual
-# `user: '${APP_USER}:${APP_GROUP}'` is deliberately omitted here.
+# to 0), but none of them require it: every path they write to is either a
+# bind mount we own or redirected here to one. So all three run as the apps
+# user. Two redirections make that work, and removing either puts the
+# container back to needing root:
+#   - MANAGEMENT_STATIC_PATH, or cli-proxy-api tries to mkdir /CLIProxyAPI/static
+#     for the management panel asset and /management.html 404s.
+#   - STATIC_DIR, or open-webui fails to seed its branding assets into
+#     /app/backend/open_webui/static and logs a screenful of errors each boot.
 #
 # Secrets are passed per-service via `environment` rather than a shared
 # `env_file`, so that e.g. Open WebUI never sees the CPA management key.
@@ -19,6 +25,12 @@ services:
     image: eceasy/cli-proxy-api:${CLI_PROXY_API_VERSION}
     container_name: 'cli-proxy-api'
     hostname: 'cli-proxy-api'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      # Where the management panel asset is downloaded to. Defaults to
+      # `static/` beside the config file, i.e. inside the image, which a
+      # non-root user cannot create.
+      MANAGEMENT_STATIC_PATH: '/CLIProxyAPI/static'
     # No published ports. Nothing here is reachable from outside the Docker
     # networks — Caddy fronts :8317 over nginxnetwork. The OAuth callback
     # listener (:1455, only alive while a login is in flight) binds 0.0.0.0
@@ -28,6 +40,8 @@ services:
     # never running.
     volumes:
       - '${APP_DATA_PATH}/cli-proxy-api/config.yaml:/CLIProxyAPI/config.yaml'
+      # Management panel asset, re-downloaded when missing. Cache, not state.
+      - '${APP_DATA_PATH}/cli-proxy-api/static:/CLIProxyAPI/static'
       # The account's OAuth tokens. Losing this means logging in again.
       - '${APP_DATA_PATH}/cli-proxy-api/auths:/CLIProxyAPI/auths'
       - '${APP_DATA_PATH}/cli-proxy-api/plugins:/CLIProxyAPI/plugins'
@@ -40,6 +54,7 @@ services:
     image: seakee/cpa-manager-plus:${CPA_MANAGER_VERSION}
     container_name: 'cpa-manager-plus'
     hostname: 'cpa-manager-plus'
+    user: '${APP_USER}:${APP_GROUP}'
     environment:
       HTTP_ADDR: '0.0.0.0:18317'
       USAGE_DB_PATH: '/data/usage.sqlite'
@@ -72,7 +87,14 @@ services:
     image: ghcr.io/open-webui/open-webui:${OPEN_WEBUI_VERSION}
     container_name: 'open-webui'
     hostname: 'open-webui'
+    user: '${APP_USER}:${APP_GROUP}'
     environment:
+      # Open WebUI re-seeds this directory from its frontend build on every
+      # start and serves /static from it, so it has to be writable. The
+      # default lives inside the image; putting it under the data mount keeps
+      # it writable without a second volume, and lets admin-uploaded branding
+      # (favicon, splash) persist.
+      STATIC_DIR: '/app/backend/data/static'
       # The proxy speaks the OpenAI API, so Open WebUI treats it as OpenAI
       # with a different base URL. Models are whatever the logged-in Codex
       # account exposes.
