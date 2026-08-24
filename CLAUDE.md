@@ -199,3 +199,17 @@ The playbook uses `community.docker.docker_compose_v2` module, which:
 - Shared tasks: `tasks/`
 - Role definitions: `roles/*/`
 - Documentation: `docs/Files Structure.md`
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues at `MrModest/homeserver`, via the `gh` CLI (or the GitHub MCP tools in cloud sessions). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical triage roles, each label string equal to its name. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
