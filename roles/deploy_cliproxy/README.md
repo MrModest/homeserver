@@ -137,34 +137,35 @@ healthy but no account is logged in yet.
 
 ## Notes
 
+- **All three containers run as the `apps` user**, though all three images
+  default to root. Two environment variables are load-bearing for that and must
+  not be dropped: `MANAGEMENT_STATIC_PATH` (cli-proxy-api), without which the
+  management panel asset cannot be written and `/management.html` returns 404;
+  and `STATIC_DIR` (open-webui), without which it cannot seed its branding
+  assets and logs a permission error per file on every start. `cpa-manager-plus`
+  needs nothing beyond a writable `/data`.
+- **Secrets reach each service through `environment`, not a shared `env_file`**,
+  so Open WebUI never receives the CPA management key. Compose still reads
+  `.env` for the `${...}` values.
 - **Open WebUI runs with `ENABLE_PERSISTENT_CONFIG=False`**, so this role stays
   the source of truth for its settings. The trade-off: settings changed in its
   admin UI look like they save but are discarded on restart. Change them here.
 - **CLIProxyAPI's management panel can rewrite `config.yaml`** at runtime. That
   file is templated from this role, so any such change is reverted on the next
   playbook run.
-- **`auth-dir` is set to `/CLIProxyAPI/auths`**, not the default
-  `~/.cli-proxy-api`. Upstream's examples mount the credentials into root's
-  home; there is no requirement to, and keeping every mount under the app's own
-  directory is what lets the container run as a non-root user.
-- **`config.yaml` is mode `0600`**, not the repo-wide `0644`: it holds both the
+- **`auth-dir` is `/CLIProxyAPI/auths`.** Every path the container writes to
+  lives under its own directory, which is what lets it run as a non-root user;
+  the upstream default, `~/.cli-proxy-api`, resolves to root's home.
+- **`config.yaml` is mode `0600`** where the repo uses `0644`: it holds both the
   management key and the client API key.
-- **All three containers run as the `apps` user**, even though all three images
-  default to root. Two environment variables make that possible and must not be
-  dropped: `MANAGEMENT_STATIC_PATH` (cli-proxy-api), without which the
-  management panel asset cannot be written and `/management.html` returns 404;
-  and `STATIC_DIR` (open-webui), without which it cannot seed its branding
-  assets and logs a permission error per file on every start. `cpa-manager-plus`
-  needs nothing beyond a writable `/data`.
-- **If you ever deployed this stack as root**, files already written into
-  `apps-data/cliproxy/` are root-owned and the non-root containers will fail on
-  them. `chown -R apps:apps` that tree once; `compose_up.yml` only creates
-  directories that do not already exist, so it will not fix ownership for you.
-- **No container publishes a host port**, and none needs to: the device-code
+- **No container publishes a host port**, and none needs to — the device-code
   login makes the OAuth callback listener irrelevant. Everything is reached
   through Caddy over `nginxnetwork`, including the Management API. Keep it that
-  way — the management key is the only thing guarding config and credential
+  way: the management key is the only thing guarding config and credential
   access.
 - **Back up `cpa-manager-plus/data.key` together with `usage.sqlite`.** The key
   decrypts the CPA management key stored in the database; without it the panel's
   saved connection cannot be recovered.
+- **The Codex credential is runtime state, not configuration.** CLIProxyAPI
+  refreshes the OAuth token every 15 minutes and rewrites the file in `auths/`,
+  so what protects it is your backup of that dataset.

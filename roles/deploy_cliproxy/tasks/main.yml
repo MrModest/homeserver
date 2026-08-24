@@ -1,8 +1,7 @@
 ---
-# compose_up.yml creates the dataset and the data directories too, but
-# config.yaml has to exist as a *file* before compose runs: Docker creates a
-# missing bind-mount source as a root-owned directory, and CLIProxyAPI would
-# then start with no config at all.
+# The dataset and the config directory have to exist before the config file is
+# written, and the config file before compose runs: Docker creates a missing
+# bind-mount source as an empty root-owned directory.
 - name: Create ZFS dataset for 'cliproxy'
   community.general.zfs:
     name: '{{ p_dirs.apps_data_ds }}/cliproxy'
@@ -19,8 +18,7 @@
   become: true
 
 - name: Upload the CLIProxyAPI config
-  # Holds the management key and the client API key, so it is templated
-  # rather than copied, and kept at 0600 instead of the repo's usual 0644.
+  # Holds the management key and the client API key, hence 0600.
   ansible.builtin.template:
     src: config.yaml.j2
     dest: '{{ p_dirs.apps_data }}/cliproxy/cli-proxy-api/config.yaml'

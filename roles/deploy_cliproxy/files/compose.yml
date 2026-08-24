@@ -6,20 +6,7 @@
 #                │        ^
 #   cpa-manager-plus :18317 (reads CPA's Management API + usage queue)
 #
-# All three images default to running as root (cli-proxy-api and
-# cpa-manager-plus declare no USER, open-webui defaults its UID/GID build args
-# to 0), but none of them require it: every path they write to is either a
-# bind mount we own or redirected here to one. So all three run as the apps
-# user. Two redirections make that work, and removing either puts the
-# container back to needing root:
-#   - MANAGEMENT_STATIC_PATH, or cli-proxy-api tries to mkdir /CLIProxyAPI/static
-#     for the management panel asset and /management.html 404s.
-#   - STATIC_DIR, or open-webui fails to seed its branding assets into
-#     /app/backend/open_webui/static and logs a screenful of errors each boot.
-#
-# Secrets are passed per-service via `environment` rather than a shared
-# `env_file`, so that e.g. Open WebUI never sees the CPA management key.
-# Compose still reads .env for the ${...} values below.
+# See the role's README for operational notes.
 services:
   cli-proxy-api:
     image: eceasy/cli-proxy-api:${CLI_PROXY_API_VERSION}
@@ -27,17 +14,12 @@ services:
     hostname: 'cli-proxy-api'
     user: '${APP_USER}:${APP_GROUP}'
     environment:
-      # Where the management panel asset is downloaded to. Defaults to
-      # `static/` beside the config file, i.e. inside the image, which a
-      # non-root user cannot create.
+      # Download target for the management panel asset. The default sits inside
+      # the image, where a non-root user cannot create it.
       MANAGEMENT_STATIC_PATH: '/CLIProxyAPI/static'
-    # No published ports, and none needed: accounts are added with
-    # `-codex-device-login`, which prints a code to enter on another device and
-    # polls for approval. Only the older `-codex-login` flow wants a callback
-    # on localhost:1455.
     volumes:
       - '${APP_DATA_PATH}/cli-proxy-api/config.yaml:/CLIProxyAPI/config.yaml'
-      # Management panel asset, re-downloaded when missing. Cache, not state.
+      # Management panel asset. Cache, not state — re-downloaded when missing.
       - '${APP_DATA_PATH}/cli-proxy-api/static:/CLIProxyAPI/static'
       # The account's OAuth tokens. Losing this means logging in again.
       - '${APP_DATA_PATH}/cli-proxy-api/auths:/CLIProxyAPI/auths'
@@ -55,14 +37,12 @@ services:
     environment:
       HTTP_ADDR: '0.0.0.0:18317'
       USAGE_DB_PATH: '/data/usage.sqlite'
-      # Encrypts the CPA management key stored in usage.sqlite. Back it up
-      # together with the database or the stored connection is unrecoverable.
+      # Encrypts the CPA management key held in usage.sqlite.
       CPA_MANAGER_DATA_KEY_PATH: '/data/data.key'
       CPA_MANAGER_ADMIN_KEY: '${CPA_MANAGER_ADMIN_KEY}'
       CPA_UPSTREAM_URL: '${CPA_UPSTREAM_URL}'
       CPA_MANAGEMENT_KEY: '${CPA_MANAGEMENT_KEY}'
-      # auto: RESP pub/sub first, HTTP usage queue as fallback. Both reach CPA
-      # on 8317 over cpa-net, so no reverse proxy is in the way.
+      # RESP pub/sub first, HTTP usage queue as fallback.
       USAGE_COLLECTOR_MODE: 'auto'
       TZ: '${TIMEZONE}'
     volumes:
@@ -86,25 +66,15 @@ services:
     hostname: 'open-webui'
     user: '${APP_USER}:${APP_GROUP}'
     environment:
-      # Open WebUI re-seeds this directory from its frontend build on every
-      # start and serves /static from it, so it has to be writable. The
-      # default lives inside the image; putting it under the data mount keeps
-      # it writable without a second volume, and lets admin-uploaded branding
-      # (favicon, splash) persist.
+      # Re-seeded from the frontend build on every start and served as /static,
+      # so it has to be writable. The default sits inside the image.
       STATIC_DIR: '/app/backend/data/static'
-      # The proxy speaks the OpenAI API, so Open WebUI treats it as OpenAI
-      # with a different base URL. Models are whatever the logged-in Codex
-      # account exposes.
       OPENAI_API_BASE_URL: 'http://cli-proxy-api:8317/v1'
       OPENAI_API_KEY: '${OPEN_WEBUI_API_KEY}'
       ENABLE_OLLAMA_API: 'False'
-      # Open WebUI normally persists these settings into its database on first
-      # start and ignores the environment from then on. Turning that off keeps
-      # this role the source of truth — the trade-off is that changing them in
-      # the admin UI no longer sticks.
+      # Read settings from the environment on every start, not from the
+      # database written on the first one.
       ENABLE_PERSISTENT_CONFIG: 'False'
-      # Open once, so the first visitor can claim the admin account; close it
-      # from the role afterwards.
       ENABLE_SIGNUP: '${OPEN_WEBUI_ENABLE_SIGNUP}'
       WEBUI_URL: '${OPEN_WEBUI_URL}'
       WEBUI_SECRET_KEY: '${OPEN_WEBUI_SECRET_KEY}'
@@ -119,8 +89,8 @@ services:
       - nginxnetwork
 
 networks:
-  # Private lane for open-webui and cpa-manager-plus to reach cli-proxy-api.
+  # Carries open-webui and cpa-manager-plus to cli-proxy-api.
   cpa-net:
-  # Caddy publishes all three on their subdomains.
+  # Caddy serves all three on their subdomains.
   nginxnetwork:
     external: true

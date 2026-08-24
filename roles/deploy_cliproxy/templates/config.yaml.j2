@@ -1,36 +1,25 @@
-# Managed by Ansible (roles/deploy_cliproxy). CLIProxyAPI's own management
-# panel can rewrite this file at runtime; anything it changes is overwritten
-# on the next playbook run, so make lasting changes here.
+# Managed by Ansible (roles/deploy_cliproxy). The management panel can rewrite
+# this file at runtime; the next playbook run overwrites it again.
 
-# Empty binds all interfaces inside the container. The port is never published
-# on the host — Caddy and the sibling containers reach it over the compose
-# networks.
+# Empty binds every interface inside the container.
 host: ''
 port: 8317
 
 remote-management:
   # CPAMP calls the Management API from its own container, which is not
-  # localhost as far as CPA is concerned. Every management request still needs
-  # secret-key, whatever this is set to.
+  # localhost as far as CPA is concerned. secret-key is required either way.
   allow-remote: true
   secret-key: '{{ cpa_management_key }}'
 
-# OAuth credentials for every logged-in account land here. This is the one
-# directory that must survive a container rebuild — see the auths volume.
-# Set explicitly rather than left at the default '~/.cli-proxy-api', which
-# resolves to /root/.cli-proxy-api and ties the credentials to root's home
-# for no reason. Keeping them under the app's own directory also leaves the
-# door open to running this container as a non-root user later.
 auth-dir: '/CLIProxyAPI/auths'
 
-# Keys accepted from API clients. Open WebUI uses this one too.
+# Keys accepted from API clients, Open WebUI included.
 api-keys:
   - '{{ cpa_api_key }}'
 
-# CPAMP's request monitoring consumes CPA's usage queue; with this off its
-# dashboard stays empty.
+# Feeds CPAMP's request monitoring.
 usage-statistics-enabled: true
 
 debug: false
-# Logs stay on stdout so Docker's json-file driver hands them to Promtail.
+# Logs stay on stdout for the json-file driver to hand to Promtail.
 logging-to-file: false

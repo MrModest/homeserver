@@ -4,23 +4,18 @@ cpa_cliproxy_version: 'v7.2.141'
 cpa_manager_version: 'v1.12.3'
 cpa_open_webui_version: 'v0.11.0'
 
-# Public hostname Caddy serves Open WebUI on. Only used to set WEBUI_URL,
-# which Open WebUI puts into the links it generates.
+# Public hostname Caddy serves Open WebUI on. Sets WEBUI_URL.
 cpa_open_webui_host: placeholder
 
-# CLIProxyAPI Management API key. CPAMP authenticates with this to read and
-# write CPA's config, credentials and usage queue.
+# CLIProxyAPI Management API key. CPAMP authenticates with it.
 cpa_management_key: placeholder
-# Client key for the OpenAI/Gemini/Claude-compatible API. Anything calling the
-# proxy (Open WebUI, Codex CLI, a coding agent) sends this as its API key.
+# Client key for the proxy's API. Open WebUI and any coding CLI send it.
 cpa_api_key: placeholder
 # Logs into the CPAMP panel.
 cpa_manager_admin_key: placeholder
 # Signs Open WebUI's JWTs and encrypts its secrets at rest.
 cpa_open_webui_secret_key: placeholder
 
-# Open WebUI has no users on a fresh deploy and the first account to sign up
-# becomes the admin, so signup starts open. Set this to false in main.yml once
-# that account exists and re-run — with ENABLE_PERSISTENT_CONFIG off the
-# environment is authoritative, so this cannot be re-opened from the admin UI.
+# The first account to sign up becomes the admin. Set false in main.yml once
+# that account exists.
 cpa_open_webui_enable_signup: true
