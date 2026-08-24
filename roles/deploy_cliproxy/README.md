@@ -165,9 +165,14 @@ breakdowns separable. Add an entry per tool to `v_cliproxy.api_keys` and re-run:
 v_cliproxy:
   api_keys:
     open-webui: 'owui-...'
+    hermes: 'hermes-...'
+    pi-coding-agent: 'pi-...'
     codex-cli: 'codex-...'
-    claude-code: 'cc-...'
 ```
+
+A key is also the revocation unit: dropping an entry and re-running cuts off that
+tool alone. Split by trust boundary rather than by tool name where they differ —
+the same agent on two machines wants two keys.
 
 Each renders into `config.yaml` with its name as a trailing comment, so the file
 stays readable. Give the keys recognisable prefixes: CPAMP identifies a key by
