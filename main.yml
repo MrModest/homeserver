@@ -313,6 +313,9 @@
         cpa_api_key: '{{ v_cliproxy.api_key }}'
         cpa_manager_admin_key: '{{ v_cliproxy.manager_admin_key }}'
         cpa_open_webui_secret_key: '{{ v_cliproxy.open_webui_secret_key }}'
+        # Optional: seeds the Codex credential on first deploy. Leave the vault
+        # key out entirely to log in interactively instead.
+        cpa_codex_auth_json: "{{ v_cliproxy.codex_auth_json | default('') }}"
       tags:
         - applications
         - cliproxy

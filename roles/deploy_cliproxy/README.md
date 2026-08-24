@@ -98,8 +98,9 @@ curl -X POST -F 'file=@codex.json' \
 ```
 
 …or let this role place it, by putting the file's contents in the vault as
-`v_cliproxy.codex_auth_json` and passing it as `cpa_codex_auth_json` in
-`main.yml`. The task writes it with `force: false`: CLIProxyAPI rewrites this
+`v_cliproxy.codex_auth_json`. `main.yml` already passes that through, defaulted
+to empty, so omitting the vault key simply skips the seeding task. The task
+writes the file with `force: false`: CLIProxyAPI rewrites this
 file every time it refreshes the OAuth token, so the vault copy is a first-boot
 seed, never a desired state. To re-seed, delete the file on the server first.
 
