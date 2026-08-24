@@ -171,6 +171,10 @@ healthy but no account is logged in yet.
 - **CLIProxyAPI's management panel can rewrite `config.yaml`** at runtime. That
   file is templated from this role, so any such change is reverted on the next
   playbook run.
+- **`auth-dir` is set to `/CLIProxyAPI/auths`**, not the default
+  `~/.cli-proxy-api`. Upstream's examples mount the credentials into root's
+  home; there is no requirement to, and keeping all three mounts under the
+  app's own directory is a precondition for ever running it as non-root.
 - **`config.yaml` is mode `0600`**, not the repo-wide `0644`: it holds both the
   management key and the client API key.
 - **None of the three containers set `user:`**. All three images run as root and

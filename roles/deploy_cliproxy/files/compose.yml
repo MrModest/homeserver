@@ -29,7 +29,7 @@ services:
     volumes:
       - '${APP_DATA_PATH}/cli-proxy-api/config.yaml:/CLIProxyAPI/config.yaml'
       # The account's OAuth tokens. Losing this means logging in again.
-      - '${APP_DATA_PATH}/cli-proxy-api/auths:/root/.cli-proxy-api'
+      - '${APP_DATA_PATH}/cli-proxy-api/auths:/CLIProxyAPI/auths'
       - '${APP_DATA_PATH}/cli-proxy-api/plugins:/CLIProxyAPI/plugins'
     restart: unless-stopped
     networks:

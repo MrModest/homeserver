@@ -17,7 +17,11 @@ remote-management:
 
 # OAuth credentials for every logged-in account land here. This is the one
 # directory that must survive a container rebuild — see the auths volume.
-auth-dir: '/root/.cli-proxy-api'
+# Set explicitly rather than left at the default '~/.cli-proxy-api', which
+# resolves to /root/.cli-proxy-api and ties the credentials to root's home
+# for no reason. Keeping them under the app's own directory also leaves the
+# door open to running this container as a non-root user later.
+auth-dir: '/CLIProxyAPI/auths'
 
 # Keys accepted from API clients. Open WebUI uses this one too.
 api-keys:
