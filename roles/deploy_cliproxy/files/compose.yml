@@ -75,9 +75,10 @@ services:
       OPENAI_API_BASE_URL: 'http://cli-proxy-api:8317/v1'
       OPENAI_API_KEY: '${OPEN_WEBUI_API_KEY}'
       ENABLE_OLLAMA_API: 'False'
-      # Read settings from the environment on every start, not from the
-      # database written on the first one.
-      ENABLE_PERSISTENT_CONFIG: 'False'
+      # Leave this on. It governs all ~394 config keys at once, not just the
+      # connection below, so turning it off discards every admin-UI setting on
+      # restart to keep four of them under Ansible's control.
+      ENABLE_PERSISTENT_CONFIG: 'True'
       ENABLE_SIGNUP: '${OPEN_WEBUI_ENABLE_SIGNUP}'
       WEBUI_URL: '${OPEN_WEBUI_URL}'
       WEBUI_SECRET_KEY: '${OPEN_WEBUI_SECRET_KEY}'
