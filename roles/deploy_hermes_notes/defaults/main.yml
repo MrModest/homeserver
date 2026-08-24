@@ -28,6 +28,20 @@ hnts_hatchdoor_mcp_max_base64_bytes: '{{ hnts_attachment_max_bytes }}'
 # Cap for multipart uploads (web UI + file-relay); upstream default is 10 MiB.
 hnts_hatchdoor_max_attachment_bytes: '{{ hnts_attachment_max_bytes }}'
 
+# --- LLM provider (CLIProxyAPI) ---
+# Base URL for the `openai-codex` provider, which Hermes reads from its process
+# environment. It otherwise defaults to https://chatgpt.com/backend-api/codex,
+# so a proxy key would be sent to ChatGPT itself and answered with a 401.
+# Hermes appends `/responses`, so this ends at the proxy's /v1.
+#
+# The credential itself cannot be set here: `openai-codex` declares no API-key
+# environment variable, so it is added once with `hermes auth` (Add a credential
+# -> openai-codex) and lives in auth.json under the bind-mounted /opt/data.
+# Deliberately absent: OPENAI_API_KEY. That variable belongs to the separate
+# `openai-api` provider and its mere presence registers a second credential that
+# competes with the Codex one.
+hnts_hermes_codex_base_url: placeholder
+
 hnts_relay_upload_url: http://hatchdoor:42824/api/attachment
 hnts_relay_target_dir: 98_Attachments
 
