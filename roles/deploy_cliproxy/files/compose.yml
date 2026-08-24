@@ -19,13 +19,13 @@ services:
     image: eceasy/cli-proxy-api:${CLI_PROXY_API_VERSION}
     container_name: 'cli-proxy-api'
     hostname: 'cli-proxy-api'
-    ports:
-      # OAuth callback for the login flows. The redirect always targets
-      # localhost:1455 on whichever machine runs the browser, so log in over
-      # an SSH tunnel: ssh -L 1455:localhost:1455 <server>. Only Codex's port
-      # is published; other providers listen on their own (Gemini 8085, AI
-      # Studio 54545, Antigravity 51121, Claude 11451).
-      - '1455:1455'
+    # No published ports. Nothing here is reachable from outside the Docker
+    # networks — Caddy fronts :8317 over nginxnetwork. The OAuth callback
+    # listener (:1455, only alive while a login is in flight) binds 0.0.0.0
+    # *inside* the container, so the host reaches it on the container's own
+    # bridge address; see README for the tunnel. Publishing it would put a
+    # permanent 0.0.0.0 binding on the host for a listener that is almost
+    # never running.
     volumes:
       - '${APP_DATA_PATH}/cli-proxy-api/config.yaml:/CLIProxyAPI/config.yaml'
       # The account's OAuth tokens. Losing this means logging in again.

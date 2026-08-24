@@ -40,6 +40,8 @@ domains in `vars/apps.yml`.
 | `cpa_manager_admin_key` | placeholder | Logs into the CPAMP panel |
 | `cpa_open_webui_secret_key` | placeholder | Signs Open WebUI's JWTs |
 | `cpa_open_webui_enable_signup` | `true` | Leave open until the admin account exists, then set to `false` |
+| `cpa_codex_auth_json` | `''` | Optional: contents of a Codex credential JSON, seeded into `auths/` on first deploy |
+| `cpa_codex_auth_name` | `codex.json` | Filename for the seeded credential |
 
 The four secrets come from `v_cliproxy.*` in `vars/vault.yml`:
 
@@ -59,16 +61,59 @@ Generate them with `openssl rand -hex 32` (any opaque string works).
 ansible-playbook main.yml --tags cliproxy
 ```
 
-## Log in to the ChatGPT account (one-time, manual)
+## Log in to the ChatGPT account (one-time)
 
 Nothing works until an account is logged in — the proxy starts fine with zero
-credentials and simply serves an empty model list. The OAuth redirect always
-targets `localhost:1455` on whatever machine runs the browser, so tunnel that
-port to the server and log in from your own laptop:
+credentials and simply serves an empty model list.
+
+OpenAI's OAuth client for Codex (`app_EMoamEEZ73f0CkXaXp7hrann`) has exactly one
+registered redirect URI, `http://localhost:1455/auth/callback`, and it cannot be
+changed. The management panel's `?is_webui=true` flow does not help here: it
+returns the same `redirect_uri`. So the browser that completes the login must be
+able to reach *something* on its own `localhost:1455`. Two ways to arrange that
+without publishing a port on the server.
+
+### A. Seed a credential from elsewhere (unattended)
+
+Log in on a machine where the browser and the callback listener are the same
+host — your laptop, using the Codex CLI or a throwaway local CLIProxyAPI — then
+move the resulting credential JSON to the server. No interactive step on the
+server at all.
+
+Either drop it straight into the bind mount, where CLIProxyAPI's directory
+watcher picks it up within seconds, no restart needed:
 
 ```bash
-# On your laptop — leave this running for the whole login
-ssh -L 1455:localhost:1455 homessh@192.168.178.34
+scp codex.json homessh@192.168.178.34:/tmp/
+sudo install -o apps -g apps -m 0600 /tmp/codex.json \
+  /mnt/pools/fast/apps-data/cliproxy/cli-proxy-api/auths/
+```
+
+…or upload it through the Management API, which registers it immediately:
+
+```bash
+curl -X POST -F 'file=@codex.json' \
+  -H "Authorization: Bearer $CPA_MANAGEMENT_KEY" \
+  https://cliproxy.<domain>/v0/management/auth-files
+```
+
+…or let this role place it, by putting the file's contents in the vault as
+`v_cliproxy.codex_auth_json` and passing it as `cpa_codex_auth_json` in
+`main.yml`. The task writes it with `force: false`: CLIProxyAPI rewrites this
+file every time it refreshes the OAuth token, so the vault copy is a first-boot
+seed, never a desired state. To re-seed, delete the file on the server first.
+
+### B. Log in interactively, still with no published port
+
+The callback listener binds `0.0.0.0:1455` *inside the container* and only
+exists while a login is in flight. The host can reach it directly on the
+container's bridge address, so tunnel to that rather than to a published port:
+
+```bash
+# On your laptop — leave running for the whole login
+CPA_IP=$(ssh homessh@192.168.178.34 \
+  "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' cli-proxy-api | awk '{print \$1}'")
+ssh -L 1455:$CPA_IP:1455 homessh@192.168.178.34
 ```
 
 Then, in that SSH session:
@@ -78,15 +123,17 @@ cd /mnt/pools/fast/docker/compose-files/cliproxy
 docker compose exec cli-proxy-api /CLIProxyAPI/CLIProxyAPI -no-browser --codex-login
 ```
 
-Open the printed URL in your laptop's browser, complete the ChatGPT login, and
-the redirect reaches the container through the tunnel. The credentials are
-written to `auths/`, which is bind-mounted, so this survives restarts and image
-upgrades. Repeat the command to add more accounts — CLIProxyAPI load-balances
-across them.
+Open the printed URL in your laptop's browser and finish the ChatGPT login; the
+redirect to `localhost:1455` follows the tunnel into the container. The
+container's bridge IP changes when the container is recreated, hence looking it
+up each time.
+
+Either way the credential lands in `auths/`, which is bind-mounted, so it
+survives restarts and image upgrades. Add more accounts the same way and
+CLIProxyAPI load-balances across them.
 
 Other providers use their own callback ports (Gemini 8085, AI Studio 54545,
-Antigravity 51121, Claude 11451); publish those in `compose.yml` first if you
-ever add those accounts.
+Antigravity 51121, Claude 11451) and would need the same treatment.
 
 ## Verify
 
@@ -129,6 +176,9 @@ healthy but no account is logged in yet.
 - **None of the three containers set `user:`**. All three images run as root and
   manage their own data directories, so the repo's usual
   `user: '${APP_USER}:${APP_GROUP}'` is deliberately omitted.
+- **No container publishes a host port.** Everything is reached through Caddy
+  over `nginxnetwork`, including the Management API. Keep it that way — the
+  management key is the only thing guarding config and credential access.
 - **Back up `cpa-manager-plus/data.key` together with `usage.sqlite`.** The key
   decrypts the CPA management key stored in the database; without it the panel's
   saved connection cannot be recovered.
