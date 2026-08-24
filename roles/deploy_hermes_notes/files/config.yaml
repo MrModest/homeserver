@@ -3,6 +3,16 @@ model:
   default: gpt-5.6-terra
 agent:
   verify_on_stop: false
+  # Hard suppression, applied last, overriding platform_toolsets and the
+  # recovery paths that would otherwise re-add a toolset. Hermes reads this key
+  # only under `agent:` -- a top-level `toolsets_disabled:` is silently ignored.
+  # `file` and `terminal` staying off is what the file-relay MCP exists to work
+  # around; see docs/superpowers/specs/2026-07-20-deploy-hermes-notes-design.md.
+  disabled_toolsets:
+    - terminal
+    - file
+    - browser
+    - code_execution
 display:
   tool_preview_length: 0
   tool_progress: all
@@ -32,11 +42,6 @@ mcp_servers:
     tools:
       resources: false
       prompts: false
-toolsets_disabled:
-  - terminal
-  - file
-  - browser
-  - code_execution
 platform_toolsets:
   telegram:
     - hatchdoor
