@@ -170,6 +170,12 @@ v_cliproxy:
     codex-cli: 'codex-...'
 ```
 
+Point clients at the protocol the upstream actually speaks. In Hermes, choose
+the `openai-codex` provider rather than `openai-api`, even when authenticating
+with one of these keys instead of OAuth — both read `OPENAI_API_KEY` and
+`OPENAI_BASE_URL`, but `openai-api` returns the proxy's model list verbatim and
+misses the Codex catalog.
+
 A key is also the revocation unit: dropping an entry and re-running cuts off that
 tool alone. Split by trust boundary rather than by tool name where they differ —
 the same agent on two machines wants two keys.
