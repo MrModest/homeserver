@@ -130,3 +130,16 @@ g_services:
   - slug: hatchdoor
     hostname: hatchdoor
     port: 42824
+  - slug: cliproxy
+    hostname: cli-proxy-api
+    port: 8317
+    timeout: 0     # no timeout — a model response can take minutes to finish
+    flush: true    # disable buffering — the API streams SSE
+  - slug: cpamp
+    hostname: cpa-manager-plus
+    port: 18317
+  - slug: chat
+    hostname: open-webui
+    port: 8080
+    timeout: 0     # no timeout — chat completions stream for as long as they need
+    flush: true    # disable buffering — tokens should appear as they arrive

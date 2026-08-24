@@ -1,0 +1,107 @@
+# Codex subscription -> local OpenAI-compatible API, with a management panel
+# and a chat UI on top:
+#
+#   open-webui ──┐
+#   coding CLIs ─┼─> cli-proxy-api :8317 ──> ChatGPT/Codex (OAuth, no API key)
+#                │        ^
+#   cpa-manager-plus :18317 (reads CPA's Management API + usage queue)
+#
+# None of these three images run as a non-root user — cli-proxy-api and
+# cpa-manager-plus declare no USER, open-webui defaults its UID/GID build args
+# to 0 — and each expects to own the paths it writes to, so the repo's usual
+# `user: '${APP_USER}:${APP_GROUP}'` is deliberately omitted here.
+#
+# Secrets are passed per-service via `environment` rather than a shared
+# `env_file`, so that e.g. Open WebUI never sees the CPA management key.
+# Compose still reads .env for the ${...} values below.
+services:
+  cli-proxy-api:
+    image: eceasy/cli-proxy-api:${CLI_PROXY_API_VERSION}
+    container_name: 'cli-proxy-api'
+    hostname: 'cli-proxy-api'
+    ports:
+      # OAuth callback for the login flows. The redirect always targets
+      # localhost:1455 on whichever machine runs the browser, so log in over
+      # an SSH tunnel: ssh -L 1455:localhost:1455 <server>. Only Codex's port
+      # is published; other providers listen on their own (Gemini 8085, AI
+      # Studio 54545, Antigravity 51121, Claude 11451).
+      - '1455:1455'
+    volumes:
+      - '${APP_DATA_PATH}/cli-proxy-api/config.yaml:/CLIProxyAPI/config.yaml'
+      # The account's OAuth tokens. Losing this means logging in again.
+      - '${APP_DATA_PATH}/cli-proxy-api/auths:/root/.cli-proxy-api'
+      - '${APP_DATA_PATH}/cli-proxy-api/plugins:/CLIProxyAPI/plugins'
+    restart: unless-stopped
+    networks:
+      - cpa-net
+      - nginxnetwork
+
+  cpa-manager-plus:
+    image: seakee/cpa-manager-plus:${CPA_MANAGER_VERSION}
+    container_name: 'cpa-manager-plus'
+    hostname: 'cpa-manager-plus'
+    environment:
+      HTTP_ADDR: '0.0.0.0:18317'
+      USAGE_DB_PATH: '/data/usage.sqlite'
+      # Encrypts the CPA management key stored in usage.sqlite. Back it up
+      # together with the database or the stored connection is unrecoverable.
+      CPA_MANAGER_DATA_KEY_PATH: '/data/data.key'
+      CPA_MANAGER_ADMIN_KEY: '${CPA_MANAGER_ADMIN_KEY}'
+      CPA_UPSTREAM_URL: '${CPA_UPSTREAM_URL}'
+      CPA_MANAGEMENT_KEY: '${CPA_MANAGEMENT_KEY}'
+      # auto: RESP pub/sub first, HTTP usage queue as fallback. Both reach CPA
+      # on 8317 over cpa-net, so no reverse proxy is in the way.
+      USAGE_COLLECTOR_MODE: 'auto'
+      TZ: '${TIMEZONE}'
+    volumes:
+      - '${APP_DATA_PATH}/cpa-manager-plus:/data'
+    restart: unless-stopped
+    depends_on:
+      - cli-proxy-api
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:18317/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - cpa-net
+      - nginxnetwork
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:${OPEN_WEBUI_VERSION}
+    container_name: 'open-webui'
+    hostname: 'open-webui'
+    environment:
+      # The proxy speaks the OpenAI API, so Open WebUI treats it as OpenAI
+      # with a different base URL. Models are whatever the logged-in Codex
+      # account exposes.
+      OPENAI_API_BASE_URL: 'http://cli-proxy-api:8317/v1'
+      OPENAI_API_KEY: '${OPEN_WEBUI_API_KEY}'
+      ENABLE_OLLAMA_API: 'False'
+      # Open WebUI normally persists these settings into its database on first
+      # start and ignores the environment from then on. Turning that off keeps
+      # this role the source of truth — the trade-off is that changing them in
+      # the admin UI no longer sticks.
+      ENABLE_PERSISTENT_CONFIG: 'False'
+      # Open once, so the first visitor can claim the admin account; close it
+      # from the role afterwards.
+      ENABLE_SIGNUP: '${OPEN_WEBUI_ENABLE_SIGNUP}'
+      WEBUI_URL: '${OPEN_WEBUI_URL}'
+      WEBUI_SECRET_KEY: '${OPEN_WEBUI_SECRET_KEY}'
+      TZ: '${TIMEZONE}'
+    volumes:
+      - '${APP_DATA_PATH}/open-webui:/app/backend/data'
+    restart: unless-stopped
+    depends_on:
+      - cli-proxy-api
+    networks:
+      - cpa-net
+      - nginxnetwork
+
+networks:
+  # Private lane for open-webui and cpa-manager-plus to reach cli-proxy-api.
+  cpa-net:
+  # Caddy publishes all three on their subdomains.
+  nginxnetwork:
+    external: true
