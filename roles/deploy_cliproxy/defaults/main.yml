@@ -19,12 +19,13 @@ cpa_manager_admin_key: placeholder
 # Signs Open WebUI's JWTs and encrypts its secrets at rest.
 cpa_open_webui_secret_key: placeholder
 
-# Optional: raw contents of a Codex credential JSON, to seed the account
-# without any interactive login on the server. Written into auths/ only when
-# that file does not already exist, so CLIProxyAPI's own token refreshes are
-# never clobbered by a stale copy from the vault. Leave empty to log in
-# interactively instead — see README.
-cpa_codex_auth_json: ''
+# Optional: path on the machine running Ansible to a Codex credential JSON,
+# used to seed the account without an interactive login on the server. Deliberately
+# a path to a live file rather than a vaulted copy of its contents: CLIProxyAPI
+# refreshes the OAuth token every 15 minutes and rewrites the file, so any stored
+# copy is stale almost immediately. Written only when the destination does not
+# already exist. Leave empty to log in interactively — see README.
+cpa_codex_auth_src: ''
 cpa_codex_auth_name: 'codex.json'
 
 # Open WebUI has no users on a fresh deploy and the first account to sign up

@@ -40,7 +40,7 @@ domains in `vars/apps.yml`.
 | `cpa_manager_admin_key` | placeholder | Logs into the CPAMP panel |
 | `cpa_open_webui_secret_key` | placeholder | Signs Open WebUI's JWTs |
 | `cpa_open_webui_enable_signup` | `true` | Leave open until the admin account exists, then set to `false` |
-| `cpa_codex_auth_json` | `''` | Optional: contents of a Codex credential JSON, seeded into `auths/` on first deploy |
+| `cpa_codex_auth_src` | `''` | Optional: path (on the Ansible control machine) to a Codex credential JSON, seeded into `auths/` on first deploy |
 | `cpa_codex_auth_name` | `codex.json` | Filename for the seeded credential |
 
 The four secrets come from `v_cliproxy.*` in `vars/vault.yml`:
@@ -97,12 +97,20 @@ curl -X POST -F 'file=@codex.json' \
   https://cliproxy.<domain>/v0/management/auth-files
 ```
 
-…or let this role place it, by putting the file's contents in the vault as
-`v_cliproxy.codex_auth_json`. `main.yml` already passes that through, defaulted
-to empty, so omitting the vault key simply skips the seeding task. The task
-writes the file with `force: false`: CLIProxyAPI rewrites this
-file every time it refreshes the OAuth token, so the vault copy is a first-boot
-seed, never a desired state. To re-seed, delete the file on the server first.
+…or let this role place it, by pointing it at the file on the machine you run
+Ansible from:
+
+```bash
+ansible-playbook main.yml --tags cliproxy -e cpa_codex_auth_src=~/.codex/auth.json
+```
+
+The task writes it with `force: false`, and the file is deliberately referenced
+by path rather than stored in the vault. CLIProxyAPI refreshes the OAuth token
+every 15 minutes and rewrites the file, so a vaulted copy would be stale almost
+immediately — and if the provider rotates refresh tokens, invalid rather than
+merely old. Treat the credential as runtime state, not configuration: it lives
+in `auths/`, and the thing that protects it is your backup of that dataset, not
+`vault.yml`. To re-seed, delete the file on the server first.
 
 ### B. Log in interactively, still with no published port
 

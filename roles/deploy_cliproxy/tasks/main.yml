@@ -39,15 +39,15 @@
     group: '{{ p_apps_user.group }}'
     mode: '{{ p_default_permissions.directory }}'
   become: true
-  when: cpa_codex_auth_json | length > 0
+  when: cpa_codex_auth_src | length > 0
 
 - name: Seed the Codex credential
-  # force: false is the whole point — CLIProxyAPI rewrites this file as it
-  # refreshes the OAuth token, so a copy from the vault is a first-boot seed,
-  # never a desired state. Overwriting it on every run would roll the live
-  # token back to whatever was captured at seeding time.
+  # force: false is the whole point — CLIProxyAPI refreshes the OAuth token
+  # every 15 minutes and rewrites this file, so the source is a first-boot
+  # seed, never a desired state. Overwriting it on every run would roll the
+  # live token back to whatever was captured at seeding time.
   ansible.builtin.copy:
-    content: '{{ cpa_codex_auth_json }}'
+    src: '{{ cpa_codex_auth_src }}'
     dest: '{{ p_dirs.apps_data }}/cliproxy/cli-proxy-api/auths/{{ cpa_codex_auth_name }}'
     owner: '{{ p_apps_user.user }}'
     group: '{{ p_apps_user.group }}'
@@ -55,7 +55,7 @@
     force: false
   become: true
   no_log: true
-  when: cpa_codex_auth_json | length > 0
+  when: cpa_codex_auth_src | length > 0
 
 - name: Start 'cliproxy'
   ansible.builtin.import_tasks: tasks/compose_up.yml
