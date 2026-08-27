@@ -1,16 +1,47 @@
+# Alloy is the only writer into Loki and Prometheus: it tails logs, scrapes
+# every exporter, and forwards both. Prometheus scrapes only itself and Alloy,
+# so that an Alloy outage is still visible as a failed target.
+#
 # More info:
+# - https://grafana.com/docs/alloy/latest/
 # - https://github.com/grafana/loki/blob/main/production/docker-compose.yaml
-# - https://freedium.cfd/https://pramodshehan.medium.com/containers-metrics-in-prometheus-and-grafana-389555499eb8
-# - https://stackoverflow.com/a/76919356/7422280
 
 services:
   grafana:
     image: 'grafana/grafana:${GRAFANA_VERSION}'
     container_name: grafana
-    user: ${APP_USER}
+    user: '${APP_USER}:${APP_GROUP}'
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      # Currently a no-op: on CGO-free builds Grafana silently fails to apply
+      # it and SQLite stays in rollback-journal mode (grafana/grafana#127893,
+      # still open). Kept so it takes effect once that is fixed. Verify with
+      # PRAGMA journal_mode, not by trusting the setting.
+      # _SYNC installs before Grafana starts, so dashboards never load against
+      # a missing datasource. GF_INSTALL_PLUGINS is deprecated and silently
+      # does nothing unless GF_INSTALL_PLUGINS_FORCE is also set.
+      GF_PLUGINS_PREINSTALL_SYNC: '${GRAFANA_PLUGINS}'
+      GF_DATABASE_WAL: 'true'
+      # Defaults to true even on sqlite3. It pushes leases and coordination
+      # through the database for the benefit of multi-instance deployments;
+      # this is a single instance, so that write traffic buys nothing.
+      GF_DATABASE_HIGH_AVAILABILITY: 'false'
+      # Defaults to 0, so a read that meets a locked database fails outright
+      # rather than retrying. That is why auth 500s instead of waiting.
+      GF_DATABASE_QUERY_RETRIES: '3'
+      # Defaults to 0, meaning an unbounded pool. SQLite allows exactly one
+      # writer even in WAL mode, so an unbounded pool just multiplies the
+      # number of goroutines contending for that one write lock. 4 is the
+      # floor, because migrations need that many.
+      GF_DATABASE_MAX_OPEN_CONN: '4'
+      # 13.0 migrates dashboards and folders into unified storage. On SQLite
+      # that migration can fail with "database is locked"; staging through a
+      # Parquet file separates the read and write phases. Grafana falls back to
+      # this on its own, but this box has already proven it contends, so force
+      # it. Safe to drop once the migration has completed.
+      GF_UNIFIED_STORAGE_MIGRATION_PARQUET_BUFFER: 'true'
     volumes:
       - '${APP_DATA}/grafana/data:/var/lib/grafana'
     healthcheck:
@@ -22,7 +53,7 @@ services:
   loki:
     image: grafana/loki:${LOKI_VERSION}
     container_name: loki
-    user: loki
+    user: '${APP_USER}:${APP_GROUP}'
     restart: unless-stopped
     env_file:
       - .env
@@ -30,31 +61,36 @@ services:
       - ${APP_DATA}/loki/config/loki-config.yaml:/etc/loki/loki-config.yaml
       - ${APP_DATA}/loki/data:/data/loki
     command: -config.file=/etc/loki/loki-config.yaml
-    healthcheck:
-      test: wget --quiet --tries=1 --output-document=- http://localhost:3100/ready | grep -q -w ready || exit 1
-      start_period: 20s
-      interval: 10s
-      timeout: 1s
-      retries: 12  # try for 2 minutes
-  promtail:
-    image: grafana/promtail:${PROMTAIL_VERSION}
-    container_name: promtail
+    # No healthcheck: the image is distroless as of Loki 3.5.8, so it has no
+    # shell and no wget for a healthcheck command to use.
+  alloy:
+    image: grafana/alloy:${ALLOY_VERSION}
+    container_name: alloy
+    # Root. Reading the Docker socket requires the docker group, which is
+    # root-equivalent in practice, so the non-root variant bought nothing but
+    # GID plumbing. A socket proxy is the change that would actually help here.
+    user: '0'  # root
     restart: unless-stopped
-    volumes:
-      - ${APP_DATA}/promtail/config/promtail.yaml:/etc/promtail/promtail.yaml
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ${DOCKER_ROOT_DIR}/containers:/var/lib/docker/containers:ro
-      - /var/log:/var/log:ro
-      - ${APPS_DATA_ROOT}:/apps-data:ro
-    command: -config.file=/etc/promtail/promtail.yaml
     env_file:
       - .env
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+    volumes:
+      - ${APP_DATA}/alloy/config/config.alloy:/etc/alloy/config.alloy:ro
+      - ${APP_DATA}/alloy/data:/var/lib/alloy/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/log:/var/log:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - loki
   prometheus:
     image: prom/prometheus:${PROMETHEUS_VERSION}
     container_name: prometheus
-    user: '0' #root
+    user: '${APP_USER}:${APP_GROUP}'
     restart: unless-stopped
     env_file:
       - .env
@@ -63,26 +99,37 @@ services:
       - ${APP_DATA}/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
+      # Explicitly what the flag default already resolves to: the image's
+      # WORKDIR is /prometheus and the default path is the relative 'data/'.
+      # Do not "correct" this to /prometheus, it would orphan the existing TSDB.
+      - '--storage.tsdb.path=/prometheus/data'
       - '--storage.tsdb.retention.time=180d'
-    extra_hosts: # https://stackoverflow.com/a/67158212/7422280
-      - "host.docker.internal:host-gateway"
+      - '--web.enable-remote-write-receiver'
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:${CADVISOR_VERSION}
+    # gcr.io/cadvisor/cadvisor was abandoned after v0.55.1; releases
+    # from v0.57.0 onward are published to ghcr.io only.
+    image: ghcr.io/google/cadvisor:${CADVISOR_VERSION}
     container_name: cadvisor
-    user: '0' #root
+    user: '0'  # root
     restart: unless-stopped
     env_file:
       - .env
+    command:
+      - '--housekeeping_interval=${CADVISOR_HOUSEKEEPING_INTERVAL}'
+      - '--docker_only=true'
+      - '--store_container_labels=false'
+      - '--whitelisted_container_labels=${CADVISOR_WHITELISTED_LABELS}'
+      - '--disable_metrics=${CADVISOR_DISABLED_METRICS}'
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
       - /sys:/sys:ro
-      - ${DOCKER_ROOT_DIR}:/var/lib/docker:ro
+      # Must be the same path the daemon reports as DockerRootDir, otherwise
+      # cAdvisor fails to resolve every container's read-write layer.
+      - ${DOCKER_ROOT_DIR}:${DOCKER_ROOT_DIR}:ro
       - /dev/disk:/dev/disk/:ro
-    devices:
-      - /dev/zfs:/dev/zfs
   prometheus_node_exporter:
-    image: quay.io/prometheus/node-exporter:latest
+    image: quay.io/prometheus/node-exporter:${NODE_EXPORTER_VERSION}
     container_name: prometheus_node_exporter
     command:
       - '--path.rootfs=/host'

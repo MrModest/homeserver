@@ -9,6 +9,18 @@
     recurse: true
   become: true
 
+# Prometheus used to run as root, so its existing blocks are root-owned. The
+# container now runs as the apps user. Ownership only: forcing a directory mode
+# across every TSDB block would be both wrong and slow on a 180d store.
+- name: Take ownership of the Prometheus data directory
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/observability/prometheus/data'
+    state: directory
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    recurse: true
+  become: true
+
 - name: Copy Prometheus config file
   ansible.builtin.copy:
     src: prometheus.yml

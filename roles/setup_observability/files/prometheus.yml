@@ -1,26 +1,19 @@
+# Everything else is scraped by Alloy and pushed in over remote write. The two
+# jobs below are deliberately native scrapes: they are what tells you Alloy
+# itself has stopped feeding the stack.
 global:
-  scrape_interval: 5s
-  evaluation_interval: 5s
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+storage:
+  tsdb:
+    # Absorbs replays from Alloy's write-ahead log after either side restarts.
+    out_of_order_time_window: 30m
 
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: ['prometheus:9090']
-  - job_name: 'loki'
+  - job_name: 'alloy'
     static_configs:
-      - targets: ['loki:3100']
-  - job_name: 'docker'
-    static_configs:
-      - targets: ['host.docker.internal:9323']
-  - job_name: 'cadvisor'
-    static_configs:
-      - targets: ['cadvisor:8080']
-  - job_name: node
-    static_configs:
-      - targets: ['host.docker.internal:9100']
-  - job_name: immich_api
-    static_configs:
-      - targets: ['immich_server:8081']
-  - job_name: immich_microservices
-    static_configs:
-      - targets: ['immich_server:8082']
+      - targets: ['alloy:12345']

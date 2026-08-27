@@ -11,7 +11,10 @@
 - name: Preconfigure Loki
   ansible.builtin.import_tasks: preconfig_loki.yml
 
-- name: Start 'Grafana + Prometheus + Loki + cAdvisor'
+- name: Preconfigure Alloy
+  ansible.builtin.import_tasks: preconfig_alloy.yml
+
+- name: Start 'Grafana + Prometheus + Loki + Alloy + cAdvisor'
   ansible.builtin.import_tasks: tasks/compose_up.yml
   vars:
     t_app_name: 'observability'

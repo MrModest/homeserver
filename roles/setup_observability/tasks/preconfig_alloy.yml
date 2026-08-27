@@ -1,0 +1,35 @@
+---
+# daemon.json does not set data-root, so the effective root has never matched
+# g_pools.fast.custom_dirs.docker_root. Ask the daemon instead of assuming.
+- name: Detect the live Docker data root
+  ansible.builtin.command: "docker info --format '{% raw %}{{ .DockerRootDir }}{% endraw %}'"
+  changed_when: false
+  become: true
+  register: t_docker_root
+
+- name: Use the live Docker data root for cAdvisor
+  ansible.builtin.set_fact:
+    obs_docker_root_dir: '{{ t_docker_root.stdout | trim }}'
+
+- name: Create Alloy conf and data directories
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    mode: '{{ p_default_permissions.directory }}'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    recurse: true
+  become: true
+  loop:
+    - '{{ p_dirs.apps_data }}/observability/alloy'
+    - '{{ p_dirs.apps_data }}/observability/alloy/config'
+    - '{{ p_dirs.apps_data }}/observability/alloy/data'
+
+- name: Copy Alloy config file into the directory
+  ansible.builtin.template:
+    src: config.alloy.j2
+    dest: '{{ p_dirs.apps_data }}/observability/alloy/config/config.alloy'
+    mode: '{{ p_default_permissions.file }}'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+  become: true

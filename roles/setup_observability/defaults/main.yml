@@ -1,19 +1,51 @@
 ---
 obs_apps_version:
-  grafana: '12.4.0'
-  loki: '3.1.2'
-  promtail: '3.1.2'
-  prometheus: 'v3.1.0'
-  cadvisor: 'v0.55.1'
-# obs_grafana_user:
-#   name: grafana
-#   id: 472
+  grafana: '13.2.0'
+  loki: '3.7.6'
+  alloy: 'v1.19.2'
+  prometheus: 'v3.14.0'
+  cadvisor: 'v0.60.5'
+  node_exporter: 'v1.12.1'
+
+# Overridden at runtime by preconfig_alloy.yml with the daemon's live value.
+# Pinned so the version is reviewable here rather than being whatever was once
+# clicked into the UI. Infinity 4.0.0 is the first release built against the
+# externalized react/jsx-runtime that Grafana 13 requires.
+obs_grafana_plugins:
+  - yesoreyeram-infinity-datasource@4.0.0
+
 obs_docker_root_dir: /var/lib/docker
 
-obs_loki_docker_driver_opts:
-  loki_host: 127.0.0.1
-  loki-batch-size: '400'
-  max_size: '100m'
-  max_file: '2'
+# cAdvisor defaults (1s housekeeping, every cgroup on the host, all metric
+# kinds) are far too expensive for ~70 containers. See docs/adr for the numbers.
+obs_cadvisor_housekeeping_interval: 30s
+# store_container_labels=false drops every container_label_* series, including
+# the compose project label the dashboards group and filter on. Whitelist the
+# ones actually used rather than paying for all of them.
+obs_cadvisor_whitelisted_container_labels:
+  - com.docker.compose.project
+  - com.docker.compose.service
+obs_cadvisor_disabled_metrics:
+  - percpu
+  - sched
+  - process
+  - hugetlb
+  - referenced_memory
+  - cpu_topology
+  - resctrl
+  - advtcp
+  - tcp
+  - udp
+  - memory_numa
 
-obs_loki_driver_version: 2.9.4
+# Alloy scrapes cAdvisor no faster than cAdvisor refreshes its own stats.
+obs_cadvisor_scrape_interval: 30s
+obs_scrape_interval: 5s
+# Must be <= obs_scrape_interval. Prometheus clamps this silently, Alloy
+# refuses to start, and the default is 10s.
+obs_scrape_timeout: 5s
+
+# Targets that existed only in the hand-edited prometheus.yml on the server.
+obs_extra_scrape_targets:
+  - job: backrest
+    address: 'backrest:9898'

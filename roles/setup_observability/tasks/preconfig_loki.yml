@@ -1,61 +1,26 @@
 ---
-- name: Create Loki user groups
-  ansible.builtin.group:
-    name: loki
-    state: present
-  become: true
-
-- name: Add apps_user into loki group
-  ansible.builtin.user:
-    name: '{{ p_apps_user.user }}'
-    groups:
-      - loki
-    append: true
-    state: present
-  become: true
-
-- name: Create Loki user
-  ansible.builtin.user:
-    name: loki
-    group: loki
-    groups:
-      - '{{ p_apps_user.group }}'
-    uid: 10001
-    shell: '/sbin/nologin'
-    state: present
-    append: true
-  become: true
-
-- name: Create Loki and Promtail conf directories
+# Loki's image defaults to USER 10001, but the uid is not baked into the binary:
+# the container runs as the apps user, so the data it writes stays consistent
+# with every other app's dataset.
+- name: Create Loki conf directories
   ansible.builtin.file:
     path: '{{ item }}'
     state: directory
     mode: '{{ p_default_permissions.directory }}'
-    owner: loki
-    group: loki
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
     recurse: true
   become: true
   loop:
     - '{{ p_dirs.apps_data }}/observability/loki'
     - '{{ p_dirs.apps_data }}/observability/loki/config'
     - '{{ p_dirs.apps_data }}/observability/loki/data'
-    - '{{ p_dirs.apps_data }}/observability/promtail'
-    - '{{ p_dirs.apps_data }}/observability/promtail/config'
 
 - name: Copy Loki config file into the directory
   ansible.builtin.copy:
     src: loki-config.yaml
     dest: '{{ p_dirs.apps_data }}/observability/loki/config/loki-config.yaml'
     mode: '{{ p_default_permissions.file }}'
-    owner: loki
-    group: loki
-  become: true
-
-- name: Copy Promtail config file into the directory
-  ansible.builtin.template:
-    src: promtail.yaml.j2
-    dest: '{{ p_dirs.apps_data }}/observability/promtail/config/promtail.yaml'
-    mode: '{{ p_default_permissions.file }}'
-    owner: loki
-    group: loki
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
   become: true

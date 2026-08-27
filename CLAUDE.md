@@ -62,9 +62,9 @@ Variables follow a strict naming convention:
 
 The server uses ZFS pools with specific purposes:
 
-- **`fast`** (SSD mirror): High-performance pool for app data, Docker root, compose files
+- **`fast`** (SSD mirror): High-performance pool for app data and compose files
   - Path: `/mnt/pools/fast`
-  - Structure: `apps-data/[app]`, `docker/data-root`, `docker/compose-files`
+  - Structure: `apps-data/[app]`, `docker/compose-files`
 
 - **`slow`** (HDD mirror): Large storage for media, backups, SMB shares
   - Path: `/mnt/pools/slow`
@@ -80,10 +80,14 @@ Three specialized system users:
 
 ### Docker Architecture
 
-- Data root: `/mnt/pools/fast/docker/data-root` (not `/var/lib/docker`)
+- Data root: `/var/lib/docker`, on the root ext4 disk, **not** on a pool.
+  `g_pools.fast.custom_dirs.docker_root` names `/mnt/pools/fast/docker/data-root`
+  and is threaded through `setup_docker`, but `daemon.json.j2` never sets
+  `data-root`, so it has no effect. Anything needing the real path should read
+  `docker info --format '{{ .DockerRootDir }}'` rather than the variable.
 - Compose files: `/mnt/pools/fast/docker/compose-files/[app]/`
-- Storage driver: overlay2 (ZFS native driver not needed since ZFS 2.0)
-- Logging: json-file driver for Loki/Promtail integration
+- Storage driver: overlay2 on extfs (ZFS native driver not needed since ZFS 2.0)
+- Logging: json-file driver, read by Alloy for Loki
 - Metrics: Docker metrics exposed on port 9323 for Prometheus
 
 ### Role Structure
@@ -117,10 +121,22 @@ Key convention: Each role sets `t_app_name` variable before importing `compose_u
 
 ### Observability Stack
 
-Located in `roles/setup_observability/`:
-- **Prometheus**: Metrics collection (Docker metrics on :9323, app metrics)
-- **Loki**: Log aggregation (Docker json-file logs)
-- **Promtail**: Log shipper for host logs (`/var/log/*`)
+Located in `roles/setup_observability/`. Alloy is the only writer into both
+stores; Prometheus natively scrapes just itself and Alloy, so an Alloy outage
+shows up as a failed target instead of silence.
+
+- **Alloy**: Collector. Tails `/var/log/*` and Docker container logs into Loki,
+  scrapes every exporter and remote-writes to Prometheus. Config is templated
+  from `config.alloy.j2`. Replaced Promtail, which reached EOL 2026-03-02.
+- **Loki**: Log storage
+- **Prometheus**: Metric storage. Needs `--web.enable-remote-write-receiver`
+  to accept Alloy's writes.
+- **cAdvisor**: Container metrics. Kept as its own container rather than folded
+  into Alloy: Alloy cannot configure `housekeeping_interval` (grafana/alloy#4686
+  is unmerged) and its embedded cAdvisor lags upstream. Tuning flags live in
+  `obs_cadvisor_*` in the role defaults.
+- **node_exporter**: Host metrics. Needs host network and pid namespaces, so it
+  stays a separate container and cannot run non-root.
 - **Grafana**: Visualization dashboard
 
 All containers use json-file logging driver for Loki integration.
