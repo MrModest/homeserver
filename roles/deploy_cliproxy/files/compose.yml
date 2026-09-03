@@ -20,6 +20,7 @@ services:
       # Download target for the management panel asset. The default sits inside
       # the image, where a non-root user cannot create it.
       MANAGEMENT_STATIC_PATH: '/CLIProxyAPI/static'
+      TZ: '${TIMEZONE}'
     volumes:
       - '${APP_DATA_PATH}/cli-proxy-api/config.yaml:/CLIProxyAPI/config.yaml'
       # Management panel asset. Cache, not state — re-downloaded when missing.
