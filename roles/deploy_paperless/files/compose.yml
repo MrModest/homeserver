@@ -46,6 +46,7 @@ services:
       - .env
     environment:
       PAPERLESS_REDIS: redis://paperless_redis:6379
+      PAPERLESS_DBENGINE: postgresql
       PAPERLESS_DBHOST: paperless_db
       PAPERLESS_TIKA_ENABLED: 1
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless_gotenberg:3000
@@ -61,6 +62,7 @@ services:
       PAPERLESS_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD}
       PAPERLESS_TIME_ZONE: ${TZ}
       PAPERLESS_CONSUMER_RECURSIVE: true
+      PAPERLESS_CONSUMER_DELETE_DUPLICATES: "true" # Delete incoming duplicates; keep the stored document.
       PAPERLESS_FILENAME_DATE_ORDER: YMD
       USERMAP_UID: ${APP_USER}
       USERMAP_GID: ${APP_GROUP}

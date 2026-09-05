@@ -8,6 +8,11 @@
 - Ubuntu Server 22.04 LTS
 - First installation should be finished before this playbook to run
 
+## Current hardware
+
+- Home server CPU: Intel Xeon E3-1245 v5, 4 cores / 8 threads, 3.5 GHz base and up to 3.9 GHz turbo.
+- Supported instruction extensions include SSE4.1, SSE4.2, and AVX2 ([Intel specifications](https://www.intel.com/content/www/us/en/products/sku/88173/intel-xeon-processor-e31245-v5-8m-cache-3-50-ghz/specifications.html)).
+
 ## Recommended configurations
 - Boot system and root in a dedicated SSD drive with the default ext4 partitioning and stores nothing but OS
 - All other drives are formatted into ZFS pools
