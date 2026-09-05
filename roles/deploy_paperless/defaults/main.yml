@@ -1,6 +1,6 @@
 ---
-ppls_app_version: 2.20.15
+ppls_app_version: 3.1.3
 ppls_redis_version: '7'
 ppls_postgres_version: '16'
-ppls_gotenberg_version: '8.7'
-ppls_tika_version: '3.1.0.0'
+ppls_gotenberg_version: '8.34'
+ppls_tika_version: '3.3.1.0'
