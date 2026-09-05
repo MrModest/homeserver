@@ -59,6 +59,18 @@
           icon: di:tududi.png
           url: https://tududi.modestlab.dev
     - type: monitor
+      title: AI
+      sites:
+        - title: OpenWebUI
+          icon: di:open-webui
+          url: https://chat.modestlab.dev
+        - title: Hatchdoor
+          icon: mdi:code-brackets
+          url: https://hatchdoor.modestlab.dev
+        - title: CPA-Manager-Plus
+          icon: mdi:hexagon-slice-6
+          url: https://cpamp.modestlab.dev
+    - type: monitor
       title: ServArr
       sites:
         - title: RDT Client
@@ -76,10 +88,6 @@
     - type: monitor
       title: Maintenance
       sites:
-        - title: Nginx
-          icon: di:nginx-proxy-manager
-          url: https://npm.modestlab.dev
-          allow-insecure: true
         - title: Portainer
           icon: di:portainer
           url: https://portainer.modestlab.dev
