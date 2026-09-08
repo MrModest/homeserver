@@ -38,7 +38,7 @@ g_pools:
     mount_path: '/mnt/pools/slow'
     drives:
       - /dev/disk/by-id/ata-WDC_WD20EZAZ-00L9GB0_WD-WXC2A51F94ST
-      - /dev/disk/by-id/ata-ST2000VM003-1ET164_W5238D50
+      - /dev/disk/by-id/ata-ST4000VN006-3CW104_WW6AF3Q6
     mirror: true
     custom_dirs:
       apps_data_ds: slow/apps-data

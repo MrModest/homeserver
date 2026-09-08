@@ -14,7 +14,7 @@
 
 - name: INTENSO SSD
   serial: 1642312002004838
-  dev: sdc
+  dev: sdd
   size: 232GiB (250GB)
   purpose: fast pool
   by-ids:
@@ -25,7 +25,7 @@
 
 - name: INTENSO SSD
   serial: 1642410001006905
-  dev: sdd
+  dev: sdc
   size: 238GiB (256GB)
   purpose: fast pool
   by-ids:
@@ -34,9 +34,9 @@
     - scsi-1ATA_INTENSO_SSD_1642410001006905
     - scsi-SATA_INTENSO_SSD_1642410001006905
 
-- name: WDC WD20EZAZ-00L
+- name: WDC WD20EZAZ-00L9GB0
   serial: WD-WXC2A51F94ST
-  dev: sdb
+  dev: sde
   size: 1863GiB (2TB)
   purpose: slow pool
   by-ids:
@@ -47,15 +47,15 @@
     - scsi-SATA_WDC_WD20EZAZ-00L_WD-WXC2A51F94ST
     - wwn-0x50014ee269be2a21
 
-- name: Seagate ST2000VM003-1ET164
-  serial: W5238D50
-  dev: sde
-  size: 1863GiB (2TB)
+- name: Seagate ST4000VN006-3CW1
+  serial: WW6AF3Q6
+  dev: sdb
+  size: 3726GiB (4.0TB)
   purpose: slow pool
   by-ids:
-    - ata-ST2000VM003-1ET164_W5238D50
-    - scsi-0ATA_ST2000VM003-1ET1_W5238D50
-    - scsi-1ATA_ST2000VM003-1ET164_W5238D50
-    - scsi-35000c5009bbb5049
-    - scsi-SATA_ST2000VM003-1ET1_W5238D50
-    - wwn-0x5000c5009bbb5049
+    - ata-ST4000VN006-3CW104_WW6AF3Q6
+    - scsi-0ATA_ST4000VN006-3CW1_WW6AF3Q6
+    - scsi-1ATA_ST4000VN006-3CW104_WW6AF3Q6
+    - scsi-35000c50114786a99
+    - scsi-SATA_ST4000VN006-3CW1_WW6AF3Q6
+    - wwn-0x5000c50114786a99
