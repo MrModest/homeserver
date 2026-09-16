@@ -1,5 +1,5 @@
 ---
-hnts_hermes_version: v2026.7.7.2
+hnts_hermes_version: v2026.9.14
 hnts_hatchdoor_version: 2.4.0
 
 # The baked-in `hermes` user inside the hermes image. Confirmed a container
