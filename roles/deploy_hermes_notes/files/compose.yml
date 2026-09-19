@@ -38,6 +38,8 @@ services:
     container_name: hatchdoor
     hostname: hatchdoor
     env_file: .env
+    environment:
+      HATCHDOOR_CACHE_DB: /data/cache/hatchdoor-cache.sqlite3
     volumes:
       - ${APP_DATA_PATH}/hatchdoor/knowledge-vault:/data/vault
       - ${APP_DATA_PATH}/hatchdoor/cache:/data/cache

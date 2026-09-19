@@ -1,6 +1,6 @@
 ---
 hnts_hermes_version: v2026.9.14
-hnts_hatchdoor_version: 2.5.0
+hnts_hatchdoor_version: 2.6.1
 
 # The baked-in `hermes` user inside the hermes image. Confirmed a container
 # restart does NOT retroactively chown pre-existing bind-mounted content to
