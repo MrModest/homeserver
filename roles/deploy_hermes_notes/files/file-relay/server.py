@@ -153,4 +153,5 @@ if __name__ == "__main__":
         transport="http",
         host=os.environ.get("RELAY_HOST", "0.0.0.0"),
         port=int(os.environ.get("RELAY_PORT", 8000)),
+        stateless_http=True,
     )

@@ -56,11 +56,16 @@ mcp_servers:
     url: http://hatchdoor:42824/mcp
     headers:
       Authorization: Bearer ${HATCHDOOR_MCP_BEARER_TOKEN}
+    # Hatchdoor only speaks 2026-07-28 from v2.6.0;
+    # on 2.5.0 the probe just misses and the retry carries it.
+    protocol: stateless
     tools:
       resources: false
       prompts: false
   file_relay:
     url: http://file-relay:8000/mcp
+    # fastmcp 4.x serves 2026-07-28 with per-connection negotiation.
+    protocol: stateless
     tools:
       resources: false
       prompts: false

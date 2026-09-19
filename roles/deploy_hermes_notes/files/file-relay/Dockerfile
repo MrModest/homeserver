@@ -1,6 +1,10 @@
 FROM python:3.13-slim
 
-RUN pip install --no-cache-dir "fastmcp>=3.2,<4" "httpx>=0.28,<1"
+# fastmcp 4.x is the release built for MCP protocol 2026-07-28, serving it and
+# older revisions from one deployment via per-connection negotiation. Its
+# breaking changes (FastMCPOpenAPI, mount(prefix=), as_proxy(), transport kwargs
+# on the constructor) touch nothing this relay uses.
+RUN pip install --no-cache-dir "fastmcp==4.0.5" "httpx==0.28.1"
 
 COPY server.py /app/server.py
 
