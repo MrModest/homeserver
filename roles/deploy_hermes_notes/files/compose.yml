@@ -46,6 +46,12 @@ services:
       # v2.4.0 — public images ship no model, so without this mount every
       # container recreate re-downloads it and re-asks for terms acceptance.
       - ${APP_DATA_PATH}/hatchdoor/models:/models
+      # Vault identities and source definitions (vaults.json) — authoritative
+      # instance state since v2.5.0, not a rebuildable cache. Without this
+      # mount the registry created by the automatic single-vault import is
+      # lost on every restart, and Hatchdoor re-runs the import (and its
+      # recovery screen) forever.
+      - ${APP_DATA_PATH}/hatchdoor/state:/data/state
     # No published host port — reached over notes-net by hermes at
     # http://hatchdoor:42824/mcp, and over nginxnetwork by Caddy.
     networks:

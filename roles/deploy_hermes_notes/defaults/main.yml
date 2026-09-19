@@ -1,6 +1,6 @@
 ---
 hnts_hermes_version: v2026.9.14
-hnts_hatchdoor_version: 2.4.0
+hnts_hatchdoor_version: 2.5.0
 
 # The baked-in `hermes` user inside the hermes image. Confirmed a container
 # restart does NOT retroactively chown pre-existing bind-mounted content to
@@ -49,14 +49,30 @@ hnts_firecrawl_api_key: placeholder
 hnts_relay_upload_url: http://hatchdoor:42824/api/attachment
 hnts_relay_target_dir: 98_Attachments
 
-hnts_hatchdoor_git_sync_enabled: true
-hnts_hatchdoor_git_remote: origin
+# --- Hatchdoor vault registry (templates/vaults.json.j2) ---
+# Only used to seed /data/state/vaults.json on a host that has none. Hatchdoor
+# owns that file afterwards; these values do not track later edits made in
+# Settings or through the `edit_vault` MCP tool.
+# The id is the one v2.5.0's legacy import minted for the existing vault —
+# pinning it keeps a rebuilt host addressing the same vault as before.
+hnts_hatchdoor_vault_id: 0f56ee34-d304-4a67-b73d-523f40b90d27
+hnts_hatchdoor_vault_name: vault
+# How often a two-way vault talks to the remote. Hatchdoor's own default is
+# 86400 (once a day); this is the successor to the retired 30s
+# HATCHDOOR_GIT_DEBOUNCE_SECONDS, though it paces pushes, not commits.
+hnts_hatchdoor_git_poll_interval_secs: 86400
+# The vault's commit identity. No longer passed through .env — v2.5.0 moved it
+# into the registry, so it reaches Hatchdoor only via the seed template.
+hnts_hatchdoor_git_author_name: Hermes Agent
+hnts_hatchdoor_git_author_email: hermes-agent@localhost
+
+# Only the initial `git clone` still reads these. Git sync itself is configured
+# per Vault inside Hatchdoor since v2.5.0 — remote, branch, credentials, commit
+# identity and schedule all live in /data/state/vaults.json, and re-exporting
+# the old HATCHDOOR_GIT_* variables would stop every Vault from activating.
 hnts_hatchdoor_git_branch: main
 hnts_github_username: placeholder
 hnts_github_pat: placeholder
-hnts_hatchdoor_git_debounce_seconds: 30
-hnts_hatchdoor_git_author_name: Hermes Agent
-hnts_hatchdoor_git_author_email: hermes-agent@localhost
 
 hnts_knowledge_vault_repo: placeholder
 hnts_hatchdoor_uid: 65532

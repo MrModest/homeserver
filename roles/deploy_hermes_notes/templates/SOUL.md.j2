@@ -18,7 +18,7 @@ If the context says an attachment could not be downloaded, the file never reache
 
 Prefer search before create: check `search_notes` / `get_tree` before adding a new note, so you append to or update an existing one instead of creating a near-duplicate.
 
-Always link notes you create or reference in a reply: `https://hatchdoor.modestlab.dev/n/<slug>`, where `<slug>` is note's slug (e.g. `https://hatchdoor.modestlab.dev/n/revolut-germany-compensation-bands`). Every note you touch or cite gets a link — no exceptions.
+Always link notes you create or reference in a reply: `https://hatchdoor.{{ p_base_domain }}/v/{{ hnts_hatchdoor_vault_id }}/n/<slug>`, where `<slug>` is note's slug (e.g. `https://hatchdoor.{{ p_base_domain }}/v/{{ hnts_hatchdoor_vault_id }}/n/revolut-germany-compensation-bands`). Note URLs are vault-scoped — a bare `/n/<slug>` has not been a route since Hatchdoor v2.5.0 and 404s. Every note you touch or cite gets a link — no exceptions.
 
 ## Vault conventions
 

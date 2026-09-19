@@ -69,20 +69,31 @@
   become: true
   loop:
     - {src: config.yaml, dest: config.yaml}
-    - {src: SOUL.md, dest: SOUL.md}
     - {src: no-bundled-skills, dest: .no-bundled-skills}
     - {src: skills/note-taking/DESCRIPTION.md, dest: skills/note-taking/DESCRIPTION.md}
     - {src: skills/note-taking/obsidian/SKILL.md, dest: skills/note-taking/obsidian/SKILL.md}
     - {src: skills/caveman/DESCRIPTION.md, dest: skills/caveman/DESCRIPTION.md}
     - {src: skills/caveman/caveman/SKILL.md, dest: skills/caveman/caveman/SKILL.md}
 
+- name: Template Hermes' persona file
+  # A template rather than a static file because the note links it tells the
+  # agent to emit are vault-scoped (`/v/<vault id>/n/<slug>`) since Hatchdoor
+  # v2.5.0 — the bare `/n/<slug>` form is not a route any more and 404s.
+  ansible.builtin.template:
+    src: SOUL.md.j2
+    dest: '{{ p_dirs.apps_data }}/hermes_notes/hermes/SOUL.md'
+    owner: '{{ hnts_hermes_uid }}'
+    group: '{{ hnts_hermes_gid }}'
+    mode: '{{ p_default_permissions.file }}'
+  become: true
+
 - name: Allow root to operate on Hatchdoor's knowledge-vault repo despite UID mismatch
   # The repo ends up owned by hnts_hatchdoor_uid (see the ownership task
-  # below), but this git task runs as root via become. Git refuses to
+  # below), but the git tasks here run as root via become. Git refuses to
   # operate on a repo it doesn't own (CVE-2022-24765 "dubious ownership"
-  # mitigation) unless the path is allow-listed — without this, the clone
-  # succeeds on a fresh deploy (root creates + owns it) but every run after
-  # fails permanently once the ownership task hands it to UID 65532.
+  # mitigation) unless the path is allow-listed — without this, the remote-URL
+  # task below fails permanently once the ownership task has handed the repo
+  # to UID 65532.
   community.general.git_config:
     name: safe.directory
     scope: global
@@ -90,13 +101,46 @@
     add_mode: add
   become: true
 
-- name: Clone 'knowledge-vault' repo for Hatchdoor
+- name: Check if the 'knowledge-vault' repo has already been cloned
+  ansible.builtin.stat:
+    path: '{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/knowledge-vault/.git'
+  become: true
+  register: t_knowledge_vault_git
+
+- name: Clone 'knowledge-vault' repo for Hatchdoor (first deploy only)
+  # Deliberately a one-shot bootstrap, not a converge step. On an existing repo
+  # ansible.builtin.git would fetch and then `git reset --hard origin/<branch>`
+  # (modules/git.py switch_version), which silently destroys local commits that
+  # have not been pushed yet. Hatchdoor produces exactly those: since v2.6.1 it
+  # commits a write immediately but pushes on a schedule (a two-way vault
+  # defaults to once a day), and a push blocked by an expired PAT leaves them
+  # local indefinitely. `force: no` does not help — it only refuses a dirty
+  # working tree; a clean tree holding unpushed commits is reset without a word.
+  # Once cloned, the repo is Hatchdoor's to sync; Ansible must not touch it.
   ansible.builtin.git:
     repo: "{{ hnts_knowledge_vault_repo | regex_replace('^https://', 'https://' ~ hnts_github_username ~ ':' ~ hnts_github_pat ~ '@') }}"
     dest: '{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/knowledge-vault'
     version: '{{ hnts_hatchdoor_git_branch }}'
   become: true
   no_log: true
+  when: not t_knowledge_vault_git.stat.exists
+
+- name: Strip the clone credentials from the knowledge-vault remote URL
+  # The clone above has to embed the PAT to authenticate against a private
+  # repo, which leaves `url = https://user:token@github.com/...` in
+  # .git/config. Hatchdoor's v2.5.0 legacy import reads the URL of the remote
+  # named by HATCHDOOR_GIT_REMOTE (src/vault_migration.rs) and refuses anything
+  # that is not credential-free HTTPS, failing the whole import with
+  # `legacy_migration_required`. Hatchdoor authenticates with the separate
+  # HATCHDOOR_GIT_HTTPS_USERNAME/TOKEN pair, so the remote itself must stay
+  # clean. Runs on every deploy, not just after a clone: a repo cloned by an
+  # older version of this role still carries the credentialed URL.
+  community.general.git_config:
+    name: remote.origin.url
+    scope: local
+    repo: '{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/knowledge-vault'
+    value: '{{ hnts_knowledge_vault_repo }}'
+  become: true
 
 - name: Create Hatchdoor cache and models directories
   # models/ holds the embedding model Hatchdoor downloads on first start plus
@@ -112,6 +156,43 @@
     - cache
     - models
 
+- name: Create Hatchdoor state directory
+  # Holds vaults.json, which since v2.5.0 stores each vault's own settings —
+  # including the git HTTPS token carried over from the .env by the automatic
+  # single-vault import. Hence 0700 rather than p_default_permissions.directory
+  # (0754), which would leave a credential group- and world-traversable.
+  # Must be pre-created with the right owner: Docker would otherwise create the
+  # missing bind-mount source as root and the distroless nonroot process could
+  # not write the registry into it.
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/state'
+    state: directory
+    owner: '{{ hnts_hatchdoor_uid }}'
+    group: '{{ hnts_hatchdoor_gid }}'
+    mode: '0700'
+  become: true
+
+- name: Seed the Hatchdoor vault registry (only when the host has none)
+  # `force: false` makes this a bootstrap, never a converge step. vaults.json is
+  # authoritative, revisioned state that Hatchdoor owns: every edit in Settings
+  # or via the `edit_vault` MCP tool bumps `revision`, and writes use optimistic
+  # concurrency against it (src/vault_registry.rs). Re-templating a live
+  # registry back to revision 1 would revert every change made since and make
+  # in-flight clients fail with a revision conflict.
+  # It exists for disaster recovery. Since the HATCHDOOR_GIT_* variables left
+  # .env, a host that lost /data/state has nothing for the legacy import to read
+  # and would come back as a local-only vault with two-way sync silently gone.
+  # 0600 matches what Hatchdoor itself writes: the file carries the GitHub PAT.
+  ansible.builtin.template:
+    src: vaults.json.j2
+    dest: '{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/state/vaults.json'
+    owner: '{{ hnts_hatchdoor_uid }}'
+    group: '{{ hnts_hatchdoor_gid }}'
+    mode: '0600'
+    force: false
+  become: true
+  no_log: true
+
 - name: Set Hatchdoor data directories ownership to the distroless nonroot UID/GID
   ansible.builtin.file:
     path: '{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/{{ item }}'
@@ -124,6 +205,7 @@
     - knowledge-vault
     - cache
     - models
+    - state
 
 - name: Create compose subdirectory for the file-relay build context
   # compose_up.yml creates this same directory, but the build context has to be

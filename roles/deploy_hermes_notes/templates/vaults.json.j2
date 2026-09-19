@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "revision": 1,
+  "vaults": {
+    "{{ hnts_hatchdoor_vault_id }}": {
+      "name": "{{ hnts_hatchdoor_vault_name }}",
+      "enabled": true,
+      "source": {
+        "type": "existing_git",
+        "repository_path": "/data/vault",
+        "repository_url": "{{ hnts_knowledge_vault_repo }}",
+        "branch": "{{ hnts_hatchdoor_git_branch }}",
+        "vault_subdirectory": null,
+        "mode": "two_way",
+        "poll_interval_secs": {{ hnts_hatchdoor_git_poll_interval_secs }}
+      },
+      "exclude_patterns": [],
+      "https_credentials": {
+        "username": "{{ hnts_github_username }}",
+        "token": "{{ hnts_github_pat }}"
+      },
+      "commit_identity": {
+        "name": "{{ hnts_hatchdoor_git_author_name }}",
+        "email": "{{ hnts_hatchdoor_git_author_email }}"
+      }
+    }
+  }
+}
