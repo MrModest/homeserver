@@ -1,6 +1,12 @@
 model:
   provider: openai-codex
-  default: gpt-5.6-terra
+  # The plain `gpt-5.6-terra` id went back to the verified 272K context window in
+  # hermes v0.21.0; the large window now lives behind explicit `-900k` variants.
+  default: gpt-5.6-terra-900k
+  # Redundant with the process-environment HERMES_CODEX_BASE_URL that .env sets,
+  # but explicit: without a base_url the openai-codex provider defaults to
+  # https://chatgpt.com/backend-api/codex and answers a proxy key with a 401.
+  base_url: ${HERMES_CODEX_BASE_URL}
 agent:
   verify_on_stop: false
   # Hard suppression, applied last, overriding platform_toolsets and the
@@ -8,14 +14,27 @@ agent:
   # only under `agent:` -- a top-level `toolsets_disabled:` is silently ignored.
   # `file` and `terminal` staying off is what the file-relay MCP exists to work
   # around; see docs/superpowers/specs/2026-07-20-deploy-hermes-notes-design.md.
+  # This is also the only toolset switch that is global rather than per-platform,
+  # so it cannot express "off for cli, on for telegram" (see platform_toolsets).
   disabled_toolsets:
     - terminal
     - file
     - browser
     - code_execution
+  reasoning_effort: medium
+web:
+  # Selects Firecrawl for both web_search and web_extract. Required even with a
+  # key present: without an explicit selection the keyless cloud path is never
+  # taken, and FIRECRAWL_API_KEY alone does not pick the backend.
+  backend: firecrawl
 display:
   tool_preview_length: 0
   tool_progress: all
+approvals:
+  destructive_slash_confirm: false
+plugins:
+  enabled:
+    - web-firecrawl
 gateway:
   platforms:
     telegram:
@@ -28,7 +47,10 @@ onboarding:
   seen:
     profile_build_offered: true
     busy_input_prompt: true
-_config_version: 33
+# Hermes migrates this file in place on upgrade and writes the resulting version
+# back here. Keep it at whatever the running image last migrated to: a lower
+# number replays migrations that have already been applied to the live config.
+_config_version: 44
 mcp_servers:
   hatchdoor:
     url: http://hatchdoor:42824/mcp
@@ -44,18 +66,39 @@ mcp_servers:
       prompts: false
 platform_toolsets:
   telegram:
-    - hatchdoor
     - file_relay
+    - hatchdoor
     - memory
     - web
-# Web search and extraction are plugin-provided. An empty list enables nothing,
-# so web_search/web_extract have no backend and the `web` toolset above resolves
-# to unusable tools.
-plugins:
-  enabled:
-    - web-firecrawl
-web:
-  # Selects Firecrawl for both web_search and web_extract. Required even with a
-  # key present: without an explicit selection the keyless cloud path is never
-  # taken, and FIRECRAWL_API_KEY alone does not pick the backend.
-  backend: firecrawl
+  # The container runs `gateway run`, so this platform only resolves for an
+  # interactive `hermes` invocation inside it (`docker exec ... hermes auth`).
+  # An explicitly empty list is authoritative in hermes' resolver, where a
+  # missing key means "never configured" and infers a default composite.
+  cli: []
+# Hermes' ledger of builtin toolsets a platform was offered and declined. It is
+# consulted by the path that turns on toolsets shipped after a saved list was
+# written, which is how the cli list grew its 12 entries in the first place.
+# Naming them here records them as declined, so a future release cannot re-add
+# one to an empty cli list.
+known_builtin_toolsets:
+  cli:
+    - clarify
+    - computer_use
+    - cronjob
+    - delegation
+    - image_gen
+    - memory
+    - session_search
+    - skills
+    - todo
+    - tts
+    - vision
+    - web
+# The same ledger for plugin-provided toolsets, which are enabled by default
+# unless they are listed here AND absent from the platform's saved list. Without
+# this key an installed plugin's toolset switches itself on even under `cli: []`.
+known_plugin_toolsets:
+  telegram:
+    - spotify
+  cli:
+    - spotify
