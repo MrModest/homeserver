@@ -1,5 +1,10 @@
 ---
 hnts_hermes_version: v2026.9.14
+# Needs OpenZFS >= 2.2 on the host: from v2.5.0 Hatchdoor's note compare-and-swap
+# is renameat2(RENAME_EXCHANGE), which zfs 2.1.x rejects with EINVAL, failing
+# every edit of an existing note while creates still work. Ubuntu 22.04's GA
+# kernel ships 2.1.5, the HWE kernel 2.2.x -- check `zfs version` before bumping
+# past 2.4.0. https://github.com/BatterWorks/Hatchdoor/issues/345
 hnts_hatchdoor_version: 2.6.1
 
 # The baked-in `hermes` user inside the hermes image. Confirmed a container
@@ -46,7 +51,13 @@ hnts_hermes_codex_base_url: placeholder
 # environment; config.yaml selects the backend and enables the plugin.
 hnts_firecrawl_api_key: placeholder
 
-hnts_relay_upload_url: http://hatchdoor:42824/api/attachment
+# Attachment upload endpoint. Vault-scoped since Hatchdoor v2.5.0 made the
+# instance multi-vault: the old unscoped /api/attachment is gone and answers
+# 404, which surfaces as a bare "Error calling tool 'upload_file'" in the relay
+# log. Confirmed against the live instance with get_attachment_import_config,
+# which reports this path as method `http_multipart`. The form fields
+# (target_relative_path, file) and the bearer auth are unchanged.
+hnts_relay_upload_url: http://hatchdoor:42824/api/v1/vaults/{{ hnts_hatchdoor_vault_id }}/attachments
 hnts_relay_target_dir: 98_Attachments
 
 # --- Hatchdoor vault registry (templates/vaults.json.j2) ---
@@ -59,8 +70,12 @@ hnts_hatchdoor_vault_id: 0f56ee34-d304-4a67-b73d-523f40b90d27
 hnts_hatchdoor_vault_name: vault
 # How often a two-way vault talks to the remote. Hatchdoor's own default is
 # 86400 (once a day); this is the successor to the retired 30s
-# HATCHDOOR_GIT_DEBOUNCE_SECONDS, though it paces pushes, not commits.
-hnts_hatchdoor_git_poll_interval_secs: 86400
+# HATCHDOOR_GIT_DEBOUNCE_SECONDS, though it paces pushes, not commits. Set to
+# hourly so a write is off-box within the hour: commits land immediately but
+# stay local until a push, and an expired PAT can strand them indefinitely.
+# Only seeds a host with no registry -- the live value lives in vaults.json and
+# is changed through Settings or the edit_vault MCP tool.
+hnts_hatchdoor_git_poll_interval_secs: 3600
 # The vault's commit identity. No longer passed through .env — v2.5.0 moved it
 # into the registry, so it reaches Hatchdoor only via the seed template.
 hnts_hatchdoor_git_author_name: Hermes Agent

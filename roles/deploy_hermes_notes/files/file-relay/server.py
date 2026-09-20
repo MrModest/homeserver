@@ -12,6 +12,7 @@ bytes, no URL, and no credential. Everything else is env-configured, so it is
 not tied to Hatchdoor or to images.
 """
 
+import logging
 import mimetypes
 import os
 import re
@@ -42,6 +43,17 @@ _STRIP_RE = re.compile(STRIP_PREFIX) if STRIP_PREFIX else None
 # traversal. Empty disables the rewrite.
 AGENT_ROOT = os.environ.get("RELAY_AGENT_ROOT", "").rstrip("/")
 
+# fastmcp logs a tool failure as a bare "Error calling tool 'upload_file'" with
+# neither the message nor a traceback, so every diagnosis starts from zero. Own
+# logger on the root config (fastmcp and uvicorn attach handlers to their own
+# loggers, not root, so nothing double-prints).
+logging.basicConfig(
+    level=os.environ.get("RELAY_LOG_LEVEL", "INFO"),
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+)
+log = logging.getLogger("file-relay")
+
+
 # No auth: this listens only on an internal compose network with no published
 # port, and its one client already holds every credential the relay does. Add a
 # bearer token if it ever gains a published port or a second network.
@@ -64,6 +76,7 @@ def _safe_name(filename: str) -> str:
     """
     name = filename.strip()
     if "/" in name or "\\" in name or name in {"", ".", ".."}:
+        log.warning("rejected filename %r", filename)
         raise ToolError(f"filename must be a bare filename, not a path: {filename}")
     return name
 
@@ -79,8 +92,10 @@ def _resolve(source_path: str) -> Path:
         source_path = source_path[len(AGENT_ROOT) :].lstrip("/")
     candidate = (SOURCE_DIR / source_path).resolve()
     if not candidate.is_relative_to(SOURCE_DIR):
+        log.warning("rejected traversal %r -> %s", source_path, candidate)
         raise ToolError(f"path escapes the source directory: {source_path}")
     if not candidate.is_file():
+        log.warning("no such file %r (resolved to %s)", source_path, candidate)
         raise ToolError(f"no such file: {source_path}")
     return candidate
 
@@ -132,16 +147,33 @@ def upload_file(source_path: str, filename: str | None = None) -> dict:
     content_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
     headers = {"Authorization": f"Bearer {UPLOAD_TOKEN}"} if UPLOAD_TOKEN else {}
 
-    response = httpx.post(
-        UPLOAD_URL,
-        headers=headers,
-        data={PATH_FIELD: target_relative_path},
-        files={FILE_FIELD: (path.name, path.read_bytes(), content_type)},
-        timeout=120,
+    log.info(
+        "upload %s (%d bytes, %s) -> %s as %s",
+        path, size, content_type, UPLOAD_URL, target_relative_path,
     )
+    try:
+        response = httpx.post(
+            UPLOAD_URL,
+            headers=headers,
+            data={PATH_FIELD: target_relative_path},
+            files={FILE_FIELD: (path.name, path.read_bytes(), content_type)},
+            timeout=120,
+        )
+    except httpx.HTTPError as exc:
+        # Connect/timeout/DNS: never reached the endpoint, so there is no status
+        # code to report. Names the URL, since a wrong one looks identical to a
+        # down service from the agent's side.
+        log.error("upload could not reach %s: %r", UPLOAD_URL, exc)
+        raise ToolError(f"upload could not reach {UPLOAD_URL}: {exc}") from exc
+
     if response.is_error:
+        log.error(
+            "upload rejected by %s: %s %s",
+            UPLOAD_URL, response.status_code, response.text[:500],
+        )
         raise ToolError(f"upload failed ({response.status_code}): {response.text}")
 
+    log.info("upload ok: %s -> %s (%d)", path.name, target_relative_path, response.status_code)
     try:
         return {"status": response.status_code, "response": response.json()}
     except ValueError:
@@ -149,6 +181,13 @@ def upload_file(source_path: str, filename: str | None = None) -> dict:
 
 
 if __name__ == "__main__":
+    # The deployment-config half of every upload failure, logged once at boot so
+    # a wrong URL or an unmounted source dir is visible without a reproduction.
+    log.info(
+        "file-relay starting: source=%s upload_url=%s target_dir=%r "
+        "max_bytes=%d token=%s",
+        SOURCE_DIR, UPLOAD_URL, TARGET_DIR, MAX_BYTES, "set" if UPLOAD_TOKEN else "unset",
+    )
     mcp.run(
         transport="http",
         host=os.environ.get("RELAY_HOST", "0.0.0.0"),
