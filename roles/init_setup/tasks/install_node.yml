@@ -4,7 +4,7 @@
     name: nodesource
     types: deb
     uris: "https://deb.nodesource.com/node_{{ t_node_version }}.x"
-    suites: "{{ ansible_distribution_release }}"
+    suites: nodistro
     components: main
     signed_by: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
     state: present
