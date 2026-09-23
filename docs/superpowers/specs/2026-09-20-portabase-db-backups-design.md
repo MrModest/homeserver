@@ -12,10 +12,10 @@ an alias that shells out to `docker exec ... pg_dumpall` and gzips the result in
 along with it. Keeping Node on the host purely to schedule database dumps is the cost we
 want to remove.
 
-Cronicle is also stuck at v0.9.59: `roles/init_setup/tasks/cronicle.yml` only imports the
+Cronicle upgrades are also awkward: `roles/init_setup/tasks/cronicle.yml` only imports the
 installer `when: cronicle_service_check_result.failed`, and the installer's unarchive task
-is additionally guarded by `creates: /opt/cronicle/package.json`. A healthy service is
-therefore never upgraded.
+is additionally guarded by `creates: /opt/cronicle/package.json`, so a healthy service is
+not upgraded by a normal run. The host now runs Cronicle v0.9.134 on Node.js 24.
 
 [Portabase](https://github.com/Portabase/portabase) (Apache-2.0, actively developed) does
 the specific job Cronicle is being used for — scheduled PostgreSQL dumps with retention,
@@ -136,8 +136,9 @@ Node.js and Cronicle task imports. Flipping it to `false` is the first step of r
 taken later and separately.
 
 Unrelated fix already applied: NodeSource is no longer a per-distribution repository, so
-`install_node.yml` must use the suite `nodistro` rather than the distribution codename
-(`dists/jammy` returns 404, `dists/nodistro` returns 200).
+`install_node.yml` uses the suite `nodistro` rather than the distribution codename
+(`dists/jammy` returns 404, `dists/nodistro` returns 200). With that fix the Node.js 24 and
+Cronicle v0.9.134 upgrades deployed successfully.
 
 ## Bootstrap
 
