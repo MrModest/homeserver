@@ -203,6 +203,16 @@
         - applications
         - planka
 
+    - name: Deploy 'portabase'
+      ansible.builtin.import_role:
+        name: deploy_portabase
+      vars:
+        pbs_app_host: 'portabase.{{ p_base_domain }}'
+        pbs_edge_key: '{{ v_portabase.edge_key }}'
+      tags:
+        - applications
+        - portabase
+
     - name: Deploy 'opencloud'
       ansible.builtin.import_role:
         name: deploy_opencloud

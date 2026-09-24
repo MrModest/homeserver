@@ -141,3 +141,6 @@ g_services:
     hostname: open-webui
     port: 8080
     flush: true    # disable buffering — tokens should appear as they arrive
+  - slug: portabase
+    hostname: portabase-app
+    port: 80
