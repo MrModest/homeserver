@@ -382,8 +382,11 @@ AUTH_DEFAULT_PASSWORD={{ v_portabase.admin_password }}
 AUTH_SIGNUP_ENABLED=false
 
 # Where the 'local' storage channel writes inside the dashboard container.
-# /data is the BACKUPS_PATH mount, so files land in BACKUPS_PATH/uploads.
-PRIVATE_PATH=/data
+# Left at the image's own default (/data/private) on purpose: the entrypoint
+# hardcodes `mkdir -p /data/private/uploads/tmp` for tusd regardless of this
+# variable, so overriding it would split the storage layout in two. /data is
+# the BACKUPS_PATH mount, so dumps land in BACKUPS_PATH/private/uploads.
+PRIVATE_PATH=/data/private
 
 RETENTION_CRON={{ pbs_retention_cron }}
 LOG_LEVEL=warn
@@ -680,7 +683,7 @@ be listed.
 
 Dumps go to `{{ p_dirs.backups_root }}/portabase`, mounted as `/data` on the dashboard. Portabase's
 `local` storage provider writes to `PRIVATE_PATH/uploads` **inside the dashboard container**, not
-the agent, so files appear at `{{ p_dirs.backups_root }}/portabase/uploads/`.
+the agent, so files appear at `{{ p_dirs.backups_root }}/portabase/private/uploads/`.
 
 Cronicle's `{{ p_dirs.backups_root }}/db_dumps` is untouched; both systems run in parallel.
 
@@ -714,7 +717,7 @@ Cronicle's `{{ p_dirs.backups_root }}/db_dumps` is untouched; both systems run i
    | semaphore | `semaphore_pg` | `PG_USER` | `PG_PASSWORD` | `PG_DB_NAME` |
 
 7. Set a schedule and retention per database, then run one backup by hand to confirm it lands in
-   `{{ p_dirs.backups_root }}/portabase/uploads/`.
+   `{{ p_dirs.backups_root }}/portabase/private/uploads/`.
 
 ## Caveats
 
@@ -812,7 +815,7 @@ channel, then add the ten databases.
 Trigger one backup from the UI, then:
 
 ```bash
-ssh homessh@192.168.178.34 'sudo ls -lh /mnt/pools/slow/backups/portabase/uploads/'
+ssh homessh@192.168.178.34 'sudo ls -lh /mnt/pools/slow/backups/portabase/private/uploads/'
 ```
 
 Expected: a dump file, non-zero size, timestamped just now.
@@ -837,7 +840,7 @@ Use the dump file name from Task 11 Step 5:
 
 ```bash
 ssh homessh@192.168.178.34 \
-  'sudo cat /mnt/pools/slow/backups/portabase/uploads/<dump file> | \
+  'sudo cat /mnt/pools/slow/backups/portabase/private/uploads/<dump file> | \
    docker exec -i pbs-restore-test pg_restore -U postgres -d postgres --clean --if-exists'
 ```
 

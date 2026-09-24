@@ -99,7 +99,8 @@ Portabase's "local" storage channel writes inside the **dashboard** container, a
 the agent. So the host path is bind-mounted into the dashboard:
 
 - `{{ p_dirs.backups_root }}/portabase` → `/data` on `portabase-app`
-- dumps land in `{{ p_dirs.backups_root }}/portabase/uploads/`
+- dumps land in `{{ p_dirs.backups_root }}/portabase/private/uploads/` (`PRIVATE_PATH`
+  stays at the image default `/data/private`; the entrypoint hardcodes that tree for tusd)
 - `{{ p_dirs.backups_root }}/db_dumps` stays Cronicle's, untouched
 
 Portabase's own state (its PostgreSQL) lives on the fast pool as a dedicated ZFS dataset at
