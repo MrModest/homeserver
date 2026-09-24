@@ -1,0 +1,31 @@
+---
+- name: Create the Portabase backups directory on the slow pool
+  # Not part of t_app_data_dirs below: that list is relative to the fast pool's
+  # apps-data, while the dumps belong on the slow pool next to Cronicle's
+  # existing db_dumps/ tree. Docker would otherwise create the missing bind
+  # mount source as a root-owned directory.
+  ansible.builtin.file:
+    path: '{{ p_dirs.backups_root }}/portabase'
+    state: directory
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.directory }}'
+  become: true
+
+- name: Warn when the agent has no pairing key yet
+  # First deploy always lands here: EDGE_KEY is minted by the dashboard, so it
+  # cannot exist before the dashboard runs. The agent will start and fail to
+  # pair; that is expected. See README.md for the two-phase bootstrap.
+  ansible.builtin.debug:
+    msg: >-
+      pbs_edge_key is empty: the agent will start but cannot pair. Create an
+      agent in the Portabase UI, store its key as v_portabase.edge_key, and
+      re-run this role.
+  when: pbs_edge_key | length == 0
+
+- name: Start 'portabase'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'portabase'
+    t_app_data_dirs:
+      - '{{ p_dirs.apps_data }}/portabase/db'
