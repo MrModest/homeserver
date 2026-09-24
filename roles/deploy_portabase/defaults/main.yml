@@ -1,0 +1,17 @@
+---
+# Dashboard (Next.js control plane) and its own PostgreSQL.
+pbs_app_version: '1.30.2'
+pbs_db_version: '17-alpine'
+
+# Rust agent: runs pg_dump against the application databases.
+pbs_agent_version: '1.21.2'
+
+pbs_app_host: placeholder
+
+# Pairing token minted by the dashboard when an agent is created in its UI.
+# Empty on a first deploy — the agent cannot pair until this is filled in from
+# the vault. See the role README for the two-phase bootstrap.
+pbs_edge_key: ''
+
+# Retention sweep for expired backups, as a cron expression.
+pbs_retention_cron: '0 * * * *'
