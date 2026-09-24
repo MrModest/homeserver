@@ -29,6 +29,7 @@
 - name: Install Node.js & Cronicle
   ansible.builtin.import_tasks: cronicle.yml
   become: true
+  when: isu_cronicle_enabled | bool
   tags:
     - cronicle
 

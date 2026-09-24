@@ -1,3 +1,8 @@
 ---
 isu_hl_version: '0.36.3'
 isu_dops_version: '1.18'
+
+# Bare-metal Cronicle (and the host Node.js install it needs). Kept on while
+# Portabase runs in parallel; set to false to stop managing it. Turning it off
+# does not uninstall anything — the service and /opt/cronicle stay on the host.
+isu_cronicle_enabled: true
