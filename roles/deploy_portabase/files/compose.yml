@@ -10,7 +10,10 @@ services:
     volumes:
       # Portabase's 'local' storage channel writes to PRIVATE_PATH/uploads
       # inside THIS container (not the agent), so the slow-pool backup path is
-      # mounted here. Dumps land in ${BACKUPS_PATH}/uploads on the host.
+      # mounted here. Dumps land in ${BACKUPS_PATH}/private/uploads on the host.
+      # No `user:` here, unlike portabase-pg: the upstream image ends its prod
+      # stage with USER root and its entrypoint execs nginx without dropping
+      # privileges, so pinning a UID would fight the image rather than help.
       - ${BACKUPS_PATH}:/data
     networks:
       - default

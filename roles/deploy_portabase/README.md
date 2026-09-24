@@ -20,7 +20,9 @@ be listed.
 
 Dumps go to `{{ p_dirs.backups_root }}/portabase`, mounted as `/data` on the dashboard. Portabase's
 `local` storage provider writes to `PRIVATE_PATH/uploads` **inside the dashboard container**, not
-the agent, so files appear at `{{ p_dirs.backups_root }}/portabase/uploads/`.
+the agent. `PRIVATE_PATH` is left at the image default `/data/private`, so files appear at
+`{{ p_dirs.backups_root }}/portabase/private/uploads/`. The dashboard container runs as root
+(upstream's prod stage ends with `USER root`), so the dumps it writes are root-owned.
 
 Cronicle's `{{ p_dirs.backups_root }}/db_dumps` is untouched; both systems run in parallel.
 
@@ -54,7 +56,7 @@ Cronicle's `{{ p_dirs.backups_root }}/db_dumps` is untouched; both systems run i
    | semaphore | `semaphore_pg` | `PG_USER` | `PG_PASSWORD` | `PG_DB_NAME` |
 
 7. Set a schedule and retention per database, then run one backup by hand to confirm it lands in
-   `{{ p_dirs.backups_root }}/portabase/uploads/`.
+   `{{ p_dirs.backups_root }}/portabase/private/uploads/`.
 
 ## Caveats
 
