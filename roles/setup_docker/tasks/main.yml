@@ -61,6 +61,17 @@
     append: true
   become: true
 
+- name: Create the 'db_backup' network
+  # Dedicated path for the Portabase agent to reach application databases with
+  # pg_dump. 'internal: true' means no route off the host: the only things on
+  # this network are the agent and the DB containers that opt into it. Created
+  # here rather than in deploy_portabase so it exists before any app role runs,
+  # including a single-app run like `--tags planka`.
+  community.docker.docker_network:
+    name: db_backup
+    internal: true
+  become: true
+
 - name: Assure that 'docker-py' python module is absent
   ansible.builtin.pip:
     name: docker-py
