@@ -22,6 +22,12 @@ services:
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
       POSTGRES_PASSWORD: paperless
+    networks:
+      # 'default' must stay listed: a service that declares networks no longer
+      # joins it implicitly, and the app reaches its DB over 'default'.
+      - default
+      # Dump-only path for the Portabase agent. Internal network, no egress.
+      - db_backup
 
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:${APP_VERSION}
@@ -93,3 +99,6 @@ networks:
   default:
     external: true
     name: nginxnetwork
+  db_backup:
+    external: true
+    name: db_backup

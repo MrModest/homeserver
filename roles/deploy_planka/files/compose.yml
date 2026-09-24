@@ -37,8 +37,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      # 'default' must stay listed: a service that declares networks no longer
+      # joins it implicitly, and the app reaches its DB over 'default'.
+      - default
+      # Dump-only path for the Portabase agent. Internal network, no egress.
+      - db_backup
 
 networks:
   default:
     external: true
     name: nginxnetwork
+  db_backup:
+    external: true
+    name: db_backup
