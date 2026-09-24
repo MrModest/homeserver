@@ -1,0 +1,79 @@
+services:
+  portabase-app:
+    image: portabase/portabase:${APP_VERSION}
+    container_name: 'portabase-app'
+    hostname: 'portabase-app'
+    env_file:
+      - .env
+    environment:
+      TZ: ${TZ}
+    volumes:
+      # Portabase's 'local' storage channel writes to PRIVATE_PATH/uploads
+      # inside THIS container (not the agent), so the slow-pool backup path is
+      # mounted here. Dumps land in ${BACKUPS_PATH}/uploads on the host.
+      - ${BACKUPS_PATH}:/data
+    networks:
+      - default
+      - portabase
+    restart: unless-stopped
+    depends_on:
+      portabase-pg:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost/api/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+  portabase-pg:
+    image: postgres:${DB_VERSION}
+    container_name: 'portabase-pg'
+    hostname: 'portabase-pg'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ${APP_DATA_PATH}/db:/var/lib/postgresql/data
+    # Deliberately NOT on 'default' (nginxnetwork): Portabase's own state is
+    # reachable only by the dashboard.
+    networks:
+      - portabase
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  portabase-agent:
+    image: portabase/agent:${AGENT_VERSION}
+    container_name: 'portabase-agent'
+    hostname: 'portabase-agent'
+    environment:
+      EDGE_KEY: ${EDGE_KEY}
+      LOG: info
+      TZ: ${TZ}
+    # No docker socket: the agent runs pg_dump as a network client
+    # (agent-rust/src/domain/postgres/backup.rs). The socket is only needed for
+    # Docker Volume backups, which are out of scope.
+    networks:
+      # Reaches the dashboard to poll for jobs...
+      - portabase
+      # ...and the application databases to dump them. No egress from here.
+      - db_backup
+    restart: unless-stopped
+    depends_on:
+      portabase-app:
+        condition: service_healthy
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork
+  db_backup:
+    external: true
+    name: db_backup
+  portabase:
