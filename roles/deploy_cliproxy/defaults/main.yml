@@ -3,6 +3,8 @@ cpa_cliproxy_version: 'v8.0.27'
 # CPAMP needs CLIProxyAPI v7.1.39+; its HTTP usage queue needs v6.10.8+.
 cpa_manager_version: 'v1.14.6'
 cpa_open_webui_version: 'v0.12.0'
+# Published TETRA image tag.
+cpa_open_webui_mcp_version: '0.2.2-3'
 
 # Public hostname Caddy serves Open WebUI on. Sets WEBUI_URL.
 cpa_open_webui_host: placeholder

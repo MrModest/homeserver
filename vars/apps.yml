@@ -141,3 +141,7 @@ g_services:
     hostname: open-webui
     port: 8080
     flush: true    # disable buffering — tokens should appear as they arrive
+  - slug: open-webui-mcp
+    hostname: open-webui-mcp
+    port: 8000
+    flush: true    # disable buffering — MCP streams SSE
