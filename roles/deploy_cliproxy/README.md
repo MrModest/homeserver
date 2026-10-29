@@ -3,7 +3,8 @@
 ## Overview
 
 Turns a ChatGPT/Codex subscription into a local OpenAI-compatible API, with a
-management panel and a chat UI on top. Three containers in one compose stack:
+management panel, a chat UI and an administration MCP server. Four containers
+in one compose stack:
 
 - **[CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI)** (`cli-proxy-api`)
   logs into ChatGPT (and optionally Gemini, Claude, xAI, Kimi) with OAuth and
@@ -16,6 +17,9 @@ management panel and a chat UI on top. Three containers in one compose stack:
   it does not proxy model traffic itself.
 - **[Open WebUI](https://github.com/open-webui/open-webui)** (`open-webui`) on
   `:8080` — a ChatGPT-like interface pointed at the proxy as if it were OpenAI.
+- **[Open WebUI MCP Server](https://github.com/TETRA-2023/open-webui-mcp)**
+  (`open-webui-mcp`) on `:8000/mcp` — exposes Open WebUI management tools using
+  the caller's bearer token. Uses TETRA's published Docker image.
 
 ```
 open-webui ──┐
@@ -24,9 +28,9 @@ coding CLIs ─┼──> cli-proxy-api :8317 ──> ChatGPT / Codex (OAuth)
       cpa-manager-plus :18317
 ```
 
-`cpa-net` carries traffic between the three; Caddy reaches each of them over
-`nginxnetwork` and serves them as `cliproxy.`, `cpamp.` and `chat.` on the
-domains in `vars/apps.yml`.
+`cpa-net` carries traffic between the four; Caddy reaches them over
+`nginxnetwork` and serves them as `cliproxy.`, `cpamp.`, `chat.` and
+`open-webui-mcp.` on the domains in `vars/apps.yml`.
 
 ## Role Variables
 
@@ -35,6 +39,7 @@ domains in `vars/apps.yml`.
 | `cpa_cliproxy_version` | `v7.2.141` | CLIProxyAPI image tag. CPAMP needs `v7.1.39+` |
 | `cpa_manager_version` | `v1.12.3` | CPA-Manager-Plus image tag |
 | `cpa_open_webui_version` | `v0.11.0` | Open WebUI image tag |
+| `cpa_open_webui_mcp_version` | `0.2.2-3` | Published TETRA MCP image tag |
 | `cpa_open_webui_host` | placeholder | Public hostname, used for `WEBUI_URL` |
 | `cpa_management_key` | placeholder | CLIProxyAPI Management API key; CPAMP authenticates with it |
 | `cpa_api_keys` | `{open-webui: placeholder}` | Client keys for the proxy's API, keyed by tool |
@@ -62,6 +67,33 @@ Generate them with `openssl rand -hex 32` (any opaque string works).
 ```bash
 ansible-playbook main.yml --tags cliproxy
 ```
+
+The MCP service pulls `ghcr.io/tetra-2023/open-webui-mcp:0.2.2-3`; no local build
+is needed. After deploying the service, regenerate Caddy's configuration with
+`ansible-playbook main.yml --tags update_caddyfile`.
+
+## Open WebUI administration over MCP
+
+The endpoint is `https://open-webui-mcp.<domain>/mcp` through Caddy, with streaming
+buffering disabled. Caddy forwards requests to the MCP server, which passes the
+caller's bearer token to Open WebUI. Open WebUI enforces permissions on each API
+operation. Containers on this stack's `cpa-net` can also use
+`http://open-webui-mcp:8000/mcp`. No host port is published.
+
+To use it from Open WebUI, add a connection under **Admin Settings → Integrations
+→ External Tool Servers**, choose **MCP (Streamable HTTP)**, enter that URL and
+select **Session** authentication. Each tool call forwards the signed-in user's
+token to Open WebUI; administrator credentials are required for admin operations.
+
+Other MCP clients can use the HTTPS endpoint and send an Open WebUI administrator API
+key as `Authorization: Bearer <key>` (API key access must be enabled in Open
+WebUI). This is an Open WebUI account credential, separate from the proxy client
+key named `OPEN_WEBUI_API_KEY` in this role's `.env`. No default admin key is
+stored in the MCP service. Tools use the image's bundled OpenAPI schema because
+Open WebUI disables `/openapi.json` in production. Tool names follow OpenAPI
+operation IDs rather than the original server's short names. The bundled schema
+can differ from the deployed Open WebUI version; check compatibility when
+upgrading either image.
 
 ## Add provider accounts
 
@@ -209,7 +241,7 @@ run restores the set defined here.
 
 ## Notes
 
-- **All three containers run as the `apps` user**, though all three images
+- **All four containers run as the `apps` user**, though the upstream images
   default to root. Two environment variables are load-bearing for that and must
   not be dropped: `MANAGEMENT_STATIC_PATH` (cli-proxy-api), without which the
   management panel asset cannot be written and `/management.html` returns 404;

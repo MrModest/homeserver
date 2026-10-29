@@ -93,9 +93,31 @@ services:
       - cpa-net
       - nginxnetwork
 
+  open-webui-mcp:
+    image: ghcr.io/tetra-2023/open-webui-mcp:${OPEN_WEBUI_MCP_VERSION}
+    container_name: 'open-webui-mcp'
+    hostname: 'open-webui-mcp'
+    user: '${APP_USER}:${APP_GROUP}'
+    environment:
+      WEBUI_URL: 'http://open-webui:8080'
+      # Open WebUI disables /openapi.json in production.
+      OPENWEBUI_SPEC_SOURCE: 'bundled'
+      # Forward the caller's bearer token; no shared administrator credential.
+      MCP_TRANSPORT: 'http'
+      MCP_HTTP_HOST: '0.0.0.0'
+      MCP_HTTP_PORT: '8000'
+      MCP_HTTP_PATH: '/mcp'
+      TZ: '${TIMEZONE}'
+    restart: unless-stopped
+    depends_on:
+      - open-webui
+    networks:
+      - cpa-net
+      - nginxnetwork
+
 networks:
-  # Carries open-webui and cpa-manager-plus to cli-proxy-api.
+  # Private traffic between the proxy, management panel, chat UI and MCP server.
   cpa-net:
-  # Caddy serves all three on their subdomains.
+  # Caddy serves all four on their subdomains.
   nginxnetwork:
     external: true
