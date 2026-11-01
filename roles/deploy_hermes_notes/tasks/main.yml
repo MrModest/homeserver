@@ -1,4 +1,7 @@
 ---
+- name: Set up the matching Hermes host identity
+  ansible.builtin.import_tasks: runtime_user.yml
+
 - name: Create ZFS dataset for 'hermes_notes'
   community.general.zfs:
     name: '{{ p_dirs.apps_data_ds }}/hermes_notes'
@@ -34,8 +37,8 @@
   ansible.builtin.file:
     path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/{{ dir.item }}'
     state: directory
-    owner: '{{ hnts_hermes_uid }}'
-    group: '{{ hnts_hermes_gid }}'
+    owner: '{{ hnts_hermes_user }}'
+    group: '{{ hnts_hermes_group }}'
     mode: '{{ p_default_permissions.directory }}'
     recurse: true
   become: true
@@ -55,16 +58,52 @@
   ansible.builtin.file:
     path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/cache'
     state: directory
-    owner: '{{ hnts_hermes_uid }}'
-    group: '{{ hnts_hermes_gid }}'
+    owner: '{{ hnts_hermes_user }}'
+    group: '{{ hnts_hermes_group }}'
   become: true
+
+- name: Create Hermes plugins directory
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/plugins'
+    state: directory
+    owner: '{{ hnts_hermes_user }}'
+    group: '{{ hnts_hermes_group }}'
+    mode: '0755'
+  become: true
+
+- name: Set session-reset plugin ownership and permissions for Hermes
+  # Prepare the checkout before Git runs, including handing any earlier
+  # root-owned installation to Hermes. Touch only this plugin, not secrets.
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/hermes_notes/hermes/plugins/hermes-session-reset-policy'
+    state: directory
+    owner: '{{ hnts_hermes_user }}'
+    group: '{{ hnts_hermes_group }}'
+    mode: 'u=rwX,go=rX'
+    recurse: true
+  become: true
+  when: ansible_check_mode is false
+  notify: Restart Hermes Notes gateway
+
+- name: Install the pinned Hermes session-reset policy plugin
+  # Manual clone + plugins.enabled is an upstream-supported install path.
+  # Run as the matching host account created above: sudo requires a known
+  # identity, and Git sees its own checkout without safe.directory exceptions.
+  ansible.builtin.git:
+    repo: '{{ hnts_session_reset_plugin_repo }}'
+    dest: '{{ p_dirs.apps_data }}/hermes_notes/hermes/plugins/hermes-session-reset-policy'
+    version: '{{ hnts_session_reset_plugin_version }}'
+    umask: '0022'
+  become: true
+  become_user: '{{ hnts_hermes_user }}'
+  notify: Restart Hermes Notes gateway
 
 - name: Copy Hermes config/persona files
   ansible.builtin.copy:
     src: '{{ item.src }}'
     dest: '{{ p_dirs.apps_data }}/hermes_notes/hermes/{{ item.dest }}'
-    owner: '{{ hnts_hermes_uid }}'
-    group: '{{ hnts_hermes_gid }}'
+    owner: '{{ hnts_hermes_user }}'
+    group: '{{ hnts_hermes_group }}'
     mode: '{{ p_default_permissions.file }}'
   become: true
   loop:
@@ -74,6 +113,7 @@
     - {src: skills/note-taking/obsidian/SKILL.md, dest: skills/note-taking/obsidian/SKILL.md}
     - {src: skills/caveman/DESCRIPTION.md, dest: skills/caveman/DESCRIPTION.md}
     - {src: skills/caveman/caveman/SKILL.md, dest: skills/caveman/caveman/SKILL.md}
+  notify: Restart Hermes Notes gateway
 
 - name: Template Hermes' persona file
   # A template rather than a static file because the note links it tells the
@@ -82,8 +122,8 @@
   ansible.builtin.template:
     src: SOUL.md.j2
     dest: '{{ p_dirs.apps_data }}/hermes_notes/hermes/SOUL.md'
-    owner: '{{ hnts_hermes_uid }}'
-    group: '{{ hnts_hermes_gid }}'
+    owner: '{{ hnts_hermes_user }}'
+    group: '{{ hnts_hermes_group }}'
     mode: '{{ p_default_permissions.file }}'
   become: true
 

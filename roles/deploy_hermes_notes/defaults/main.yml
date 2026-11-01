@@ -1,5 +1,11 @@
 ---
-hnts_hermes_version: v2026.9.14
+hnts_hermes_version: v0.22.5
+
+# Restores time-based resets removed in Hermes v2026.9.11. Pin plugin code
+# independently of the image; this revision is plugin v0.4.0 (no runtime deps).
+hnts_session_reset_plugin_repo: https://github.com/fastfinge/hermes-session-reset-policy.git
+hnts_session_reset_plugin_version: 76ad1aecc4067f74158ca69c40d74c56451ebef2
+
 # Needs OpenZFS >= 2.2 on the host: from v2.5.0 Hatchdoor's note compare-and-swap
 # is renameat2(RENAME_EXCHANGE), which zfs 2.1.x rejects with EINVAL, failing
 # every edit of an existing note while creates still work. Ubuntu 22.04's GA
@@ -14,6 +20,10 @@ hnts_hatchdoor_version: 2.6.1
 # rather than relying on the container to fix it up afterward.
 hnts_hermes_uid: 10000
 hnts_hermes_gid: 10000
+# Locked host identity matching the container, so Ansible can run Git as the
+# bind-mounted checkout's owner without sudo's unknown-numeric-UID rejection.
+hnts_hermes_user: hermes
+hnts_hermes_group: hermes
 
 hnts_telegram_bot_token: placeholder
 hnts_telegram_allowed_users: placeholder

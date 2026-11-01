@@ -35,14 +35,17 @@ approvals:
 plugins:
   enabled:
     - web-firecrawl
+    - hermes-session-reset-policy
+# The plugin reads the profile's top-level block, not gateway.platforms.
+# Rotate on the first user message after 30 idle minutes, never mid-turn.
+# No carry-over: a reset must start with clean conversation context.
+session_reset:
+  mode: idle
+  idle_minutes: 30
 gateway:
   platforms:
     telegram:
       enabled: true
-      session_reset:
-        mode: idle
-        idle_minutes: 30
-        notify: true
 onboarding:
   seen:
     profile_build_offered: true
@@ -86,6 +89,9 @@ platform_toolsets:
 # Naming them here records them as declined, so a future release cannot re-add
 # one to an empty cli list.
 known_builtin_toolsets:
+  # Declined for Telegram: migration 44 -> 45 must not expand its allowlist.
+  telegram:
+    - connections
   cli:
     - clarify
     - computer_use

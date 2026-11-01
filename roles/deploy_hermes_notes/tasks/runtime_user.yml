@@ -1,0 +1,23 @@
+---
+- name: Create Hermes runtime group on the host
+  ansible.builtin.group:
+    name: '{{ hnts_hermes_group }}'
+    gid: '{{ hnts_hermes_gid }}'
+    system: true
+    state: present
+  become: true
+
+- name: Create locked Hermes runtime user on the host
+  # Numeric ownership alone needs no passwd entry, but sudo become_user does.
+  # No login shell, home creation, supplementary groups or sudo privileges.
+  ansible.builtin.user:
+    name: '{{ hnts_hermes_user }}'
+    uid: '{{ hnts_hermes_uid }}'
+    group: '{{ hnts_hermes_group }}'
+    system: true
+    shell: /usr/sbin/nologin
+    home: /nonexistent
+    create_home: false
+    password_lock: true
+    state: present
+  become: true

@@ -1,0 +1,12 @@
+---
+- name: Restart Hermes Notes gateway
+  # Bind-mounted config/plugin changes do not recreate the container during
+  # compose up. Restart only Hermes, after the shared deployment has finished.
+  community.docker.docker_compose_v2:
+    project_src: '{{ p_dirs.compose_files }}/hermes_notes'
+    services:
+      - hermes
+    dependencies: false
+    state: restarted
+  become: true
+  when: ansible_check_mode is false
