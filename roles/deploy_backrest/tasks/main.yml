@@ -1,15 +1,23 @@
 ---
-- name: Start 'backrest'
-  ansible.builtin.import_tasks: tasks/compose_up.yml
-  vars:
-    t_app_name: 'backrest'
-    t_app_data_dirs:
-      - '{{ p_dirs.apps_data }}/backrest/config'
-      - '{{ p_dirs.apps_data }}/backrest/cache'
-      - '{{ p_dirs.apps_data }}/backrest/logs'
-      - '{{ p_dirs.apps_data }}/backrest/rclone'
-      - '{{ p_dirs.apps_data }}/backrest/mounts'
-      - '{{ p_dirs.backups_root }}/backrest/repos'
+# Configs are written before compose runs so backrest boots with them. The
+# dataset has to come first: zfs refuses to mount over a non-empty directory.
+- name: Create ZFS dataset for 'backrest'
+  community.general.zfs:
+    name: '{{ p_dirs.apps_data_ds }}/backrest'
+    state: present
+  become: true
+
+- name: Create the backrest config directories
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '{{ p_default_permissions.directory }}'
+  become: true
+  loop:
+    - '{{ p_dirs.apps_data }}/backrest/config'
+    - '{{ p_dirs.apps_data }}/backrest/rclone'
 
 - name: Configure 'rclone'
   ansible.builtin.template:
@@ -28,3 +36,15 @@
     group: '{{ p_apps_user.group }}'
     mode: '{{ p_default_permissions.file }}'
   become: true
+
+- name: Start 'backrest'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: 'backrest'
+    t_app_data_dirs:
+      - '{{ p_dirs.apps_data }}/backrest/config'
+      - '{{ p_dirs.apps_data }}/backrest/cache'
+      - '{{ p_dirs.apps_data }}/backrest/logs'
+      - '{{ p_dirs.apps_data }}/backrest/rclone'
+      - '{{ p_dirs.apps_data }}/backrest/mounts'
+      - '{{ p_dirs.backups_root }}/backrest/repos'

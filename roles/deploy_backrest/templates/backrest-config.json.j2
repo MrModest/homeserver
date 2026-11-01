@@ -1,6 +1,6 @@
 {
-  "modno":  22,
-  "version":  2,
+  "modno":  33,
+  "version":  6,
   "instance":  "HomeServer",
   "repos":  [
     {
@@ -12,9 +12,10 @@
       },
       "checkPolicy":  {
         "schedule":  {
-          "maxFrequencyDays":  1
+          "maxFrequencyDays":  1,
+          "clock":  "CLOCK_LAST_RUN_TIME"
         },
-        "readDataSubsetPercent":  100
+        "readDataSubsetPercent":  10
       },
       "commandPrefix":  {}
     },
@@ -119,7 +120,7 @@
         "readDataSubsetPercent": 0
       },
       "commandPrefix": {}
-    },
+    }
   ],
   "plans":  [
     {
@@ -136,7 +137,10 @@
         ".cache",
         "*.log",
         "*.log.*.gz",
-        ".vscode-server"
+        ".vscode-server",
+        "/hostfs{{ p_dirs.apps_data }}/observability/prometheus/data",
+        "/hostfs{{ p_dirs.apps_data }}/observability/loki/data",
+        "/hostfs{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/models/"
       ],
       "schedule":  {
         "maxFrequencyDays":  1
@@ -166,7 +170,11 @@
         ".cache",
         "*.log",
         "*.log.*.gz",
-        ".vscode-server"
+        ".vscode-server",
+        "/hostfs{{ p_dirs.apps_data }}/observability/prometheus/data",
+        "/hostfs{{ p_dirs.apps_data }}/observability/loki/data",
+        ".git",
+        "/hostfs{{ p_dirs.apps_data }}/hermes_notes/hatchdoor/models/"
       ],
       "schedule":  {
         "disabled":  true
@@ -239,8 +247,8 @@
       "id": "photos__mailru-webdav",
       "repo": "photos__mailru-webdav",
       "paths": [
-        "/hostfs{{ p_dirs.slow_data }}/apps-data/immich/data/library",
-        "/hostfs{{ p_dirs.slow_data }}/apps-data/immich/external"
+        "/hostfs{{ p_dirs.slow_data }}/immich/data/library",
+        "/hostfs{{ p_dirs.slow_data }}/immich/external"
       ],
       "excludes": [],
       "iexcludes": [],
@@ -267,14 +275,14 @@
       "id": "photos__b2-via-s3",
       "repo": "photos__b2-via-s3",
       "paths": [
-        "/hostfs{{ p_dirs.slow_data }}/apps-data/immich/data/library",
-        "/hostfs{{ p_dirs.slow_data }}/apps-data/immich/external"
+        "/hostfs{{ p_dirs.slow_data }}/immich/data/library",
+        "/hostfs{{ p_dirs.slow_data }}/immich/external"
       ],
       "excludes": [],
       "iexcludes": [],
       "schedule": {
         "clock": "CLOCK_LOCAL",
-        "disabled": true
+        "cron": "0 2 * * 1"
       },
       "backup_flags": [
         "--compression max"
