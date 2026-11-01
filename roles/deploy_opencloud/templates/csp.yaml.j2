@@ -18,6 +18,8 @@ directives:
     - 'blob:'
     - 'https://embed.diagrams.net/'
     - 'https://collabora.{{ p_base_domain }}/'
+    # OIDC silent token renewal loads the external issuer in an iframe.
+    - 'https://authentik.{{ p_base_domain }}/'
     # This is needed for the external-sites web extension when embedding sites
     - 'https://docs.opencloud.eu'
   img-src:

@@ -1,11 +1,11 @@
 ---
-opcd_app_version: '6.1.0'
+opcd_app_version: '9.0.0'
 opcd_collabora_version: '25.04.9.4.1'
 opcd_radicale_version: '3.5.7'
 opcd_ext_versions:
-  unzip: '2.0.0'
-  jsonviewer: '2.0.0'
-  drawio: '2.0.0'
+  unzip: '2.2.1'
+  jsonviewer: '2.1.0'
+  drawio: '2.2.0'
 opcd_collabora_admin_user: placeholder
 opcd_collabora_admin_password: placeholder
 opcd_oidc_client_id: opencloud
