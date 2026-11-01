@@ -80,7 +80,7 @@ services:
     command:
       - "gotenberg"
       - "--chromium-disable-javascript=true"
-      - "--chromium-allow-list=file:///tmp/.*"
+      - "--chromium-allow-list=^file:///tmp/.*"
 
   tika:
     image: docker.io/apache/tika:${TIKA_VERSION}
