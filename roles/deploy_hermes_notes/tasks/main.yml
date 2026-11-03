@@ -126,6 +126,7 @@
     group: '{{ hnts_hermes_group }}'
     mode: '{{ p_default_permissions.file }}'
   become: true
+  notify: Restart Hermes Notes gateway
 
 - name: Allow root to operate on Hatchdoor's knowledge-vault repo despite UID mismatch
   # The repo ends up owned by hnts_hatchdoor_uid (see the ownership task
