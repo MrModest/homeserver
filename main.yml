@@ -99,6 +99,10 @@
         ppls_secretkey: '{{ v_paperless.secret_key }}'
         ppls_app_host: 'paperless.{{ p_base_domain }}'
         ppls_admin_password: '{{ v_paperless.admin_password }}'
+        ppls_oidc:
+          client_id: '{{ v_paperless.oidc_client_id }}'
+          client_secret: '{{ v_paperless.oidc_client_secret }}'
+          issuer: 'authentik.{{ p_base_domain }}'
       tags:
         - applications
         - paperless
