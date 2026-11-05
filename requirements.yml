@@ -3,7 +3,7 @@ collections:
   - name: community.docker
     version: '>=3.8.0'
   - name: vladgh.samba
-    version: '>=3.1.1'
+    version: '3.5.10'
   - name: ttafsir.sqlite_utils
     version: '>=1.4.0'
 roles:
