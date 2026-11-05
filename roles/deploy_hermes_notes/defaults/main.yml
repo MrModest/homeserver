@@ -6,12 +6,13 @@ hnts_hermes_version: v0.22.5
 hnts_session_reset_plugin_repo: https://github.com/fastfinge/hermes-session-reset-policy.git
 hnts_session_reset_plugin_version: 76ad1aecc4067f74158ca69c40d74c56451ebef2
 
-# Needs OpenZFS >= 2.2 on the host: from v2.5.0 Hatchdoor's note compare-and-swap
-# is renameat2(RENAME_EXCHANGE), which zfs 2.1.x rejects with EINVAL, failing
-# every edit of an existing note while creates still work. Ubuntu 22.04's GA
-# kernel ships 2.1.5, the HWE kernel 2.2.x -- check `zfs version` before bumping
-# past 2.4.0. https://github.com/BatterWorks/Hatchdoor/issues/345
-hnts_hatchdoor_version: 2.6.1
+# OpenZFS >= 2.2 on the host is still recommended (Ubuntu 22.04's GA kernel
+# ships 2.1.5, the HWE kernel 2.2.x; check `zfs version`). 2.5.0-2.6.1 required
+# it: note compare-and-swap is renameat2(RENAME_EXCHANGE), which zfs 2.1.x
+# rejects with EINVAL, failing every edit of an existing note. From 2.7.0
+# Hatchdoor probes for it and falls back to a weaker, non-atomic path, so
+# atomic writes still need >= 2.2. https://github.com/BatterWorks/Hatchdoor/issues/345
+hnts_hatchdoor_version: 2.9.0
 
 # The baked-in `hermes` user inside the hermes image. Confirmed a container
 # restart does NOT retroactively chown pre-existing bind-mounted content to
@@ -93,8 +94,9 @@ hnts_hatchdoor_git_author_email: hermes-agent@localhost
 
 # Only the initial `git clone` still reads these. Git sync itself is configured
 # per Vault inside Hatchdoor since v2.5.0 — remote, branch, credentials, commit
-# identity and schedule all live in /data/state/vaults.json, and re-exporting
-# the old HATCHDOOR_GIT_* variables would stop every Vault from activating.
+# identity and schedule all live in /data/state/vaults.json. Since v2.8.0 the
+# retired HATCHDOOR_GIT_* variables are ignored with warnings and the per-vault
+# registry is authoritative; they still must not come back.
 hnts_hatchdoor_git_branch: main
 hnts_github_username: placeholder
 hnts_github_pat: placeholder
