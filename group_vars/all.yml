@@ -44,4 +44,8 @@ g_pools:
       apps_data_ds: slow/apps-data
       apps_data: '/mnt/pools/slow/apps-data'
       shared: '/mnt/pools/slow/shared'
+      media_ds: 'slow/media'
+      samba: '/mnt/pools/slow/shared/samba'
+      samba_ds: 'slow/samba'
+      time_machine_ds: 'slow/time-machine'
       backups_root: '/mnt/pools/slow/backups'

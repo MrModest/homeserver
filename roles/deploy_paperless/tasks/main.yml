@@ -10,4 +10,3 @@
       - '{{ p_dirs.slow_data }}/paperless/media'
       - '{{ p_dirs.slow_data }}/paperless/trash'
       - '{{ p_dirs.slow_data }}/paperless/export'
-      - '{{ p_dirs.smb_root }}/paperless/consume'

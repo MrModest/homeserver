@@ -1,12 +1,37 @@
 ---
-- name: Create root folder for SMB shares
-  ansible.builtin.file:
-    path: '{{ smb_share_root_path }}'
-    owner: '{{ smb_samba_user.user }}'
-    group: '{{ smb_samba_user.group }}'
-    mode: '0774'
-    recurse: true
-    state: directory
+- name: Create datasets for SMB shares
+  community.general.zfs:
+    name: '{{ item.name }}'
+    state: present
+    extra_zfs_properties: '{{ item.properties }}'
+  become: true
+  loop:
+    - name: '{{ g_pools.slow.custom_dirs.samba_ds }}'
+      properties:
+        mountpoint: '{{ g_pools.slow.custom_dirs.samba }}'
+        compression: 'off'
+        atime: 'off'
+        xattr: 'on'
+    - name: '{{ g_pools.slow.custom_dirs.time_machine_ds }}'
+      properties:
+        mountpoint: '{{ smb_share_root_path }}/time-machine'
+        recordsize: '1M'
+        compression: 'off'
+        atime: 'off'
+        xattr: 'on'
+        refquota: '1T'
+
+- name: Install Avahi for SMB discovery
+  ansible.builtin.package:
+    name: avahi-daemon
+    state: present
+  become: true
+
+- name: Enable Avahi
+  ansible.builtin.systemd:
+    name: avahi-daemon
+    enabled: true
+    state: started
   become: true
 
 - name: Configure samba
@@ -32,53 +57,37 @@
         password: '{{ smb_samba_user.password }}'
     samba_shares_root: '{{ smb_share_root_path }}'
     samba_shares:
-      - name: media
+      - name: samba
+        path: '{{ g_pools.slow.custom_dirs.samba }}'
+        owner: '{{ smb_samba_user.user }}'
+        group: '{{ smb_samba_user.group }}'
+        directory_mode: '0775'
         public: false
-        comment: '{{ smb_hostname }} Media'
+        comment: '{{ smb_hostname }} Samba'
         write_list: '+{{ smb_samba_user.group }}'
-        browseable: true
-        # Note: When used in the [global] section this parameter may have unwanted side effects.
-        # For example: If samba is configured as a MASTER BROWSER (see local master, os level, domain master, preferred master)
-        # this option will prevent workstations from being able to browse the network.
         valid_users: '+{{ smb_samba_user.group }}'
-      - name: misc
-        public: false
-        samba_wins_support: true
-        comment: '{{ smb_hostname }} Misc'
-        write_list: '+{{ smb_samba_user.group }}'
         browseable: true
-        # Note: When used in the [global] section this parameter may have unwanted side effects.
-        # For example: If samba is configured as a MASTER BROWSER (see local master, os level, domain master, preferred master)
-        # this option will prevent workstations from being able to browse the network.
-        valid_users: '+{{ smb_samba_user.group }}'
       - name: time-machine
+        owner: '{{ smb_samba_user.user }}'
+        group: '{{ smb_samba_user.group }}'
+        directory_mode: '0775'
         public: false
-        samba_apple_extensions: true
+        write_list: '+{{ smb_samba_user.group }}'
+        valid_users: '+{{ smb_samba_user.group }}'
         vfs_objects:
           - name: catia
           - name: fruit
             options:
               - name: time machine
                 value: 'yes'
+              - name: time machine max size
+                value: '1T'
               - name: model
                 value: 'MacSamba'
-              - name: nfs_aces
-                value: 'no'
               - name: advertise_fullsync
                 value: 'true'
-              - name: metadata
-                value: 'stream'
               - name: posix_rename
                 value: 'yes'
           - name: streams_xattr
         comment: '{{ smb_hostname }} TimeMachine'
         browseable: true
-
-- name: Fix permissions for Shared folder
-  ansible.builtin.file:
-    path: '{{ smb_share_root_path }}'
-    owner: '{{ smb_samba_user.user }}'
-    group: '{{ smb_samba_user.group }}'
-    mode: '{{ p_default_permissions.directory }}'
-    recurse: true
-  become: true

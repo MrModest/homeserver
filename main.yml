@@ -17,7 +17,6 @@
       slow_data: '{{ g_pools.slow.custom_dirs.apps_data  }}'
       slow_data_ds: '{{ g_pools.slow.custom_dirs.apps_data_ds  }}'
       backups_root: '{{ g_pools.slow.custom_dirs.backups_root }}'
-      smb_root: '{{ g_pools.slow.custom_dirs.shared }}/shared'
       media_root: '{{ g_pools.slow.custom_dirs.shared }}/media'
 
     p_apps_user: '{{ g_apps_user }}'

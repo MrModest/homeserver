@@ -1,4 +1,16 @@
 ---
+- name: Create media dataset
+  community.general.zfs:
+    name: '{{ g_pools.slow.custom_dirs.media_ds }}'
+    state: present
+    extra_zfs_properties:
+      mountpoint: '{{ p_dirs.media_root }}'
+      recordsize: '1M'
+      compression: 'off'
+      atime: 'off'
+      xattr: 'on'
+  become: true
+
 - name: Start 'jellyfin'
   ansible.builtin.import_tasks: tasks/compose_up.yml
   vars:

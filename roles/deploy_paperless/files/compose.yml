@@ -40,8 +40,6 @@ services:
       - ${DATA_PATH}/media:/usr/src/paperless/media # https://docs.paperless-ngx.com/configuration/#PAPERLESS_MEDIA_ROOT
       - ${DATA_PATH}/trash:/usr/src/paperless/trash # https://docs.paperless-ngx.com/configuration/#PAPERLESS_EMPTY_TRASH_DIR
       - ${DATA_PATH}/export:/usr/src/paperless/export # https://docs.paperless-ngx.com/administration/#exporter
-
-      - ${SMB_PATH}/consume:/usr/src/paperless/consume # https://docs.paperless-ngx.com/configuration/#PAPERLESS_CONSUMPTION_DIR
     env_file:
       - .env
     environment:
@@ -62,6 +60,7 @@ services:
       PAPERLESS_ADMIN_USER: admin
       PAPERLESS_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD}
       PAPERLESS_TIME_ZONE: ${TZ}
+      PAPERLESS_CONSUMER_DISABLE: "true"
       PAPERLESS_CONSUMER_RECURSIVE: true
       PAPERLESS_CONSUMER_DELETE_DUPLICATES: "true" # Delete incoming duplicates; keep the stored document.
       PAPERLESS_FILENAME_DATE_ORDER: YMD
