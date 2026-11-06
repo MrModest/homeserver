@@ -177,6 +177,13 @@
         - applications
         - silverbullet
 
+    - name: Deploy 'docker-proxy'
+      ansible.builtin.import_role:
+        name: deploy_docker_proxy
+      tags:
+        - applications
+        - docker_proxy
+
     - name: Deploy 'glance'
       ansible.builtin.import_role:
         name: deploy_glance

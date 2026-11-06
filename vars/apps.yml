@@ -1,5 +1,8 @@
 ---
 g_services:
+  - slug: docker
+    hostname: docker-proxy
+    port: 2375
   - slug: immich
     hostname: immich_server
     port: 2283

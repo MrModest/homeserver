@@ -1,0 +1,21 @@
+services:
+  docker-proxy:
+    image: 11notes/socket-proxy:${APP_VERSION}
+    container_name: docker-proxy
+    hostname: docker-proxy
+    user: '0:0'
+    read_only: true
+    environment:
+      TZ: ${TIMEZONE}
+    volumes:
+      - /run/docker.sock:/run/docker.sock:ro
+      - proxy-run:/run/proxy
+    restart: unless-stopped
+
+volumes:
+  proxy-run:
+
+networks:
+  default:
+    external: true
+    name: nginxnetwork
