@@ -1,4 +1,17 @@
 services:
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:${FLARESOLVERR_VERSION}
+    container_name: 'flaresolverr'
+    environment:
+      - LOG_LEVEL=warning
+      - TZ=${TIMEZONE}
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://localhost:8191/']
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
+    restart: unless-stopped
   jellyfin:
     image: jellyfin/jellyfin:${APP_VERSION}
     container_name: 'jellyfin'
@@ -29,7 +42,7 @@ services:
     environment:
       - PUID=${APP_USER}
       - PGID=${APP_GROUP}
-      - UMASK='415' # for '775'
+      - UMASK=002
       - TZ=${TIMEZONE}
     env_file:
       - .env
@@ -42,14 +55,22 @@ services:
     container_name: 'ariang'
     hostname: 'ariang'
     user: '0' # root
+    # This image does not apply the UMASK environment variable itself.
+    entrypoint: ['/bin/sh', '-c', 'umask "$$UMASK"; exec ./start.sh --conf-path=/aria2/conf/aria2.conf']
     volumes:
       - ${APP_DATA_PATH}/aria2/config:/aria2/conf
       - ${MEDIA_PATH}/downloads:/aria2/data
     environment:
       - PUID=${APP_USER}
       - PGID=${APP_GROUP}
-      - UMASK='415' # for '775'
+      - UMASK=002
       - ARIA2RPCPORT=443
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://localhost:8080/']
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
     restart: always
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:${PROWLARR_VERSION}
@@ -60,11 +81,17 @@ services:
       - PUID=${APP_USER}
       - PGID=${APP_GROUP}
       - TZ=${TIMEZONE}
-      - UMASK='415' # for '775'
+      - UMASK=002
     env_file:
       - .env
     volumes:
       - ${APP_DATA_PATH}/prowlarr/config:/config
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://localhost:9696/ping']
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
     restart: unless-stopped
   sonarr:
     image: lscr.io/linuxserver/sonarr:${SONARR_VERSION}
@@ -75,12 +102,18 @@ services:
       - PUID=${APP_USER}
       - PGID=${APP_GROUP}
       - TZ=${TIMEZONE}
-      - UMASK='415' # for '775'
+      - UMASK=002
     env_file:
       - .env
     volumes:
       - ${APP_DATA_PATH}/sonarr/config:/config
       - ${MEDIA_PATH}:/media
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://localhost:8989/ping']
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
     restart: unless-stopped
 
 networks:
