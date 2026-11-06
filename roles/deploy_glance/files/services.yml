@@ -8,7 +8,7 @@
       parameters:
         app:
           - '{"name":"Immich","icon":"di:immich","url":"https://immich.modestlab.dev","container":"immich_server"}'
-          - '{"name":"Jellyfin","icon":"di:jellyfin","url":"https://jellyfin.modestlab.dev","container":"jellyfin"}'
+          - '{"name":"Jellyfin","icon":"di:jellyfin","url":"https://jellyfin.modestlab.dev","container":"jellyfin","tagTransform":"^(\\d+\\.\\d+).*$ => $1.0"}'
           - '{"name":"Paperless","icon":"di:paperless-ngx","url":"https://paperless.modestlab.dev","container":"paperless_app"}'
           - '{"name":"Grist","icon":"di:grist","url":"https://grist.modestlab.dev","container":"grist_app"}'
           - '{"name":"Forgejo","icon":"di:forgejo","url":"https://forgejo.modestlab.dev","container":"forgejo"}'
