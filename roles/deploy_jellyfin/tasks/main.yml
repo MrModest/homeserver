@@ -1,4 +1,12 @@
 ---
+- name: Require a Seanime server password
+  ansible.builtin.assert:
+    that:
+      - jlfn_seanime_server_password is defined
+      - jlfn_seanime_server_password is string
+      - jlfn_seanime_server_password | length > 0
+  no_log: true
+
 - name: Create media dataset
   community.general.zfs:
     name: '{{ g_pools.slow.custom_dirs.media_ds }}'
@@ -28,3 +36,51 @@
       - '{{ p_dirs.media_root }}/anime/tv'
       - '{{ p_dirs.media_root }}/movies'
       - '{{ p_dirs.media_root }}/tv-series'
+
+- name: Wait for Seanime configuration
+  ansible.builtin.wait_for:
+    path: '{{ p_dirs.apps_data }}/jellyfin/seanime/config.toml'
+    timeout: 60
+  become: true
+
+- name: Read Seanime configuration
+  ansible.builtin.slurp:
+    src: '{{ p_dirs.apps_data }}/jellyfin/seanime/config.toml'
+  become: true
+  no_log: true
+  register: t_seanime_config
+
+- name: Configure Seanime server password
+  community.general.ini_file:
+    path: '{{ p_dirs.apps_data }}/jellyfin/seanime/config.toml'
+    section: server
+    option: password
+    value: '{{ jlfn_seanime_server_password | to_json(ensure_ascii=False) }}'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '0600'
+    backup: true
+  become: true
+  no_log: true
+  register: t_seanime_password
+  # Seanime rewrites TOML quoting on startup; compare the parsed value.
+  when: ((t_seanime_config.content | b64decode | community.general.from_toml).server.password | default('')) != jlfn_seanime_server_password
+
+- name: Protect Seanime configuration
+  ansible.builtin.file:
+    path: '{{ p_dirs.apps_data }}/jellyfin/seanime/config.toml'
+    owner: '{{ p_apps_user.user }}'
+    group: '{{ p_apps_user.group }}'
+    mode: '0600'
+  become: true
+
+- name: Restart Seanime when its password changes
+  community.docker.docker_compose_v2:
+    project_src: '{{ p_dirs.compose_files }}/jellyfin'
+    services:
+      - seanime
+    state: restarted
+  become: true
+  when:
+    - ansible_check_mode is false
+    - t_seanime_password.changed

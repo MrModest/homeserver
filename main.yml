@@ -239,6 +239,7 @@
         name: deploy_jellyfin
       vars:
         jlfn_app_host: 'jellyfin.{{ p_base_domain }}'
+        jlfn_seanime_server_password: '{{ v_seanime.server_password }}'
       tags:
         - applications
         - jellyfin
