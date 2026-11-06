@@ -1,0 +1,17 @@
+services:
+  mail-relay:
+    image: ${TELEGRAM_IMAGE}
+    container_name: mail-relay
+    restart: unless-stopped
+    environment:
+      ST_TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?Telegram bot token required}
+      ST_TELEGRAM_CHAT_IDS: ${TELEGRAM_CHAT_ID:?Telegram chat ID required}
+      ST_FORWARDED_ATTACHMENT_MAX_SIZE: 50m
+      ST_FORWARDED_ATTACHMENT_RESPECT_ERRORS: 'true'
+    networks:
+      - nginxnetwork
+
+networks:
+  nginxnetwork:
+    external: true
+    name: nginxnetwork

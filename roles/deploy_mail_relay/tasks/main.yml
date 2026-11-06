@@ -1,0 +1,18 @@
+---
+- name: Validate Telegram credentials
+  ansible.builtin.assert:
+    that:
+      - mlr_telegram_bot_token is match('^[0-9]+:[A-Za-z0-9_-]+$')
+      - mlr_telegram_chat_id | string is match('^-?[0-9]+$')
+    fail_msg: Set the mail relay's Telegram bot token and numeric chat ID in the vault.
+  no_log: true
+
+- name: Start 'mail-relay'
+  ansible.builtin.import_tasks: tasks/compose_up.yml
+  vars:
+    t_app_name: mail-relay
+    t_app_data_dirs: []
+    # The shared flow uses this mode for both Compose and its secret-bearing .env.
+    p_default_permissions:
+      file: '0600'
+      directory: '0754'

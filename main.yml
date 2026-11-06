@@ -38,6 +38,16 @@
       tags:
         - server_init
 
+    - name: Deploy 'mail-relay'
+      ansible.builtin.import_role:
+        name: deploy_mail_relay
+      vars:
+        mlr_telegram_bot_token: '{{ v_mail_relay.telegram_bot_token }}'
+        mlr_telegram_chat_id: '{{ v_mail_relay.telegram_chat_id }}'
+      tags:
+        - applications
+        - mail_relay
+
     - name: Deploy backrest
       ansible.builtin.import_role:
         name: deploy_backrest

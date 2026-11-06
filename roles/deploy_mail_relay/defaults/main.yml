@@ -1,0 +1,4 @@
+---
+mlr_telegram_image: 'kostyaesmukov/smtp_to_telegram@sha256:44ae24d5ed375343faec3c9093afbd5d74b133c87482f81ad70fef3091fd5a24'
+mlr_telegram_bot_token: ''
+mlr_telegram_chat_id: ''
