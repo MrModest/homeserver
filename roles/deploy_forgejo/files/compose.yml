@@ -10,9 +10,9 @@ services:
       - FORGEJO__database__NAME=forgejo
       - FORGEJO__database__USER=forgejo
       - FORGEJO__database__PASSWD=forgejo
-      - FORGEJO__server_ROOT_URL=https://${APP_HOST}/
-      - FORGEJO__server_SSH_DOMAIN=${APP_HOST}
-      - FORGEJO__server_DOMAIN=${APP_HOST}
+      - FORGEJO__server__ROOT_URL=https://${APP_HOST}/
+      - FORGEJO__server__SSH_DOMAIN=${APP_HOST}
+      - FORGEJO__server__DOMAIN=${APP_HOST}
     restart: unless-stopped
     volumes:
       - ${APP_DATA_PATH}/data:/var/lib/gitea
@@ -28,12 +28,13 @@ services:
     hostname: forgejo_pg
     user: ${APP_USER}:${APP_GROUP}
     restart: unless-stopped
+    stop_grace_period: 120s
     environment:
       - POSTGRES_USER=forgejo
       - POSTGRES_PASSWORD=forgejo
       - POSTGRES_DB=forgejo
     volumes:
-      - ${APP_DATA_PATH}/postgres:/var/lib/postgresql/data
+      - ${APP_DATA_PATH}/postgres18:/var/lib/postgresql
 
 networks:
   default:

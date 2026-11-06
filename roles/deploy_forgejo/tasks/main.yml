@@ -5,5 +5,5 @@
     t_app_name: 'forgejo'
     t_app_data_dirs:
       - '{{ p_dirs.apps_data }}/forgejo/data'
-      - '{{ p_dirs.apps_data }}/forgejo/config'
-      - '{{ p_dirs.apps_data }}/forgejo/postgres'
+      - '{{ p_dirs.apps_data }}/forgejo/conf'
+      - '{{ p_dirs.apps_data }}/forgejo/postgres18'
