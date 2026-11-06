@@ -1,4 +1,27 @@
 services:
+  seanime:
+    image: umagistr/seanime:${SEANIME_VERSION}
+    container_name: 'seanime'
+    hostname: 'seanime'
+    user: '${APP_USER}:${APP_GROUP}'
+    command: ['/bin/sh', '-c', 'umask "$$UMASK"; exec /app/seanime']
+    environment:
+      - HOME=/config
+      - SEANIME_DATA_DIR=/config
+      - SEANIME_SERVER_HOST=0.0.0.0
+      - SEANIME_SERVER_PORT=43211
+      - UMASK=002
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${APP_DATA_PATH}/seanime:/config
+      - ${MEDIA_PATH}/anime/tv:/anime
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://localhost:43211/']
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
+    restart: unless-stopped
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:${FLARESOLVERR_VERSION}
     container_name: 'flaresolverr'

@@ -22,6 +22,7 @@
       - '{{ p_dirs.apps_data }}/jellyfin/rdtclient'
       - '{{ p_dirs.apps_data }}/jellyfin/prowlarr'
       - '{{ p_dirs.apps_data }}/jellyfin/sonarr'
+      - '{{ p_dirs.apps_data }}/jellyfin/seanime'
       - '{{ p_dirs.media_root }}/downloads'
       - '{{ p_dirs.media_root }}/anime/movies'
       - '{{ p_dirs.media_root }}/anime/tv'

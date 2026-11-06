@@ -5,5 +5,6 @@ jlfn_ariang_version: '1.3.15'
 jlfn_prowlarr_version: '2.7.0'
 jlfn_sonarr_version: '4.0.20'
 jlfn_flaresolverr_version: 'v3.5.2'
+jlfn_seanime_version: 'v3.10.4-rootless@sha256:4a3b69531ca71fc0c97c2ef511156f966945f4092d6b50fb994abdbda97faf5d'
 
 jlfn_app_host: placeholder

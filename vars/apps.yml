@@ -102,6 +102,9 @@ g_services:
   - slug: sonarr
     hostname: sonarr
     port: 8989
+  - slug: seanime
+    hostname: seanime
+    port: 43211
   - slug: koillection
     hostname: koillection
     port: 80
