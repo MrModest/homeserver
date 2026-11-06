@@ -3,7 +3,7 @@ services:
     image: glanceapp/glance:${APP_VERSION}
     container_name: 'glance'
     hostname: 'glance'
-    user: '0' # root because we need to access docker.sock
+    user: ${APP_USER}:${APP_GROUP}
     environment:
       TZ: ${TIMEZONE}
       PUID: ${APP_USER}
@@ -13,8 +13,6 @@ services:
     volumes:
       - '${APP_DATA_PATH}/config:/app/config'
       - '${APP_DATA_PATH}/assets:/app/assets'
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /:/host_fs:ro
     restart: unless-stopped
   glance-ext:
     image: ghcr.io/mrmodest/glance-extensions:${EXT_VERSION}

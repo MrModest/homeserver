@@ -16,23 +16,6 @@
             - type: calendar
               first-day-of-week: monday
 
-        - type: server-stats
-          hide-header: true
-          servers:
-            - type: local
-              name: HomeServer
-              hide-mountpoints-by-default: true
-              mountpoints:
-                '/host_fs':
-                  name: Root
-                  hide: false
-                '/host_fs/mnt/pools/fast':
-                  name: Fast Pool
-                  hide: false
-                '/host_fs/mnt/pools/slow':
-                  name: Slow Pool
-                  hide: false
-
         - type: weather
           location: Berlin, Germany
           units: metric
