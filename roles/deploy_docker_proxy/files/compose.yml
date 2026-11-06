@@ -3,7 +3,7 @@ services:
     image: 11notes/socket-proxy:${APP_VERSION}
     container_name: docker-proxy
     hostname: docker-proxy
-    user: '0:0'
+    user: '0:${DOCKER_GID}'  # image refuses to start unless its GID owns the socket
     read_only: true
     environment:
       TZ: ${TIMEZONE}
