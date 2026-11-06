@@ -23,9 +23,31 @@ services:
       - .env
     environment:
       APP__PORT: 9999
+      DOCKER_URL: http://docker-proxy:2375
+      WUD_URL: http://wud:3000
       TODOIST__FILTER__WORKTODAY: '(Overdue | Today) & (workspace: Work | @💼 WorkTime)'
       TODOIST__FILTER__PRIVATETODAY: '(Overdue | Today) & !workspace: Work'
       TODOIST__FILTER__PRIVATEWEEK: '(overdue | today | /week) & !workspace:work'
+    restart: unless-stopped
+
+  wud:
+    image: getwud/wud:${WUD_VERSION}
+    container_name: wud
+    hostname: wud
+    user: ${APP_USER}:${APP_GROUP}
+    read_only: true
+    tmpfs:
+      - /tmp
+    environment:
+      WUD_WATCHER_LOCAL_HOST: docker-proxy
+      WUD_WATCHER_LOCAL_PORT: '2375'
+      WUD_WATCHER_LOCAL_CRON: '0 */6 * * *'
+      WUD_WATCHER_LOCAL_WATCHEVENTS: 'false'
+      WUD_LOG_FORMAT: json
+      WUD_REGISTRY_CUSTOM_N8N_URL: https://docker.n8n.io
+      WUD_REGISTRY_CUSTOM_STIRLING_URL: https://docker.stirlingpdf.com
+    volumes:
+      - '${APP_DATA_PATH}/wud:/store'
     restart: unless-stopped
 
 networks:

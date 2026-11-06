@@ -1,5 +1,5 @@
 x-shared: &shared
-  image: docker.n8n.io/n8nio/n8n
+  image: docker.n8n.io/n8nio/n8n:${APP_VERSION}
   user: '${APP_USER}:${APP_GROUP}'
   restart: unless-stopped
   environment:

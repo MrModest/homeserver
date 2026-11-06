@@ -36,3 +36,4 @@
     t_app_name: 'glance'
     t_app_data_dirs:
       - '{{ p_dirs.apps_data }}/glance/assets'
+      - '{{ p_dirs.apps_data }}/glance/wud'
