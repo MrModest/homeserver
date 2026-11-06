@@ -1,6 +1,6 @@
 ---
 glnc_app_version: 'v0.8.7'
-glnc_ext_version: 'v0.0.7'
+glnc_ext_version: 'v0.0.8'
 glnc_wud_version: '9.5.0'
 glnc_todoist_token: placeholder
 glnc_wud_admin_password: placeholder
