@@ -1,5 +1,7 @@
 ---
 tdu_app_version: '2.0.1'
+tdu_pg_version: '18.6-bookworm'
+tdu_db_password: placeholder
 
 tdu_user_email: placeholder
 tdu_user_password: placeholder

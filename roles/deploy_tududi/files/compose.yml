@@ -10,8 +10,30 @@ services:
     env_file:
       - .env
     volumes:
-      - '${APP_DATA_PATH}/db:/app/backend/db'
-      - '${APP_DATA_PATH}/uploads:/app/backend/uploads'
+      - '${APP_DATA_PATH}/uploads:/app/uploads'
+      - '${APP_DATA_PATH}/backups:/app/backups'
+    depends_on:
+      tududi-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  tududi-db:
+    image: postgres:${PG_VERSION}
+    container_name: tududi_pg
+    hostname: tududi_pg
+    user: ${APP_USER}:${APP_GROUP}
+    environment:
+      POSTGRES_DB: tududi
+      POSTGRES_USER: tududi
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - '${APP_DATA_PATH}/postgres18:/var/lib/postgresql'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U tududi -d tududi']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    stop_grace_period: 120s
     restart: unless-stopped
 
 networks:

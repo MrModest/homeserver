@@ -289,12 +289,13 @@
     - name: Deploy 'tududi'
       ansible.builtin.import_role:
         name: deploy_tududi
-      # Disabled: DST scheduler loop (chrisvel/tududi#2085); v2 also needs a PostgreSQL migration.
+      # Disabled: DST scheduler loop (chrisvel/tududi#2085).
       when: false
       vars:
         tdu_user_email: '{{ v_tududi.user_email }}'
         tdu_user_password: '{{ v_tududi.user_password }}'
         tdu_session_secret: '{{ v_tududi.session_secret }}'
+        tdu_db_password: '{{ v_tududi.db_password }}'
         tdu_domain: 'tududi.{{ p_base_domain }}'
       tags:
         - applications

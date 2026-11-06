@@ -4,5 +4,6 @@
   vars:
     t_app_name: 'tududi'
     t_app_data_dirs:
-      - '{{ p_dirs.apps_data }}/tududi/db'
       - '{{ p_dirs.apps_data }}/tududi/uploads'
+      - '{{ p_dirs.apps_data }}/tududi/backups'
+      - '{{ p_dirs.apps_data }}/tududi/postgres18'
