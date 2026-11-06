@@ -189,6 +189,7 @@
         name: deploy_glance
       vars:
         glnc_todoist_token: '{{ v_glance.todoist_token }}'
+        glnc_wud_admin_password: '{{ v_wud.admin_password }}'
       tags:
         - applications
         - glance

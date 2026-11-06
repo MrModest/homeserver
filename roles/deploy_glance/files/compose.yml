@@ -25,6 +25,8 @@ services:
       APP__PORT: 9999
       DOCKER_URL: http://docker-proxy:2375
       WUD_URL: http://wud:3000
+      WUD_USER: admin
+      WUD_PASSWORD: ${WUD_ADMIN_PASSWORD}
       TODOIST__FILTER__WORKTODAY: '(Overdue | Today) & (workspace: Work | @💼 WorkTime)'
       TODOIST__FILTER__PRIVATETODAY: '(Overdue | Today) & !workspace: Work'
       TODOIST__FILTER__PRIVATEWEEK: '(overdue | today | /week) & !workspace:work'
@@ -39,6 +41,8 @@ services:
     tmpfs:
       - /tmp
     environment:
+      WUD_AUTH_ADMIN_USER: admin
+      WUD_AUTH_ADMIN_PASSWORD: ${WUD_ADMIN_PASSWORD}
       WUD_WATCHER_LOCAL_HOST: docker-proxy
       WUD_WATCHER_LOCAL_PORT: '2375'
       WUD_WATCHER_LOCAL_CRON: '0 */6 * * *'
