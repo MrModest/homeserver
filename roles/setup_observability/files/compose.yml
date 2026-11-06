@@ -15,6 +15,13 @@ services:
     env_file:
       - .env
     environment:
+      GF_SERVER_ROOT_URL: https://grafana.modestlab.dev/
+      GF_SMTP_ENABLED: 'true'
+      GF_SMTP_HOST: mail-relay:2525
+      GF_SMTP_FROM_ADDRESS: grafana@modestlab.dev
+      GF_SMTP_STARTTLS_POLICY: NoStartTLS
+      GF_SMTP_USER: ''
+      GF_SMTP_PASSWORD: ''
       # Currently a no-op: on CGO-free builds Grafana silently fails to apply
       # it and SQLite stays in rollback-journal mode (grafana/grafana#127893,
       # still open). Kept so it takes effect once that is fixed. Verify with

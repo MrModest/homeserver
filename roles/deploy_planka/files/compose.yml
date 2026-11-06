@@ -9,6 +9,12 @@ services:
       BASE_URL: ${BASE_URL}
       DATABASE_URL: postgresql://postgres@planka-db/planka
       SECRET_KEY: '${SECRET_KEY}'
+      SMTP_HOST: mail-relay
+      SMTP_PORT: 2525
+      SMTP_FROM: planka@modestlab.dev
+      SMTP_SECURE: 'false'
+      SMTP_USER: ''
+      SMTP_PASSWORD: ''
     env_file:
       - .env
     volumes:

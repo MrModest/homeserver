@@ -10,6 +10,12 @@ services:
       PGID: ${APP_GROUP}
       ALLOW_SIGNUP: "false"
       BASE_URL: ${APP_DOMAIN}
+      SMTP_HOST: mail-relay
+      SMTP_PORT: 2525
+      SMTP_FROM_EMAIL: mealie@modestlab.dev
+      SMTP_AUTH_STRATEGY: NONE
+      SMTP_USER: ''
+      SMTP_PASSWORD: ''
     env_file:
       - .env
     deploy:

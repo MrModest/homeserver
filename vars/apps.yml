@@ -44,6 +44,9 @@ g_services:
   - slug: hoarder
     hostname: hoarder_app
     port: 3000
+  - slug: linkwarden
+    hostname: linkwarden
+    port: 3000
   - slug: forgejo
     hostname: forgejo
     port: 3000

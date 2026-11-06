@@ -13,6 +13,14 @@ services:
       - FORGEJO__server__ROOT_URL=https://${APP_HOST}/
       - FORGEJO__server__SSH_DOMAIN=${APP_HOST}
       - FORGEJO__server__DOMAIN=${APP_HOST}
+      - FORGEJO__mailer__ENABLED=true
+      - FORGEJO__mailer__PROTOCOL=smtp
+      - FORGEJO__mailer__SMTP_ADDR=mail-relay
+      - FORGEJO__mailer__SMTP_PORT=2525
+      - FORGEJO__mailer__FROM=forgejo@modestlab.dev
+      - FORGEJO__mailer__USER=
+      - FORGEJO__mailer__PASSWD=
+      - FORGEJO__service__ENABLE_NOTIFY_MAIL=true
     restart: unless-stopped
     volumes:
       - ${APP_DATA_PATH}/data:/var/lib/gitea

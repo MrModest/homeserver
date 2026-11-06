@@ -13,6 +13,8 @@ x-shared: &shared
     - QUEUE_BULL_REDIS_HOST=n8n-redis
     - QUEUE_HEALTH_CHECK_ACTIVE=true
     - N8N_ENCRYPTION_KEY=${ENCRYPTION_KEY}
+    - N8N_EDITOR_BASE_URL=https://n8n.modestlab.dev
+    - WEBHOOK_URL=https://n8n.modestlab.dev/
   volumes:
     - ${APP_DATA_PATH}/data:/home/node/.n8n
     - ${APP_DATA_PATH}/dot-n8n:/.n8n
@@ -64,6 +66,15 @@ services:
       OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS: 'true'
       N8N_BLOCK_ENV_ACCESS_IN_NODE: 'true'
       N8N_GIT_NODE_DISABLE_BARE_REPOS: 'true'
+      N8N_EDITOR_BASE_URL: https://n8n.modestlab.dev
+      WEBHOOK_URL: https://n8n.modestlab.dev/
+      N8N_SMTP_HOST: mail-relay
+      N8N_SMTP_PORT: 2525
+      N8N_SMTP_SENDER: n8n@modestlab.dev
+      N8N_SMTP_SSL: 'false'
+      N8N_SMTP_STARTTLS: 'false'
+      N8N_SMTP_USER: ''
+      N8N_SMTP_PASS: ''
     container_name: n8n-server
     hostname: n8n-server
 

@@ -22,7 +22,15 @@ services:
     environment:
       FRONTEND_ARCHIVER_MAX_SIZE: "10000000000" # 10 GB - Max size of folders to be downloaded as zip archive
       # enable services that are not started automatically
-      OC_ADD_RUN_SERVICES: ${START_ADDITIONAL_SERVICES}
+      OC_ADD_RUN_SERVICES: notifications
+      NOTIFICATIONS_SMTP_HOST: mail-relay
+      NOTIFICATIONS_SMTP_PORT: 2525
+      NOTIFICATIONS_SMTP_SENDER: opencloud@modestlab.dev
+      NOTIFICATIONS_SMTP_ENCRYPTION: none
+      NOTIFICATIONS_SMTP_AUTHENTICATION: none
+      NOTIFICATIONS_SMTP_INSECURE: 'true'
+      NOTIFICATIONS_SMTP_USERNAME: ''
+      NOTIFICATIONS_SMTP_PASSWORD: ''
       OC_URL: ${OC_HOST}
       OC_LOG_LEVEL: info
       # do not use SSL between the reverse proxy and OpenCloud

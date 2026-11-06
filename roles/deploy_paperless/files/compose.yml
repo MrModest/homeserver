@@ -26,7 +26,7 @@ services:
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:${APP_VERSION}
     container_name: paperless_app
-    hostname: paperless_app
+    hostname: paperless-app
     user: '0' # root
     restart: unless-stopped
     depends_on:
@@ -60,6 +60,13 @@ services:
       PAPERLESS_ADMIN_USER: admin
       PAPERLESS_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD}
       PAPERLESS_TIME_ZONE: ${TZ}
+      PAPERLESS_EMAIL_HOST: mail-relay
+      PAPERLESS_EMAIL_PORT: 2525
+      PAPERLESS_EMAIL_FROM: paperless@modestlab.dev
+      PAPERLESS_EMAIL_USE_TLS: 'false'
+      PAPERLESS_EMAIL_USE_SSL: 'false'
+      PAPERLESS_EMAIL_HOST_USER: ''
+      PAPERLESS_EMAIL_HOST_PASSWORD: ''
       PAPERLESS_CONSUMER_DISABLE: "true"
       PAPERLESS_CONSUMER_RECURSIVE: true
       PAPERLESS_CONSUMER_DELETE_DUPLICATES: "true" # Delete incoming duplicates; keep the stored document.
