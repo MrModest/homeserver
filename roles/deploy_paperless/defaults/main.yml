@@ -4,6 +4,12 @@ ppls_redis_version: '7'
 ppls_postgres_version: '16'
 ppls_gotenberg_version: '8.37'
 ppls_tika_version: '3.3.1.0'
+ppls_ai_llm_model: gpt-6.1-terra
+ppls_ai_llm_endpoint: placeholder
+ppls_ai_llm_api_key: placeholder
+ppls_ai_embedding_model: '@cf/baai/bge-m3'
+ppls_ai_embedding_endpoint: placeholder
+ppls_ai_embedding_api_key: placeholder
 ppls_oidc:
   client_id: placeholder
   client_secret: placeholder

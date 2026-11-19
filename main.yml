@@ -108,6 +108,10 @@
         ppls_secretkey: '{{ v_paperless.secret_key }}'
         ppls_app_host: 'paperless.{{ p_base_domain }}'
         ppls_admin_password: '{{ v_paperless.admin_password }}'
+        ppls_ai_llm_endpoint: 'https://cliproxy.{{ p_base_domain }}/v1'
+        ppls_ai_llm_api_key: '{{ v_cliproxy.api_keys.paperless }}'
+        ppls_ai_embedding_endpoint: 'https://api.cloudflare.com/client/v4/accounts/{{ v_cloudflare.ai.account_id }}/ai/v1'
+        ppls_ai_embedding_api_key: '{{ v_cloudflare.ai.paperless }}'
         ppls_oidc:
           client_id: '{{ v_paperless.oidc_client_id }}'
           client_secret: '{{ v_paperless.oidc_client_secret }}'
