@@ -33,6 +33,7 @@ services:
       SCREEN_HEIGHT: 1024
       SCREEN_DEPTH: 16
       MAX_CONCURRENT_CHROME_PROCESSES: 10
+      HOME: /tmp # Chrome's crashpad needs a writable HOME; APP_USER has none in the image
 
 networks:
   default:
