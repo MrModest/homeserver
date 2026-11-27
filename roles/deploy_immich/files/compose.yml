@@ -16,6 +16,9 @@ services:
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
+    environment:
+      # Work around the v3.4.2 IPv6 metrics bug: immich-app/immich#33466.
+      IMMICH_HOST: 0.0.0.0
     depends_on:
       - redis
       - database
@@ -23,6 +26,7 @@ services:
       resources:
         limits:
           cpus: '3'
+          memory: '2G'
     healthcheck:
       disable: false
 
@@ -38,10 +42,13 @@ services:
       - ${APP_DATA_PATH}/ml/dot-cache:/.cache
     env_file:
       - .env
+    environment:
+      MACHINE_LEARNING_MODEL_REVISION: v2
     deploy: # https://github.com/immich-app/immich/discussions/2368#discussioncomment-5952765
       resources:
         limits:
           cpus: '2'
+          memory: '3G'
     healthcheck:
       disable: false
 
@@ -53,7 +60,7 @@ services:
     volumes:
       - ${APP_DATA_PATH}/redis:/data
     healthcheck:
-      test: redis-cli ping || exit 1
+      test: redis-cli ping | grep -q PONG || exit 1
       interval: 10s
       timeout: 5s
       retries: 5
